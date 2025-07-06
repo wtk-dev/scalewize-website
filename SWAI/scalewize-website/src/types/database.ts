@@ -5,213 +5,225 @@ export interface Database {
         Row: {
           id: string
           name: string
-          slug: string
+          domain: string | null
+          subscription_status: 'trial' | 'active' | 'inactive' | 'cancelled'
+          plan_type: 'starter' | 'professional' | 'enterprise'
+          max_users: number
+          max_chat_sessions: number
+          monthly_token_limit: number
+          librechat_config: Json
+          n8n_webhook_url: string | null
           created_at: string
           updated_at: string
-          subscription_tier: 'starter' | 'professional' | 'enterprise'
-          subscription_status: 'active' | 'inactive' | 'cancelled'
-          stripe_customer_id: string | null
-          monthly_usage_limit: number
-          current_monthly_usage: number
-          settings: Json
         }
         Insert: {
           id?: string
           name: string
-          slug: string
+          domain?: string | null
+          subscription_status?: 'trial' | 'active' | 'inactive' | 'cancelled'
+          plan_type?: 'starter' | 'professional' | 'enterprise'
+          max_users?: number
+          max_chat_sessions?: number
+          monthly_token_limit?: number
+          librechat_config?: Json
+          n8n_webhook_url?: string | null
           created_at?: string
           updated_at?: string
-          subscription_tier?: 'starter' | 'professional' | 'enterprise'
-          subscription_status?: 'active' | 'inactive' | 'cancelled'
-          stripe_customer_id?: string | null
-          monthly_usage_limit?: number
-          current_monthly_usage?: number
-          settings?: Json
         }
         Update: {
           id?: string
           name?: string
-          slug?: string
+          domain?: string | null
+          subscription_status?: 'trial' | 'active' | 'inactive' | 'cancelled'
+          plan_type?: 'starter' | 'professional' | 'enterprise'
+          max_users?: number
+          max_chat_sessions?: number
+          monthly_token_limit?: number
+          librechat_config?: Json
+          n8n_webhook_url?: string | null
           created_at?: string
           updated_at?: string
-          subscription_tier?: 'starter' | 'professional' | 'enterprise'
-          subscription_status?: 'active' | 'inactive' | 'cancelled'
-          stripe_customer_id?: string | null
-          monthly_usage_limit?: number
-          current_monthly_usage?: number
-          settings?: Json
         }
       }
       profiles: {
         Row: {
           id: string
+          organization_id: string | null
           email: string
           full_name: string | null
-          avatar_url: string | null
-          organization_id: string
           role: 'user' | 'admin' | 'super_admin'
+          is_active: boolean
+          librechat_user_id: string | null
+          last_login: string | null
           created_at: string
           updated_at: string
-          last_sign_in: string | null
         }
         Insert: {
           id: string
+          organization_id?: string | null
           email: string
           full_name?: string | null
-          avatar_url?: string | null
-          organization_id: string
           role?: 'user' | 'admin' | 'super_admin'
+          is_active?: boolean
+          librechat_user_id?: string | null
+          last_login?: string | null
           created_at?: string
           updated_at?: string
-          last_sign_in?: string | null
         }
         Update: {
           id?: string
+          organization_id?: string | null
           email?: string
           full_name?: string | null
-          avatar_url?: string | null
-          organization_id?: string
           role?: 'user' | 'admin' | 'super_admin'
+          is_active?: boolean
+          librechat_user_id?: string | null
+          last_login?: string | null
           created_at?: string
           updated_at?: string
-          last_sign_in?: string | null
         }
       }
       chat_sessions: {
         Row: {
           id: string
-          organization_id: string
-          user_id: string
-          session_id: string
+          user_id: string | null
+          organization_id: string | null
           title: string | null
+          librechat_session_id: string | null
+          model_used: string | null
+          session_metadata: Json
+          is_active: boolean
           created_at: string
           updated_at: string
-          message_count: number
-          total_tokens: number
-          status: 'active' | 'archived'
         }
         Insert: {
           id?: string
-          organization_id: string
-          user_id: string
-          session_id: string
+          user_id?: string | null
+          organization_id?: string | null
           title?: string | null
+          librechat_session_id?: string | null
+          model_used?: string | null
+          session_metadata?: Json
+          is_active?: boolean
           created_at?: string
           updated_at?: string
-          message_count?: number
-          total_tokens?: number
-          status?: 'active' | 'archived'
         }
         Update: {
           id?: string
-          organization_id?: string
-          user_id?: string
-          session_id?: string
+          user_id?: string | null
+          organization_id?: string | null
           title?: string | null
+          librechat_session_id?: string | null
+          model_used?: string | null
+          session_metadata?: Json
+          is_active?: boolean
           created_at?: string
           updated_at?: string
-          message_count?: number
-          total_tokens?: number
-          status?: 'active' | 'archived'
         }
       }
       usage_metrics: {
         Row: {
           id: string
-          organization_id: string
-          user_id: string
-          date: string
+          organization_id: string | null
+          user_id: string | null
+          session_id: string | null
+          message_count: number
           tokens_used: number
           cost_usd: number
-          session_count: number
+          model_used: string | null
+          endpoint_used: string | null
+          date: string
           created_at: string
         }
         Insert: {
           id?: string
-          organization_id: string
-          user_id: string
-          date: string
-          tokens_used: number
-          cost_usd: number
-          session_count: number
+          organization_id?: string | null
+          user_id?: string | null
+          session_id?: string | null
+          message_count?: number
+          tokens_used?: number
+          cost_usd?: number
+          model_used?: string | null
+          endpoint_used?: string | null
+          date?: string
           created_at?: string
         }
         Update: {
           id?: string
-          organization_id?: string
-          user_id?: string
-          date?: string
+          organization_id?: string | null
+          user_id?: string | null
+          session_id?: string | null
+          message_count?: number
           tokens_used?: number
           cost_usd?: number
-          session_count?: number
+          model_used?: string | null
+          endpoint_used?: string | null
+          date?: string
           created_at?: string
         }
       }
       billing_records: {
         Row: {
           id: string
-          organization_id: string
-          stripe_invoice_id: string
-          amount_usd: number
-          status: 'pending' | 'paid' | 'failed'
-          billing_period_start: string
-          billing_period_end: string
+          organization_id: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          amount_usd: number | null
+          billing_period_start: string | null
+          billing_period_end: string | null
+          status: string
           created_at: string
-          paid_at: string | null
         }
         Insert: {
           id?: string
-          organization_id: string
-          stripe_invoice_id: string
-          amount_usd: number
-          status?: 'pending' | 'paid' | 'failed'
-          billing_period_start: string
-          billing_period_end: string
+          organization_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          amount_usd?: number | null
+          billing_period_start?: string | null
+          billing_period_end?: string | null
+          status?: string
           created_at?: string
-          paid_at?: string | null
         }
         Update: {
           id?: string
-          organization_id?: string
-          stripe_invoice_id?: string
-          amount_usd?: number
-          status?: 'pending' | 'paid' | 'failed'
-          billing_period_start?: string
-          billing_period_end?: string
+          organization_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          amount_usd?: number | null
+          billing_period_start?: string | null
+          billing_period_end?: string | null
+          status?: string
           created_at?: string
-          paid_at?: string | null
         }
       }
       api_keys: {
         Row: {
           id: string
-          organization_id: string
-          name: string
-          key_hash: string
-          permissions: string[]
+          organization_id: string | null
+          key_name: string
+          key_value: string
+          is_active: boolean
           created_at: string
-          last_used: string | null
-          expires_at: string | null
+          updated_at: string
         }
         Insert: {
           id?: string
-          organization_id: string
-          name: string
-          key_hash: string
-          permissions: string[]
+          organization_id?: string | null
+          key_name: string
+          key_value: string
+          is_active?: boolean
           created_at?: string
-          last_used?: string | null
-          expires_at?: string | null
+          updated_at?: string
         }
         Update: {
           id?: string
-          organization_id?: string
-          name?: string
-          key_hash?: string
-          permissions?: string[]
+          organization_id?: string | null
+          key_name?: string
+          key_value?: string
+          is_active?: boolean
           created_at?: string
-          last_used?: string | null
-          expires_at?: string | null
+          updated_at?: string
         }
       }
     }

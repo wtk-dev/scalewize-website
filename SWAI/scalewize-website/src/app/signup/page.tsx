@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Bot, Eye, EyeOff, Loader2, Building2 } from 'lucide-react'
-import { createClient } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase-client'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -60,8 +60,6 @@ export default function SignupPage() {
       return
     }
 
-    const supabase = createClient()
-
     try {
       // Create user account
       const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -81,12 +79,13 @@ export default function SignupPage() {
           .from('organizations')
           .insert({
             name: formData.organizationName,
-            slug: formData.organizationSlug,
-            subscription_tier: 'starter',
-            subscription_status: 'active',
-            monthly_usage_limit: 10000, // Default starter limit
-            current_monthly_usage: 0,
-            settings: {},
+            domain: formData.organizationSlug,
+            subscription_status: 'trial',
+            plan_type: 'starter',
+            max_users: 50,
+            max_chat_sessions: 1000,
+            monthly_token_limit: 100000,
+            librechat_config: {},
           })
           .select()
           .single()
@@ -106,6 +105,7 @@ export default function SignupPage() {
             full_name: formData.fullName,
             organization_id: orgData.id,
             role: 'admin', // First user is admin
+            is_active: true,
           })
 
         if (profileError) {

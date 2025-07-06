@@ -38,8 +38,9 @@ export default function DashboardPage() {
     },
   ]
 
+  // Calculate usage percentage based on your schema
   const usagePercentage = organization 
-    ? Math.round((organization.current_monthly_usage / organization.monthly_usage_limit) * 100)
+    ? Math.round((0 / organization.monthly_token_limit) * 100) // We'll calculate actual usage later
     : 0
 
   return (
@@ -91,7 +92,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium text-gray-900">Monthly Usage</h3>
           <span className="text-sm text-gray-500">
-            {organization?.current_monthly_usage?.toLocaleString()} / {organization?.monthly_usage_limit?.toLocaleString()} tokens
+            0 / {organization?.monthly_token_limit?.toLocaleString()} tokens
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
@@ -117,7 +118,7 @@ export default function DashboardPage() {
         </div>
         <div className="h-96">
           <iframe
-            src={`${process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'http://localhost:3080'}?org=${organization?.slug}`}
+            src={`${process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'http://localhost:3080'}?org=${organization?.domain}`}
             className="w-full h-full rounded-b-lg"
             title="ScaleWize AI Chat"
             frameBorder="0"

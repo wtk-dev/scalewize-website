@@ -48,7 +48,7 @@ async function testSupabaseConnection() {
     console.log('3. Testing Row Level Security...')
     const { data: orgs, error: orgError } = await supabase
       .from('organizations')
-      .select('id, name, slug')
+      .select('id, name, domain')
       .limit(5)
     
     if (orgError) {
@@ -88,12 +88,13 @@ async function createTestData() {
       .from('organizations')
       .insert({
         name: 'Test Organization',
-        slug: 'test-org',
-        subscription_tier: 'starter',
-        subscription_status: 'active',
-        monthly_usage_limit: 10000,
-        current_monthly_usage: 0,
-        settings: {}
+        domain: 'test-org',
+        subscription_status: 'trial',
+        plan_type: 'starter',
+        max_users: 50,
+        max_chat_sessions: 1000,
+        monthly_token_limit: 100000,
+        librechat_config: {}
       })
       .select()
       .single()
@@ -134,7 +135,7 @@ async function createTestData() {
         date: new Date().toISOString().split('T')[0],
         tokens_used: 1000,
         cost_usd: 0.02,
-        session_count: 5
+        message_count: 5
       })
 
     if (usageError) {
@@ -159,7 +160,7 @@ async function cleanupTestData() {
     // Delete test data in reverse order (due to foreign key constraints)
     await supabase.from('usage_metrics').delete().eq('user_id', 'test-user-id')
     await supabase.from('profiles').delete().eq('id', 'test-user-id')
-    await supabase.from('organizations').delete().eq('slug', 'test-org')
+    await supabase.from('organizations').delete().eq('domain', 'test-org')
 
     console.log('✅ Test data cleaned up')
     return true

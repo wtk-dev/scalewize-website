@@ -1,18 +1,13 @@
-import { createBrowserClient } from '@supabase/ssr'
 import { createServerClient } from '@supabase/ssr'
+import { createBrowserClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-// Browser client for client-side operations
-export function createClient() {
-  return createBrowserClient(supabaseUrl, supabaseAnonKey)
-}
-
 // Server client for server-side operations
-export function createServerSupabaseClient() {
-  const cookieStore = cookies()
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies()
 
   return createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
