@@ -226,9 +226,148 @@ export interface Database {
           updated_at?: string
         }
       }
+      leads: {
+        Row: {
+          id: string
+          organization_id: string
+          full_name: string | null
+          first_name: string | null
+          last_name: string | null
+          linkedin_url: string | null
+          email: string | null
+          company: string | null
+          title: string | null
+          industry: string | null
+          validated: boolean | null
+          outreach_message: string | null
+          status: 'SENT' | 'REPLIED' | 'PENDING' | 'CONNECTED' | 'RESPONDED' | 'BOOKED' | 'CLOSED'
+          delegation_level: number | null
+          source: string | null
+          user_id: string
+          connection_request_sent_at: string | null
+          first_message_sent_at: string | null
+          last_contact_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          linkedin_url?: string | null
+          email?: string | null
+          company?: string | null
+          title?: string | null
+          industry?: string | null
+          validated?: boolean | null
+          outreach_message?: string | null
+          status?: 'SENT' | 'REPLIED' | 'PENDING' | 'CONNECTED' | 'RESPONDED' | 'BOOKED' | 'CLOSED'
+          delegation_level?: number | null
+          source?: string | null
+          user_id: string
+          connection_request_sent_at?: string | null
+          first_message_sent_at?: string | null
+          last_contact_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          full_name?: string | null
+          first_name?: string | null
+          last_name?: string | null
+          linkedin_url?: string | null
+          email?: string | null
+          company?: string | null
+          title?: string | null
+          industry?: string | null
+          validated?: boolean | null
+          outreach_message?: string | null
+          status?: 'SENT' | 'REPLIED' | 'PENDING' | 'CONNECTED' | 'RESPONDED' | 'BOOKED' | 'CLOSED'
+          delegation_level?: number | null
+          source?: string | null
+          user_id?: string
+          connection_request_sent_at?: string | null
+          first_message_sent_at?: string | null
+          last_contact_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      messages: {
+        Row: {
+          id: string
+          organization_id: string
+          conversation_id: string | null
+          sender_linkedin_url: string | null
+          recipient_linkedin_url: string | null
+          from_name: string | null
+          to_name: string | null
+          message_date: string | null
+          subject: string | null
+          content: string | null
+          folder: string | null
+          message_type: 'general' | 'connection_request' | 'first_message' | 'response'
+          created_at: string
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          conversation_id?: string | null
+          sender_linkedin_url?: string | null
+          recipient_linkedin_url?: string | null
+          from_name?: string | null
+          to_name?: string | null
+          message_date?: string | null
+          subject?: string | null
+          content?: string | null
+          folder?: string | null
+          message_type?: 'general' | 'connection_request' | 'first_message' | 'response'
+          created_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          conversation_id?: string | null
+          sender_linkedin_url?: string | null
+          recipient_linkedin_url?: string | null
+          from_name?: string | null
+          to_name?: string | null
+          message_date?: string | null
+          subject?: string | null
+          content?: string | null
+          folder?: string | null
+          message_type?: 'general' | 'connection_request' | 'first_message' | 'response'
+          created_at?: string
+          user_id?: string | null
+        }
+      }
+
     }
     Views: {
-      [_ in never]: never
+      linkedin_analytics: {
+        Row: {
+          organization_id: string
+          total_leads: number
+          pending_leads: number
+          sent_requests: number
+          connected_leads: number
+          responded_leads: number
+          booked_meetings: number
+          closed_deals: number
+          total_messages: number
+          connection_requests_sent: number
+          first_messages_sent: number
+          responses_received: number
+          connection_rate: number
+          response_rate: number
+        }
+      }
     }
     Functions: {
       [_ in never]: never
@@ -246,4 +385,8 @@ export type Profile = Database['public']['Tables']['profiles']['Row']
 export type ChatSession = Database['public']['Tables']['chat_sessions']['Row']
 export type UsageMetric = Database['public']['Tables']['usage_metrics']['Row']
 export type BillingRecord = Database['public']['Tables']['billing_records']['Row']
-export type ApiKey = Database['public']['Tables']['api_keys']['Row'] 
+export type ApiKey = Database['public']['Tables']['api_keys']['Row']
+export type Lead = Database['public']['Tables']['leads']['Row']
+export type Message = Database['public']['Tables']['messages']['Row']
+
+export type LinkedInAnalytics = Database['public']['Views']['linkedin_analytics']['Row'] 

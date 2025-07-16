@@ -24,7 +24,9 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const navigation = [
-    { name: 'Chat', href: '/dashboard', icon: MessageSquare },
+    { name: 'Overview', href: '/dashboard', icon: BarChart3 },
+    { name: 'AI Chatbot', href: '/dashboard/chatbot', icon: MessageSquare },
+    { name: 'LinkedIn Sales', href: '/dashboard/linkedin', icon: Users },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Team', href: '/dashboard/team', icon: Users },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
