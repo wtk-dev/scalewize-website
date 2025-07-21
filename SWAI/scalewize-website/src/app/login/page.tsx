@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Bot, Eye, EyeOff, Loader2 } from 'lucide-react'
@@ -12,26 +12,110 @@ function LoginPageInner() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [checkingSession, setCheckingSession] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirectTo') || '/dashboard'
 
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('Login page session:', session);
+      if (
+        session &&
+        session.user &&
+        (!session.expires_at || session.expires_at * 1000 > Date.now())
+      ) {
+        // Try fetching the user's profile
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+        console.log('Profile fetch after login:', data, error);
+
+        if (data && !error) {
+          console.log('Redirecting to /dashboard');
+          router.push('/dashboard');
+        } else {
+          console.log('Profile fetch failed, forcing logout');
+          // Session is invalid for data fetches, force logout
+          await supabase.auth.signOut();
+          localStorage.clear();
+          sessionStorage.clear();
+          document.cookie.split(';').forEach((c) => {
+            if (c.includes('sb-')) {
+              document.cookie = c
+                .replace(/^ +/, '')
+                .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+            }
+          });
+          setCheckingSession(false);
+        }
+      } else {
+        console.log('No valid session, showing login form');
+        setCheckingSession(false);
+      }
+    });
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    console.log('Login form submitted'); // Debug print
+    setLoading(true);
+    setError('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      console.log('Calling supabase.auth.signInWithPassword with:', email);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      console.log('Supabase signInWithPassword result:', data, error);
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      router.push(redirectTo)
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+        console.error('Supabase login error:', error); // Log error for debugging
+        return;
+      }
+
+      if (!data || !data.user) {
+        setError('No user returned from Supabase');
+        setLoading(false);
+        console.error('No user returned from Supabase:', data);
+        return;
+      }
+
+      // Fetch profile after login
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single();
+      console.log('Profile fetch after login:', profile, profileError);
+
+      if (profile && !profileError) {
+        console.log('Redirecting to', redirectTo);
+        window.location.href = redirectTo;
+      } else {
+        setError('Profile not found');
+        setLoading(false);
+        console.error('Profile fetch failed:', profileError);
+      }
+    } catch (err) {
+      console.log('Login handler exception:', err);
+      setError('Unexpected error');
+      setLoading(false);
     }
+    console.log('Login handler finished');
+  };
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      </div>
+    );
   }
 
   return (
@@ -134,9 +218,5 @@ function LoginPageInner() {
 }
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LoginPageInner />
-    </Suspense>
-  )
+  return <LoginPageInner />;
 } 

@@ -14,12 +14,21 @@ import {
   X,
   Building2
 } from 'lucide-react'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  return (
+    <AuthProvider>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </AuthProvider>
+  )
+}
+
+function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, profile, organization, signOut } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 

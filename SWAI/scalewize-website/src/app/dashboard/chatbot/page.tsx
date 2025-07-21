@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { MessageSquare, Settings, Users, Zap, Loader2 } from 'lucide-react'
 import { libreChatAuth } from '@/lib/librechat-auth'
+import { supabase } from '@/lib/supabase-client';
 
 export default function ChatbotPage() {
   const { user, organization } = useAuth()
@@ -32,6 +33,26 @@ export default function ChatbotPage() {
 
     generateLibreChatUrl()
   }, [user, organization])
+
+  useEffect(() => {
+    async function testSupabase() {
+      // Get the current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Supabase session:', session);
+      console.log('Supabase session error:', sessionError);
+      if (session && session.user) {
+        const userId = session.user.id;
+        const { data, error } = await supabase.from('profiles').select('*').eq('id', userId);
+        console.log('Test Supabase profile data:', data);
+        console.log('Test Supabase profile error:', error);
+      } else {
+        const { data, error } = await supabase.from('profiles').select('*').limit(1);
+        console.log('Test Supabase data (public):', data);
+        console.log('Test Supabase error (public):', error);
+      }
+    }
+    testSupabase();
+  }, []);
 
   // Mock data for chatbot stats
   const chatbotStats = [
@@ -65,13 +86,31 @@ export default function ChatbotPage() {
     },
   ]
 
+  // Debug prints
+  console.log('user:', user);
+  console.log('organization:', organization);
+  console.log('libreChatUrl:', libreChatUrl);
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">AI Chatbot</h1>
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+              AI Chatbot
+              {libreChatUrl && (
+                <a
+                  href={libreChatUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-4 text-blue-600 underline text-sm font-normal"
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  Open in New Tab
+                </a>
+              )}
+            </h1>
             <p className="text-gray-600 mt-1">
               Your custom AI assistant for {organization?.name}
             </p>

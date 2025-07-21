@@ -2,6 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // Debug: Log all cookies on every request
+  console.log('MIDDLEWARE: Cookies:', request.cookies.getAll())
+
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -29,6 +32,8 @@ export async function middleware(request: NextRequest) {
 
   // Refresh session if expired - required for Server Components
   const { data: { session } } = await supabase.auth.getSession()
+  // Debug: Log session for every request
+  console.log('MIDDLEWARE: Supabase session:', session)
 
   // Define protected routes
   const protectedRoutes = ['/dashboard', '/admin']

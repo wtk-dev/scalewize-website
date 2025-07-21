@@ -1,7 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 import { jwtDecode } from 'jwt-decode'
 
-const supabase = createClient(
+const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
@@ -38,6 +38,7 @@ interface LibreChatJWT {
   }
   iat: number
   exp: number
+  jti: string // JWT ID for token tracking
 }
 
 export class LibreChatAuth {
@@ -76,6 +77,16 @@ export class LibreChatAuth {
 
       const organization = profile.organizations
 
+      // Validate organization access
+      if (!organization || organization.subscription_status !== 'active') {
+        throw new Error('Organization not found or inactive')
+      }
+
+      // Check subscription status
+      if (organization.subscription_status === 'cancelled') {
+        throw new Error('Organization subscription is cancelled')
+      }
+
       // Create LibreChat user object
       const libreChatUser: LibreChatUser = {
         id: profile.id,
@@ -93,8 +104,12 @@ export class LibreChatAuth {
         }
       }
 
-      // Generate JWT token (in production, use a proper JWT library)
+      // Generate JWT token
       const token = this.createJWT(libreChatUser)
+      
+      // Track token generation for analytics
+      await this.trackTokenGeneration(userId, organization.id)
+      
       return token
 
     } catch (error) {
@@ -122,7 +137,8 @@ export class LibreChatAuth {
       role: user.role,
       organization: user.organization,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours
+      jti: `${user.id}-${Date.now()}` // Unique token ID
     }
 
     // In production, use a proper JWT library
@@ -167,7 +183,36 @@ export class LibreChatAuth {
     const token = await this.generateLibreChatToken(userId)
     const baseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'http://localhost:3080'
     
-    return `${baseUrl}?token=${encodeURIComponent(token)}&org=${organizationDomain}`
+    // Add additional security parameters
+    const params = new URLSearchParams({
+      token: token,
+      org: organizationDomain,
+      timestamp: Date.now().toString(),
+      version: '1.0'
+    })
+    
+    return `${baseUrl}?${params.toString()}`
+  }
+
+  /**
+   * Track token generation for analytics and security
+   */
+  private async trackTokenGeneration(userId: string, organizationId: string): Promise<void> {
+    try {
+      await supabase
+        .from('usage_metrics')
+        .insert({
+          user_id: userId,
+          organization_id: organizationId,
+          date: new Date().toISOString().split('T')[0],
+          message_count: 0,
+          tokens_used: 0,
+          model_used: 'auth',
+          endpoint_used: 'token_generation'
+        })
+    } catch (error) {
+      console.error('Error tracking token generation:', error)
+    }
   }
 
   /**
@@ -189,13 +234,49 @@ export class LibreChatAuth {
       if (!profile.librechat_user_id) {
         await supabase
           .from('profiles')
-          .update({ librechat_user_id: userId })
+          .update({ 
+            librechat_user_id: userId,
+            updated_at: new Date().toISOString()
+          })
           .eq('id', userId)
       }
 
     } catch (error) {
       console.error('Error syncing user with LibreChat:', error)
       throw error
+    }
+  }
+
+  /**
+   * Validate organization access and limits
+   */
+  async validateOrganizationAccess(organizationId: string): Promise<boolean> {
+    try {
+      const { data: organization, error } = await supabase
+        .from('organizations')
+        .select('subscription_status, plan_type, max_users')
+        .eq('id', organizationId)
+        .single()
+
+      if (error || !organization) {
+        return false
+      }
+
+      // Check subscription status
+      if (organization.subscription_status === 'cancelled') {
+        return false
+      }
+
+      // Check user limits
+      const { count: userCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('organization_id', organizationId)
+
+      return (userCount || 0) < organization.max_users
+    } catch (error) {
+      console.error('Error validating organization access:', error)
+      return false
     }
   }
 }

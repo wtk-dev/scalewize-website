@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { createLinkedInService } from '@/lib/linkedin-service'
 import { TrendingUp, Users, MessageSquare, Calendar, BarChart3, PieChart } from 'lucide-react'
+import { supabase } from '@/lib/supabase-client'
 
 export default function AnalyticsPage() {
-  const { organization } = useAuth()
+  const { organization, user, profile } = useAuth()
   const [linkedinMetrics, setLinkedinMetrics] = useState<Array<{
     date: string
     leads: number
@@ -24,6 +25,12 @@ export default function AnalyticsPage() {
   const linkedinService = organization ? createLinkedInService(organization.id) : null
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Dashboard Supabase session:', session);
+    });
+    console.log('Dashboard AuthContext user:', user);
+    console.log('Dashboard AuthContext profile:', profile);
+    console.log('Dashboard AuthContext organization:', organization);
     if (linkedinService && organization) {
       loadAnalytics()
     }
