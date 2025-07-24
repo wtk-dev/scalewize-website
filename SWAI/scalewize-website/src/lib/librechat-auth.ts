@@ -181,7 +181,7 @@ export class LibreChatAuth {
    */
   async getLibreChatURL(userId: string, organizationDomain: string): Promise<string> {
     const token = await this.generateLibreChatToken(userId)
-    const baseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'http://localhost:3080'
+    const baseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'https://localhost:3080'
     
     // Add additional security parameters
     const params = new URLSearchParams({

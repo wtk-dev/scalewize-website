@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { MessageSquare, Settings, Users, Zap, Loader2 } from 'lucide-react'
-import { libreChatAuth } from '@/lib/librechat-auth'
+// import { libreChatAuth } from '@/lib/librechat-auth' // No longer needed for URL
 import { supabase } from '@/lib/supabase-client';
 
 export default function ChatbotPage() {
@@ -13,46 +13,35 @@ export default function ChatbotPage() {
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    const generateLibreChatUrl = async () => {
+    const getLibreChatSession = async () => {
       if (!user || !organization) {
         setLoading(false)
         return
       }
-
       try {
         setLoading(true)
-        const url = await libreChatAuth.getLibreChatURL(user.id, organization.domain || '')
-        setLibreChatUrl(url)
+        // Get Supabase session and access token
+        const { data: { session } } = await supabase.auth.getSession();
+        const accessToken = session?.access_token;
+        // Call your backend SSO endpoint
+        const res = await fetch('https://localhost:3080/api/auth/sso/librechat', {
+          method: 'POST',
+          credentials: 'include', // send cookies (if any)
+          headers: accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {},
+        })
+        if (!res.ok) throw new Error('Failed to get LibreChat session')
+        const { libreSession } = await res.json()
+        // Build the LibreChat URL (use HTTPS)
+        const baseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'https://localhost:3080'
+        setLibreChatUrl(baseUrl.replace('http://', 'https://'))
       } catch (err) {
-        console.error('Error generating LibreChat URL:', err)
         setError('Failed to connect to chat service')
       } finally {
         setLoading(false)
       }
     }
-
-    generateLibreChatUrl()
+    getLibreChatSession()
   }, [user, organization])
-
-  useEffect(() => {
-    async function testSupabase() {
-      // Get the current session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      console.log('Supabase session:', session);
-      console.log('Supabase session error:', sessionError);
-      if (session && session.user) {
-        const userId = session.user.id;
-        const { data, error } = await supabase.from('profiles').select('*').eq('id', userId);
-        console.log('Test Supabase profile data:', data);
-        console.log('Test Supabase profile error:', error);
-      } else {
-        const { data, error } = await supabase.from('profiles').select('*').limit(1);
-        console.log('Test Supabase data (public):', data);
-        console.log('Test Supabase error (public):', error);
-      }
-    }
-    testSupabase();
-  }, []);
 
   // Mock data for chatbot stats
   const chatbotStats = [

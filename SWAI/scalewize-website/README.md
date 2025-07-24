@@ -51,7 +51,7 @@ A B2B SaaS platform that provides custom AI automation solutions to businesses. 
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_LIBRECHAT_URL=http://localhost:3080
+   NEXT_PUBLIC_LIBRECHAT_URL=https://localhost:3080
    ```
 
 4. **Run the development server**
