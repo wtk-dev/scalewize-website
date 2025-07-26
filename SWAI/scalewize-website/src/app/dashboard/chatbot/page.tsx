@@ -82,67 +82,6 @@ export default function ChatbotPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-              AI Chatbot
-              {libreChatUrl && (
-                <a
-                  href={libreChatUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-4 text-blue-600 underline text-sm font-normal"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  Open in New Tab
-                </a>
-              )}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Your custom AI assistant for {organization?.name}
-            </p>
-          </div>
-          <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-            <Settings className="h-4 w-4 mr-2" />
-            Configure
-          </button>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {chatbotStats.map((stat) => (
-          <div key={stat.name} className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <stat.icon className="h-6 w-6 text-blue-600" />
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">
-                      {stat.name}
-                    </dt>
-                    <dd className="flex items-baseline">
-                      <div className="text-2xl font-semibold text-gray-900">
-                        {stat.value}
-                      </div>
-                      <div className={`ml-2 flex items-baseline text-sm font-semibold ${
-                        stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {stat.change}
-                      </div>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Chat Interface */}
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
@@ -150,7 +89,7 @@ export default function ChatbotPage() {
             <div>
               <h3 className="text-lg font-medium text-gray-900">Chat Interface</h3>
               <p className="text-sm text-gray-600">
-                Powered by LibreChat - Connected to your business systems and databases
+                Powered by ScaleWize AI - Connected to your business systems and databases
               </p>
             </div>
             <div className="flex items-center space-x-2">
@@ -182,7 +121,7 @@ export default function ChatbotPage() {
             </div>
           ) : libreChatUrl ? (
             <iframe
-              src={libreChatUrl}
+              src={`${libreChatUrl}`}
               className="w-full h-full rounded-b-lg"
               title="ScaleWize AI Chatbot"
               frameBorder="0"

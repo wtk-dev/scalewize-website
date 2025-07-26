@@ -2,12 +2,11 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { 
-  Bot, 
   MessageSquare, 
   BarChart3, 
-  Settings, 
   Users, 
   LogOut,
   Menu,
@@ -37,8 +36,6 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     { name: 'AI Chatbot', href: '/dashboard/chatbot', icon: MessageSquare },
     { name: 'LinkedIn Sales', href: '/dashboard/linkedin', icon: Users },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Team', href: '/dashboard/team', icon: Users },
-    { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ]
 
   if (profile?.role === 'super_admin') {
@@ -46,15 +43,14 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: '#f8f7f4', fontFamily: 'Arial, Helvetica, sans-serif' }}>
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
         <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
           <div className="flex h-16 items-center justify-between px-4">
             <div className="flex items-center">
-              <Bot className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">ScaleWize AI</span>
+              <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Cover Logo" width={360} height={80} className="h-16 w-auto" />
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -105,8 +101,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
         <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
           <div className="flex h-16 items-center px-4">
-            <Bot className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">ScaleWize AI</span>
+            <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Cover Logo" width={360} height={80} className="h-16 w-auto" />
           </div>
           <nav className="flex-1 space-y-1 px-2 py-4">
             {navigation.map((item) => (

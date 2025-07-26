@@ -170,7 +170,8 @@ export default function LinkedInPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen p-8" style={{ background: '#f8f7f4', fontFamily: 'Arial, Helvetica, sans-serif', color: '#000' }}>
+      <h1 className="text-2xl font-bold mb-4" style={{ color: '#595F39' }}>LinkedIn Dashboard</h1>
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center justify-between">

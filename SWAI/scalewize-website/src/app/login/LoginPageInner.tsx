@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Bot, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase-client';
 
@@ -104,24 +105,24 @@ export default function LoginPageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8" style={{ background: '#f8f7f4', fontFamily: 'Arial, Helvetica, sans-serif' }}>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
-            <Bot className="h-12 w-12 text-blue-600" />
+            <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Cover Logo" width={360} height={80} className="h-24 w-auto" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Sign in to ScaleWize AI
+          <h2 className="mt-6 text-3xl font-bold" style={{ color: '#595F39' }}>
+            Sign in
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Access your organization's AI automation platform
+          <p className="mt-2 text-sm" style={{ color: '#000' }}>
+            Communicate and work with your team of AI agents, implemented across your company
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium" style={{ color: '#000' }}>
                 Email address
               </label>
               <input
@@ -132,13 +133,14 @@ export default function LoginPageInner() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                style={{ color: '#000', '--tw-ring-color': '#595F39' } as React.CSSProperties}
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium" style={{ color: '#000' }}>
                 Password
               </label>
               <div className="mt-1 relative">
@@ -150,7 +152,8 @@ export default function LoginPageInner() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 pr-10"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 pr-10"
+                  style={{ color: '#000', '--tw-ring-color': '#595F39' } as React.CSSProperties}
                   placeholder="Enter your password"
                 />
                 <button
@@ -159,9 +162,9 @@ export default function LoginPageInner() {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
+                    <EyeOff className="h-5 w-5" style={{ color: '#595F39' }} />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
+                    <Eye className="h-5 w-5" style={{ color: '#595F39' }} />
                   )}
                 </button>
               </div>
@@ -178,7 +181,8 @@ export default function LoginPageInner() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: '#595F39', '--tw-ring-color': '#595F39' } as React.CSSProperties}
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -189,9 +193,9 @@ export default function LoginPageInner() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm" style={{ color: '#000' }}>
               Don't have an account?{' '}
-              <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link href="/signup" className="font-medium" style={{ color: '#595F39' }}>
                 Sign up
               </Link>
             </p>
