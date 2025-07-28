@@ -24,7 +24,8 @@ export default function ChatbotPage() {
         const { data: { session } } = await supabase.auth.getSession();
         const accessToken = session?.access_token;
         // Call your backend SSO endpoint
-        const res = await fetch('https://localhost:3080/api/auth/sso/librechat', {
+        const libreChatBaseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'https://localhost:3080'
+        const res = await fetch(`${libreChatBaseUrl}/api/auth/sso/librechat`, {
           method: 'POST',
           credentials: 'include', // send cookies (if any)
           headers: accessToken ? { 'Authorization': `Bearer ${accessToken}` } : {},
@@ -32,8 +33,7 @@ export default function ChatbotPage() {
         if (!res.ok) throw new Error('Failed to get LibreChat session')
         const { libreSession } = await res.json()
         // Build the LibreChat URL (use HTTPS)
-        const baseUrl = process.env.NEXT_PUBLIC_LIBRECHAT_URL || 'https://localhost:3080'
-        setLibreChatUrl(baseUrl.replace('http://', 'https://'))
+        setLibreChatUrl(libreChatBaseUrl.replace('http://', 'https://'))
       } catch (err) {
         setError('Failed to connect to chat service')
       } finally {
