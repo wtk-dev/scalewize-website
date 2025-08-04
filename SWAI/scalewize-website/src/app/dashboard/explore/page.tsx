@@ -40,7 +40,7 @@ export default function ExplorePage() {
       solution: 'We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.',
       impact: 'Accelerated pipeline growth, higher email open rates, and more closed deals.',
       status: 'available',
-      price: '$299/month'
+      price: '$1,499/month'
     },
     {
       id: 'marketing',
@@ -50,8 +50,8 @@ export default function ExplorePage() {
       problem: 'Generic campaigns waste budget. Content generation.',
       solution: 'AI-powered audience insights personalize messaging and timing.',
       impact: 'Better click-through rates, higher ROI, stronger brand engagement.',
-      status: 'coming-soon',
-      price: '$199/month'
+      status: 'available',
+      price: '$999/month'
     },
     {
       id: 'support',
@@ -62,7 +62,7 @@ export default function ExplorePage() {
       solution: 'AI chatbots handle basic issues, route complex cases.',
       impact: 'Quicker resolution times, higher satisfaction scores, cost savings.',
       status: 'beta',
-      price: '$149/month'
+      price: '$749/month'
     },
     {
       id: 'talent',
@@ -73,7 +73,7 @@ export default function ExplorePage() {
       solution: 'AI-powered audience insights personalize messaging and timing.',
       impact: 'Better click-through rates, higher ROI, stronger brand engagement.',
       status: 'coming-soon',
-      price: '$249/month'
+      price: '$1,249/month'
     },
     {
       id: 'operations',
@@ -83,8 +83,8 @@ export default function ExplorePage() {
       problem: 'Complex processes slow product delivery.',
       solution: 'Workflow automation and predictive analytics optimize supply chains.',
       impact: 'Shortened turnaround, fewer bottlenecks, consistent output quality.',
-      status: 'coming-soon',
-      price: '$399/month'
+      status: 'available',
+      price: '$1,999/month'
     },
     {
       id: 'finance',
@@ -95,7 +95,7 @@ export default function ExplorePage() {
       solution: 'Automated billing systems and real-time financial dashboards.',
       impact: 'Reduced processing time, fewer errors, stronger cash flow oversight.',
       status: 'coming-soon',
-      price: '$179/month'
+      price: '$899/month'
     }
   ]
 
