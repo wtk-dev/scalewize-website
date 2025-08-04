@@ -103,8 +103,7 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen p-8" style={{ background: '#f8f7f4', fontFamily: 'Arial, Helvetica, sans-serif', color: '#000' }}>
-      <h1 className="text-2xl font-bold mb-4" style={{ color: '#595F39' }}>Analytics</h1>
+    <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-6">
         <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
@@ -175,22 +174,20 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <BarChart3 className="h-6 w-6 text-indigo-600" />
-              </div>
-              <div className="ml-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
-                    Avg Messages/Lead
-                  </dt>
-                  <dd className="text-2xl font-semibold text-gray-900">
-                    {detailedData?.avgMessagesPerLead || 0}
-                  </dd>
-                </dl>
-              </div>
+        <div className="bg-white rounded-lg shadow p-5">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <BarChart3 className="h-6 w-6 text-indigo-600" />
+            </div>
+            <div className="ml-5 w-0 flex-1">
+              <dl>
+                <dt className="text-sm font-medium text-gray-500 truncate">
+                  Avg Messages/Lead
+                </dt>
+                <dd className="text-2xl font-semibold text-gray-900">
+                  {detailedData?.avgMessagesPerLead || 0}
+                </dd>
+              </dl>
             </div>
           </div>
         </div>
