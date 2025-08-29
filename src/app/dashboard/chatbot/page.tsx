@@ -43,38 +43,6 @@ export default function ChatbotPage() {
     getLibreChatSession()
   }, [user, organization])
 
-  // Mock data for chatbot stats
-  const chatbotStats = [
-    {
-      name: 'Active Sessions',
-      value: '12',
-      change: '+2',
-      changeType: 'positive',
-      icon: MessageSquare,
-    },
-    {
-      name: 'Messages Today',
-      value: '1,234',
-      change: '+15%',
-      changeType: 'positive',
-      icon: MessageSquare,
-    },
-    {
-      name: 'Tokens Used',
-      value: '23.4K',
-      change: '+8%',
-      changeType: 'positive',
-      icon: Zap,
-    },
-    {
-      name: 'Connected Users',
-      value: '8',
-      change: '+1',
-      changeType: 'positive',
-      icon: Users,
-    },
-  ]
-
   // Debug prints
   console.log('user:', user);
   console.log('organization:', organization);
@@ -87,7 +55,7 @@ export default function ChatbotPage() {
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">Chat Interface</h3>
+              <h3 className="text-lg font-medium text-gray-900">{organization?.name || 'AI'} Chatbot</h3>
               <p className="text-sm text-gray-600">
                 Powered by ScaleWize AI - Connected to your business systems and databases
               </p>
@@ -99,7 +67,7 @@ export default function ChatbotPage() {
             </div>
           </div>
         </div>
-        <div className="h-[600px]">
+        <div className="h-[calc(100vh-200px)]">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
@@ -133,39 +101,6 @@ export default function ChatbotPage() {
           )}
         </div>
       </div>
-
-      {/* Configuration Info */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Configuration</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="font-medium text-gray-900 mb-2">Connected Systems</h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li className="flex items-center">
-                <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                Customer Database
-              </li>
-              <li className="flex items-center">
-                <span className="w-2 h-2 bg-green-400 rounded-full mr-2"></span>
-                CRM System
-              </li>
-              <li className="flex items-center">
-                <span className="w-2 h-2 bg-yellow-400 rounded-full mr-2"></span>
-                Knowledge Base
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-medium text-gray-900 mb-2">Model Settings</h4>
-            <ul className="space-y-2 text-sm text-gray-600">
-              <li>Primary Model: GPT-4</li>
-              <li>Fallback Model: GPT-3.5-turbo</li>
-              <li>Max Tokens: 4,096</li>
-              <li>Temperature: 0.7</li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
   )
-} 
+}
