@@ -6,6 +6,7 @@ export interface Database {
           id: string
           name: string
           domain: string | null
+          slug: string
           subscription_status: 'trial' | 'active' | 'inactive' | 'cancelled'
           plan_type: 'starter' | 'professional' | 'enterprise'
           max_users: number
@@ -20,6 +21,7 @@ export interface Database {
           id?: string
           name: string
           domain?: string | null
+          slug: string
           subscription_status?: 'trial' | 'active' | 'inactive' | 'cancelled'
           plan_type?: 'starter' | 'professional' | 'enterprise'
           max_users?: number
@@ -34,6 +36,7 @@ export interface Database {
           id?: string
           name?: string
           domain?: string | null
+          slug: string
           subscription_status?: 'trial' | 'active' | 'inactive' | 'cancelled'
           plan_type?: 'starter' | 'professional' | 'enterprise'
           max_users?: number
