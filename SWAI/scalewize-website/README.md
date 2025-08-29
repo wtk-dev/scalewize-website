@@ -132,3 +132,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For support, email support@scalewize.ai or join our Slack community.
+# Updated repository structure - SWAI directory removed
