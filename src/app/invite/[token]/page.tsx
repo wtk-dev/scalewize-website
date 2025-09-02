@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
 import { 
   CheckCircle, 
   XCircle, 
@@ -26,20 +25,27 @@ interface InvitationData {
 export default function InviteAcceptancePage() {
   const params = useParams()
   const router = useRouter()
-  const { user, profile } = useAuth()
   const [invitation, setInvitation] = useState<InvitationData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [accepting, setAccepting] = useState(false)
   const [accepted, setAccepted] = useState(false)
+  const [user, setUser] = useState<any>(null)
 
   const token = params.token as string
 
   useEffect(() => {
     if (token) {
       validateInvitation()
+      checkUserAuth()
     }
   }, [token])
+
+  const checkUserAuth = async () => {
+    // For now, we'll assume the user is not logged in
+    // In a real implementation, you'd check the session here
+    setUser(null)
+  }
 
   const validateInvitation = async () => {
     try {
@@ -74,8 +80,8 @@ export default function InviteAcceptancePage() {
   }
 
   const handleAcceptInvitation = async () => {
-    if (!invitation || !user) {
-      setError('You must be logged in to accept this invitation.')
+    if (!invitation) {
+      setError('Invalid invitation.')
       return
     }
 
@@ -95,9 +101,9 @@ export default function InviteAcceptancePage() {
       
       setAccepted(true)
       
-      // Redirect to dashboard after a short delay
+      // Redirect to signup page after a short delay
       setTimeout(() => {
-        router.push('/dashboard')
+        router.push('/signup')
       }, 2000)
 
     } catch (err) {
@@ -227,47 +233,36 @@ export default function InviteAcceptancePage() {
           </button>
         ) : (
           <div className="space-y-3">
-            {!user ? (
-              <div className="text-center">
-                <p className="text-sm text-gray-600 mb-4">
-                  You need to be logged in to accept this invitation.
-                </p>
-                <button
-                  onClick={() => router.push('/login')}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Sign In
-                </button>
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={handleAcceptInvitation}
-                  disabled={accepting}
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  {accepting ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Accepting...
-                    </>
-                  ) : (
-                    <>
-                      <Shield className="h-4 w-4 mr-2" />
-                      Accept Invitation
-                    </>
-                  )}
-                </button>
-                
-                <button
-                  onClick={handleDeclineInvitation}
-                  disabled={accepting}
-                  className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
-                >
-                  Decline
-                </button>
-              </>
-            )}
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                Click "Accept Invitation" to join this organization. You'll be redirected to create an account or sign in.
+              </p>
+              <button
+                onClick={handleAcceptInvitation}
+                disabled={accepting}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              >
+                {accepting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Accepting...
+                  </>
+                ) : (
+                  <>
+                    <Shield className="h-4 w-4 mr-2" />
+                    Accept Invitation
+                  </>
+                )}
+              </button>
+              
+              <button
+                onClick={handleDeclineInvitation}
+                disabled={accepting}
+                className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
+              >
+                Decline
+              </button>
+            </div>
           </div>
         )}
 
