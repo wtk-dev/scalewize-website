@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         is_verified: true,
         email_verification_required: false,
         organization_id: null // Will be set when user creates/joins an organization
-      })
+      } as any)
       .select()
       .single()
 

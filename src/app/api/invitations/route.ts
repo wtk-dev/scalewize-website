@@ -88,19 +88,19 @@ export async function GET(request: NextRequest) {
 
     // Clean up expired invitations
     const now = new Date().toISOString()
-    const expiredInvitations = invitations?.filter(inv => 
+    const expiredInvitations = invitations?.filter((inv: any) => 
       inv.status === 'pending' && new Date(inv.expires_at) < new Date()
     ) || []
 
     if (expiredInvitations.length > 0) {
       await supabaseAdmin
         .from('invitations')
-        .update({ status: 'expired', updated_at: now })
-        .in('id', expiredInvitations.map(inv => inv.id))
+        .update({ status: 'expired', updated_at: now } as any)
+        .in('id', expiredInvitations.map((inv: any) => inv.id))
     }
 
     // Return updated invitations
-    const updatedInvitations = invitations?.map(inv => ({
+    const updatedInvitations = invitations?.map((inv: any) => ({
       ...inv,
       status: inv.status === 'pending' && new Date(inv.expires_at) < new Date() 
         ? 'expired' 

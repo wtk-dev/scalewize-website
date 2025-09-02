@@ -48,11 +48,11 @@ export async function GET(request: NextRequest) {
 
     // If profile has organization_id, fetch organization data
     let organizationData = null
-    if (profileData.organization_id) {
+    if ((profileData as any).organization_id) {
       const { data: orgData, error: orgError } = await supabaseAdmin
         .from('organizations')
         .select('*')
-        .eq('id', profileData.organization_id)
+        .eq('id', (profileData as any).organization_id)
         .single()
 
       if (orgError) {
