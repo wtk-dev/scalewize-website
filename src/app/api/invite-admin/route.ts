@@ -51,10 +51,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get user's profile and organization
+    // Get user's profile with organization details using the correct relationship
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('*, organizations(*)')
+      .select(`
+        *,
+        organizations!profiles_organization_id_fkey (
+          id,
+          name,
+          slug
+        )
+      `)
       .eq('id', userId)
       .in('role', ['admin', 'super_admin'])
       .single()
@@ -68,7 +75,18 @@ export async function POST(request: NextRequest) {
     }
 
     const organizationId = (profile as any).organization_id
+    const organization = (profile as any).organizations
     console.log('Admin verification successful:', (profile as any).role)
+    console.log('Organization details:', organization)
+
+    // Validate organization exists
+    if (!organizationId || !organization) {
+      console.error('User has no organization or organization not found')
+      return NextResponse.json(
+        { error: 'Organization not found' },
+        { status: 400 }
+      )
+    }
 
     // Check if user is already a member
     const { data: existingMember } = await supabase
@@ -117,9 +135,6 @@ export async function POST(request: NextRequest) {
       expires_at: expiresAt.toISOString()
     }
 
-    // Get organization details for email (already loaded with profile)
-    const organization = (profile as any).organizations
-
     // Create invitation URL
     const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${token}`
 
@@ -132,7 +147,7 @@ export async function POST(request: NextRequest) {
       const emailResult = await sendInvitationEmail({
         to: email,
         inviteUrl,
-        organizationName: (organization as any)?.name || 'Your Organization',
+        organizationName: organization.name || 'Your Organization',
         inviterName: (profile as any).full_name || 'Team Admin',
         expiresAt: expiresAt.toLocaleDateString()
       })
