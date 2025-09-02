@@ -1,20 +1,46 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 import { Database } from '@/types/database'
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, organizationId, userId } = await request.json()
-    
-    console.log('Creating invitation for:', { email, organizationId, userId })
+    const { email } = await request.json()
     
     // Validate input
-    if (!email || !organizationId || !userId) {
+    if (!email) {
       return NextResponse.json(
-        { error: 'Email, organization ID, and user ID are required' },
+        { error: 'Email is required' },
         { status: 400 }
       )
     }
+
+    // Get user session
+    const cookieStore = await cookies()
+    const supabase = createServerClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll() },
+          setAll(cookiesToSet) { 
+            cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+          },
+        },
+      }
+    )
+
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+    
+    if (sessionError || !session) {
+      return NextResponse.json(
+        { error: 'Authentication required' },
+        { status: 401 }
+      )
+    }
+
+    const userId = session.user.id
+    console.log('Creating invitation for:', { email, userId })
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -25,24 +51,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create admin client using service role
-    const supabaseAdmin = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false
-        }
-      }
-    )
-
-    // Verify that the user is an admin of the organization
-    const { data: profile, error: profileError } = await supabaseAdmin
+    // Get user's profile and organization
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('*')
+      .select('*, organizations(*)')
       .eq('id', userId)
-      .eq('organization_id', organizationId)
       .in('role', ['admin', 'super_admin'])
       .single()
 
@@ -54,10 +67,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const organizationId = (profile as any).organization_id
     console.log('Admin verification successful:', (profile as any).role)
 
     // Check if user is already a member
-    const { data: existingMember } = await supabaseAdmin
+    const { data: existingMember } = await supabase
       .from('profiles')
       .select('id')
       .eq('email', email)
@@ -72,7 +86,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if invitation already exists and is pending
-    const { data: existingInvitation } = await supabaseAdmin
+    const { data: existingInvitation } = await supabase
       .from('invitations')
       .select('id')
       .eq('email', email)
@@ -103,12 +117,8 @@ export async function POST(request: NextRequest) {
       expires_at: expiresAt.toISOString()
     }
 
-    // Get organization details for email
-    const { data: organization } = await supabaseAdmin
-      .from('organizations')
-      .select('name')
-      .eq('id', organizationId)
-      .single()
+    // Get organization details for email (already loaded with profile)
+    const organization = (profile as any).organizations
 
     // Create invitation URL
     const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/invite/${token}`
