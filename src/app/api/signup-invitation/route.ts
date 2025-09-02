@@ -31,8 +31,17 @@ export async function POST(request: NextRequest) {
     const mockInvitation = {
       id: 'mock-invite-id',
       organizationId: 'd22f61c4-58ce-4f2f-b9b8-d2878979e367', // This should come from actual invitation
-      organizationName: 'Mock Organization',
+      organizationName: 'seb inc',
       expiresAt: new Date(Date.now() + 86400000).toISOString()
+    }
+
+    // Validate token format (should be UUID)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    if (!uuidRegex.test(token)) {
+      return NextResponse.json(
+        { error: 'Invalid invitation token format' },
+        { status: 400 }
+      )
     }
 
     // Check if invitation is valid and not expired

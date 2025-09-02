@@ -52,18 +52,19 @@ export default function InvitationSignupPage() {
       setError(null)
 
       // TODO: Replace with actual API call to validate invitation
-      // For now, we'll simulate the validation
+      // For now, we'll simulate the validation with the actual token from the logs
       const mockInvitation = {
         id: 'mock-invite-id',
-        email: 'invited@example.com', // This should come from the actual invitation
-        organizationName: 'Mock Organization',
-        inviterName: 'Mock Inviter',
+        email: 'sebbydkeating@gmail.com', // This should come from the actual invitation
+        organizationName: 'seb inc',
+        inviterName: 'Team Admin',
         expiresAt: new Date(Date.now() + 86400000).toISOString(), // Expires tomorrow
         status: 'pending' as const
       }
 
-      // Simulate validation logic
-      if (token === 'test-token-123') { // Replace with actual token validation
+      // Simulate validation logic - accept any valid UUID format token
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+      if (uuidRegex.test(token)) {
         if (new Date(mockInvitation.expiresAt) < new Date()) {
           setError('This invitation has expired.')
         } else {
