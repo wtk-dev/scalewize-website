@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log('User ID value:', userId)
     
     // Create organization (Supabase will handle slug and created_by automatically)
-    const { data: orgData, error: orgError } = await supabaseAdmin
+    const { data: orgData, error: orgError } = await (supabaseAdmin as any)
       .from('organizations')
       .insert({
         name: organizationName,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     console.log('Organization ID type:', typeof profileData.organization_id)
     
     // Create profile with proper error handling
-    const { data: createdProfile, error: profileError } = await supabaseAdmin
+    const { data: createdProfile, error: profileError } = await (supabaseAdmin as any)
       .from('profiles')
       .insert(profileData)
       .select()
