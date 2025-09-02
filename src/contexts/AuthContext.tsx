@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [loading, setLoading] = useState(true)
+  const [profileLoading, setProfileLoading] = useState(false)
   const router = useRouter()
 
   // Fallback to prevent infinite loading
@@ -100,7 +101,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [router])
 
   const fetchProfile = async (userId: any, retryCount = 0) => {
+    // Prevent duplicate profile fetches
+    if (profileLoading) {
+      console.log('Profile fetch already in progress, skipping...')
+      return
+    }
+    
     console.log('fetchProfile called with userId:', userId, 'retry:', retryCount)
+    setProfileLoading(true)
+    
     try {
       console.log('Making API call to get-profile endpoint...')
       
@@ -123,6 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Retry once if it's a network error and we haven't retried yet
         if (retryCount === 0 && (result.error?.includes('fetch') || result.error?.includes('network'))) {
           console.log('Retrying profile fetch...')
+          setProfileLoading(false)
           setTimeout(() => fetchProfile(userId, 1), 1000)
           return
         }
@@ -156,6 +166,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               console.error('Error creating profile:', createResult.error)
               setProfile(null)
               setOrganization(null)
+              setProfileLoading(false)
               return
             }
             
@@ -168,12 +179,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setProfile(null)
           setOrganization(null)
         }
+        setProfileLoading(false)
         return
       }
       
       console.log('fetchProfile result:', result.profile)
       setProfile(result.profile)
       setOrganization(result.organization)
+      setProfileLoading(false)
       
     } catch (error) {
       console.error('Unexpected error in fetchProfile:', error)
@@ -181,12 +194,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Retry once if it's a network error and we haven't retried yet
       if (retryCount === 0) {
         console.log('Retrying profile fetch due to error...')
+        setProfileLoading(false)
         setTimeout(() => fetchProfile(userId, 1), 1000)
         return
       }
       
       setProfile(null)
       setOrganization(null)
+      setProfileLoading(false)
     }
   }
 

@@ -25,27 +25,33 @@ export default function LoginPageInner() {
         session.user &&
         (!session.expires_at || session.expires_at * 1000 > Date.now())
       ) {
-        // Try fetching the user's profile
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (data && !error) {
-          router.push('/dashboard');
-        } else {
-          // Session is invalid for data fetches, force logout
-          await supabase.auth.signOut();
-          localStorage.clear();
-          sessionStorage.clear();
-          document.cookie.split(';').forEach((c) => {
-            if (c.includes('sb-')) {
-              document.cookie = c
-                .replace(/^ +/, '')
-                .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+        // Use the API endpoint instead of direct Supabase query
+        try {
+          const response = await fetch(`/api/get-profile?userId=${session.user.id}`, {
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
             }
           });
+          
+          if (response.ok) {
+            router.push('/dashboard');
+          } else {
+            // Profile not found, force logout
+            await supabase.auth.signOut();
+            localStorage.clear();
+            sessionStorage.clear();
+            document.cookie.split(';').forEach((c) => {
+              if (c.includes('sb-')) {
+                document.cookie = c
+                  .replace(/^ +/, '')
+                  .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+              }
+            });
+            setCheckingSession(false);
+          }
+        } catch (error) {
+          console.error('Error checking profile:', error);
           setCheckingSession(false);
         }
       } else {
@@ -77,17 +83,25 @@ export default function LoginPageInner() {
         return;
       }
 
-      // Fetch profile after login
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-
-      if (profile && !profileError) {
-        window.location.href = redirectTo;
-      } else {
-        setError('Profile not found');
+      // Fetch profile after login using API endpoint
+      try {
+        const response = await fetch(`/api/get-profile?userId=${data.user.id}`, {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        if (response.ok) {
+          // Profile found, redirect to dashboard
+          window.location.href = redirectTo;
+        } else {
+          setError('Profile not found');
+          setLoading(false);
+        }
+      } catch (profileError) {
+        console.error('Error fetching profile:', profileError);
+        setError('Error loading profile');
         setLoading(false);
       }
     } catch (err) {
