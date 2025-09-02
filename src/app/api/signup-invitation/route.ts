@@ -26,31 +26,57 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    // TODO: Validate invitation token and get organization details
-    // For now, we'll simulate this with mock data
-    const mockInvitation = {
-      id: 'mock-invite-id',
-      organizationId: 'd22f61c4-58ce-4f2f-b9b8-d2878979e367', // This should come from actual invitation
-      organizationName: 'seb inc',
-      expiresAt: new Date(Date.now() + 86400000).toISOString()
+    // Validate invitation token and get organization details
+    const { data: invitationData, error: invitationError } = await supabaseAdmin
+      .from('invitations')
+      .select(`
+        id,
+        email,
+        role,
+        status,
+        expires_at,
+        organization_id,
+        organizations!invitations_organization_id_fkey (
+          name
+        )
+      `)
+      .eq('token', token)
+      .single()
+
+    if (invitationError || !invitationData) {
+      console.error('Invitation not found:', invitationError)
+      return NextResponse.json(
+        { error: 'Invalid or expired invitation link' },
+        { status: 404 }
+      )
     }
 
-    // Validate token format (should be UUID)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-    if (!uuidRegex.test(token)) {
+    // Check if invitation is still pending
+    if (invitationData.status !== 'pending') {
       return NextResponse.json(
-        { error: 'Invalid invitation token format' },
+        { error: 'This invitation has already been used or cancelled' },
         { status: 400 }
       )
     }
 
-    // Check if invitation is valid and not expired
-    if (new Date(mockInvitation.expiresAt) < new Date()) {
+    // Check if invitation is expired
+    if (new Date(invitationData.expires_at) < new Date()) {
       return NextResponse.json(
         { error: 'Invitation has expired' },
         { status: 400 }
       )
     }
+
+    // Check if the email matches the invitation
+    if (invitationData.email !== email) {
+      return NextResponse.json(
+        { error: 'Email does not match the invitation' },
+        { status: 400 }
+      )
+    }
+
+    const organizationId = invitationData.organization_id
+    const organizationName = (invitationData.organizations as any)?.name
 
     // Check if user already exists by checking profiles table
     const { data: existingProfile } = await supabaseAdmin
@@ -61,16 +87,16 @@ export async function POST(request: NextRequest) {
     
     if (existingProfile) {
       return NextResponse.json(
-        { error: 'User with this email already exists' },
-        { status: 400 }
+        { error: 'A user with this email already exists. Please log in instead.' },
+        { status: 409 }
       )
     }
 
-    // Create user account
+    // Create user account with email already confirmed
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: process.env.NODE_ENV === 'production' ? false : true, // Require email verification in production
+      email_confirm: true, // Auto-confirm email for invited users
       user_metadata: {
         full_name: fullName
       }
@@ -86,17 +112,39 @@ export async function POST(request: NextRequest) {
 
     const userId = userData.user.id
     console.log('User created successfully:', userId)
+    
+    // Verify the user was actually created
+    const { data: verifyUser, error: verifyUserError } = await supabaseAdmin.auth.admin.getUserById(userId)
+    if (verifyUserError || !verifyUser.user) {
+      console.error('User verification failed:', verifyUserError)
+      return NextResponse.json(
+        { error: 'User was created but could not be verified: ' + (verifyUserError?.message || 'Unknown error') },
+        { status: 500 }
+      )
+    }
+    console.log('User verified in auth:', verifyUser.user.email)
 
     // Create user profile with organization assignment
     const profileData = {
       id: userId,
       full_name: fullName,
       email,
-      organization_id: mockInvitation.organizationId,
-      role: 'user', // Invited users get 'user' role by default
-      is_verified: process.env.NODE_ENV === 'production' ? false : true, // Require verification in production
-      email_verification_required: process.env.NODE_ENV === 'production' ? true : false // Require verification in production
+      organization_id: organizationId,
+      role: invitationData.role, // Use the role from the invitation
+      is_verified: true, // Auto-verify invited users
+      email_verification_required: false, // No verification needed for invited users
+      is_active: true,
+      status: 'active',
+      onboarding_step: 'completed',
+      profile_completion_percentage: 100,
+      invitation_accepted_at: new Date().toISOString(),
+      last_activity_at: new Date().toISOString(),
+      invitation_status: 'accepted',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
+
+    console.log('Creating profile with data:', profileData)
 
     const { data: createdProfile, error: profileError } = await supabaseAdmin
       .from('profiles')
@@ -106,45 +154,70 @@ export async function POST(request: NextRequest) {
 
     if (profileError || !createdProfile) {
       console.error('Profile creation error:', profileError)
+      console.error('Profile data that failed:', profileData)
+      console.error('Full error details:', JSON.stringify(profileError, null, 2))
       
       // Clean up the created user if profile creation fails
-      await supabaseAdmin.auth.admin.deleteUser(userId)
+      try {
+        await supabaseAdmin.auth.admin.deleteUser(userId)
+        console.log('Cleaned up user after profile creation failure')
+      } catch (cleanupError) {
+        console.error('Failed to cleanup user:', cleanupError)
+      }
       
       return NextResponse.json(
-        { error: 'Failed to create user profile' },
+        { error: 'Failed to create user profile: ' + (profileError?.message || 'Unknown error') },
         { status: 500 }
       )
     }
 
     console.log('Profile created successfully:', (createdProfile as any).id)
 
-    // TODO: Update invitation status to 'accepted'
-    // This would involve updating the invitations table
+    // Verify the profile was actually created by querying it back
+    const { data: verifyProfile, error: verifyError } = await supabaseAdmin
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single()
 
-    // Generate session for automatic login
-    const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
-      type: 'magiclink',
-      email,
-      options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard`
-      }
-    })
-
-    if (sessionError || !sessionData) {
-      console.error('Session generation error:', sessionError)
-      // Don't fail the entire process, user can still log in manually
+    if (verifyError || !verifyProfile) {
+      console.error('Profile verification failed:', verifyError)
+      return NextResponse.json(
+        { error: 'Profile was created but could not be verified' },
+        { status: 500 }
+      )
     }
 
+    console.log('Profile verified in database:', verifyProfile)
+
+    // Update invitation status to 'accepted'
+    const { error: updateInvitationError } = await supabaseAdmin
+      .from('invitations')
+      .update({ 
+        status: 'accepted',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', invitationData.id)
+
+    if (updateInvitationError) {
+      console.error('Failed to update invitation status:', updateInvitationError)
+      // Don't fail the entire process for this, just log the error
+    } else {
+      console.log('Invitation status updated to accepted')
+    }
+
+    // Don't generate magic link - let user log in manually after profile creation
+    // This ensures the profile exists before the user tries to access the dashboard
+    console.log('Profile creation completed successfully for user:', userId)
+
     return NextResponse.json({
-      message: 'User account created successfully',
+      message: 'User account and profile created successfully. Please log in to continue.',
       userId,
-      organizationId: mockInvitation.organizationId,
+      organizationId: organizationId,
+      organizationName: organizationName,
       profileId: (createdProfile as any).id,
-      session: sessionData?.properties ? {
-        access_token: (sessionData.properties as any).access_token,
-        refresh_token: (sessionData.properties as any).refresh_token
-      } : null,
-      redirectUrl: (sessionData?.properties as any)?.action_link || null
+      redirectUrl: '/login',
+      success: true
     })
 
   } catch (error) {

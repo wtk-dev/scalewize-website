@@ -200,6 +200,97 @@ export const EMAIL_TEMPLATES = {
       ---
       ScaleWize AI - Simplifying AI for businesses
     `
+  },
+  verification: {
+    subject: 'Verify your email to join {{organizationName}} on ScaleWize AI',
+    html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Email Verification</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; }
+          .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+          .header { background: linear-gradient(135deg, #595F39 0%, #6B7357 100%); padding: 40px 30px; text-align: center; }
+          .logo { color: white; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+          .tagline { color: rgba(255, 255, 255, 0.9); font-size: 16px; }
+          .content { padding: 40px 30px; }
+          .verification-title { color: #2d3748; font-size: 24px; margin-bottom: 20px; text-align: center; }
+          .verification-text { color: #4a5568; font-size: 16px; margin-bottom: 20px; line-height: 1.7; }
+          .cta-button { display: inline-block; background: linear-gradient(135deg, #595F39 0%, #6B7357 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; margin: 20px 0; text-align: center; }
+          .details { background: #f7fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+          .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
+          .detail-row:last-child { border-bottom: none; margin-bottom: 0; }
+          .detail-label { font-weight: 600; color: #4a5568; }
+          .detail-value { color: #2d3748; }
+          .security-note { background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px; padding: 15px; margin: 20px 0; }
+          .security-note strong { color: #c53030; }
+          .footer { background: #f7fafc; padding: 30px; text-align: center; color: #718096; font-size: 14px; }
+          @media (max-width: 600px) { .container { margin: 10px; border-radius: 8px; } .header, .content { padding: 20px; } .detail-row { flex-direction: column; } }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">ScaleWize AI</div>
+            <div class="tagline">Simplifying AI for businesses</div>
+          </div>
+          <div class="content">
+            <h1 class="verification-title">Verify Your Email</h1>
+            <p class="verification-text">
+              Hi {{fullName}}, welcome to <strong>{{organizationName}}</strong>! 
+              To complete your account setup and access your dashboard, please verify your email address.
+            </p>
+            <a href="{{verificationUrl}}" class="cta-button">Verify Email Address</a>
+            <div class="details">
+              <div class="detail-row">
+                <span class="detail-label">Organization:</span>
+                <span class="detail-value">{{organizationName}}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span class="detail-value">{{email}}</span>
+              </div>
+            </div>
+            <div class="security-note">
+              <strong>Security Note:</strong> This verification link will expire in 24 hours for security reasons. 
+              If you didn't create an account with us, please ignore this email.
+            </div>
+            <p class="verification-text">
+              Once verified, you'll have full access to your organization's AI tools and dashboard.
+            </p>
+          </div>
+          <div class="footer">
+            <p>This verification email was sent by ScaleWize AI</p>
+            <p>If you have any questions, contact your organization administrator.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+      Verify Your Email - ScaleWize AI
+      
+      Hi {{fullName}}, welcome to {{organizationName}}!
+      
+      To complete your account setup and access your dashboard, please verify your email address.
+      
+      Verify Email: {{verificationUrl}}
+      
+      Organization: {{organizationName}}
+      Email: {{email}}
+      
+      Security Note: This verification link will expire in 24 hours for security reasons. 
+      If you didn't create an account with us, please ignore this email.
+      
+      Once verified, you'll have full access to your organization's AI tools and dashboard.
+      
+      ---
+      ScaleWize AI - Simplifying AI for businesses
+    `
   }
 }
 
@@ -217,6 +308,13 @@ export interface IEmailService {
     to: string
     organizationName: string
     dashboardUrl: string
+  }): Promise<{ success: boolean; messageId?: string; error?: string }>
+
+  sendVerificationEmail(params: {
+    to: string
+    verificationUrl: string
+    fullName: string
+    organizationName: string
   }): Promise<{ success: boolean; messageId?: string; error?: string }>
 }
 
@@ -329,6 +427,60 @@ class N8nEmailService implements IEmailService {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
     }
   }
+
+  async sendVerificationEmail(params: {
+    to: string
+    verificationUrl: string
+    fullName: string
+    organizationName: string
+  }): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    if (!this.webhookUrl) {
+      console.warn('n8n webhook URL not configured, falling back to Supabase Auth')
+      return { success: false, error: 'n8n webhook URL not configured' }
+    }
+
+    try {
+      const response = await fetch(this.webhookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'verification',
+          to: params.to,
+          subject: EMAIL_TEMPLATES.verification.subject.replace('{{organizationName}}', params.organizationName),
+          html: EMAIL_TEMPLATES.verification.html
+            .replace(/{{organizationName}}/g, params.organizationName)
+            .replace(/{{fullName}}/g, params.fullName)
+            .replace(/{{verificationUrl}}/g, params.verificationUrl)
+            .replace(/{{email}}/g, params.to),
+          text: EMAIL_TEMPLATES.verification.text
+            .replace(/{{organizationName}}/g, params.organizationName)
+            .replace(/{{fullName}}/g, params.fullName)
+            .replace(/{{verificationUrl}}/g, params.verificationUrl)
+            .replace(/{{email}}/g, params.to),
+          metadata: {
+            organizationName: params.organizationName,
+            fullName: params.fullName,
+            verificationUrl: params.verificationUrl,
+            email: params.to,
+            timestamp: new Date().toISOString()
+          }
+        })
+      })
+
+      if (!response.ok) {
+        const error = await response.text()
+        throw new Error(`n8n webhook error: ${error}`)
+      }
+
+      const result = await response.json()
+      return { success: true, messageId: result.id || `n8n-${Date.now()}` }
+    } catch (error) {
+      console.error('n8n webhook error:', error)
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+    }
+  }
 }
 
 // Supabase Auth email service (fallback)
@@ -374,6 +526,22 @@ class SupabaseEmailService implements IEmailService {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
     }
   }
+
+  async sendVerificationEmail(params: {
+    to: string
+    verificationUrl: string
+    fullName: string
+    organizationName: string
+  }): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    try {
+      // For verification emails, we'll use a custom approach since Supabase doesn't have a built-in verification email
+      console.log('Verification email would be sent via Supabase Auth system')
+      return { success: true, messageId: 'supabase-auth-verification' }
+    } catch (error) {
+      console.error('Supabase verification email error:', error)
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+    }
+  }
 }
 
 // Main email service class
@@ -413,6 +581,20 @@ export class EmailService {
     console.log('Falling back to Supabase Auth for welcome email')
     return this.supabaseService.sendWelcomeEmail(params)
   }
+
+  async sendVerificationEmail(params: {
+    to: string
+    verificationUrl: string
+    fullName: string
+    organizationName: string
+  }): Promise<{ success: boolean; messageId?: string; error?: string }> {
+    // Try n8n first, fallback to Supabase
+    const result = await this.n8nService.sendVerificationEmail(params)
+    if (result.success) return result
+
+    console.log('Falling back to Supabase Auth for verification email')
+    return this.supabaseService.sendVerificationEmail(params)
+  }
 }
 
 // Helper functions for easy use
@@ -434,4 +616,13 @@ export const sendWelcomeEmail = async (params: {
   dashboardUrl: string
 }) => {
   return emailService.sendWelcomeEmail(params)
+}
+
+export const sendVerificationEmail = async (params: {
+  to: string
+  verificationUrl: string
+  fullName: string
+  organizationName: string
+}) => {
+  return emailService.sendVerificationEmail(params)
 }

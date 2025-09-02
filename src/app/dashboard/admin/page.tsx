@@ -12,7 +12,8 @@ import {
   Crown,
   CheckCircle,
   XCircle,
-  Clock
+  Clock,
+  Trash2
 } from 'lucide-react'
 
 interface OrganizationMember {
@@ -28,17 +29,24 @@ interface OrganizationMember {
 interface Invitation {
   id: string
   email: string
-  status: 'pending' | 'accepted' | 'expired'
+  role: 'user' | 'admin'
+  status: 'pending' | 'accepted' | 'expired' | 'cancelled'
   expires_at: string
   created_at: string
+  inviter?: {
+    id: string
+    full_name: string
+    email: string
+  }
 }
 
 export default function AdminPage() {
-  const { profile, organization } = useAuth()
+  const { profile, organization, session } = useAuth()
   const [members, setMembers] = useState<OrganizationMember[]>([])
   const [invitations, setInvitations] = useState<Invitation[]>([])
   const [loading, setLoading] = useState(true)
   const [inviteEmail, setInviteEmail] = useState('')
+  const [inviteRole, setInviteRole] = useState<'user' | 'admin'>('user')
   const [inviteLoading, setInviteLoading] = useState(false)
   const [inviteError, setInviteError] = useState<string | null>(null)
   const [inviteSuccess, setInviteSuccess] = useState<string | null>(null)
@@ -70,11 +78,18 @@ export default function AdminPage() {
 
   const loadInvitations = async () => {
     try {
-      // This would be an API call to get pending invitations
-      // For now, we'll show a placeholder
-      setInvitations([])
+      const response = await fetch('/api/invitations')
+
+      if (response.ok) {
+        const result = await response.json()
+        setInvitations(result.data || [])
+      } else {
+        console.error('Failed to load invitations:', await response.text())
+        setInvitations([])
+      }
     } catch (error) {
       console.error('Error loading invitations:', error)
+      setInvitations([])
     }
   }
 
@@ -91,6 +106,7 @@ export default function AdminPage() {
         },
         body: JSON.stringify({
           email: inviteEmail.trim(),
+          role: inviteRole,
         }),
       })
 
@@ -118,6 +134,29 @@ export default function AdminPage() {
       setInviteSuccess(null)
     } finally {
       setInviteLoading(false)
+    }
+  }
+
+  const handleCancelInvitation = async (invitationId: string) => {
+    try {
+      const response = await fetch(`/api/invitations?id=${invitationId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        // Reload invitations
+        loadInvitations()
+        setInviteSuccess('Invitation cancelled successfully')
+        setInviteError(null)
+      } else {
+        const result = await response.json()
+        setInviteError(result.error || 'Failed to cancel invitation')
+        setInviteSuccess(null)
+      }
+    } catch (error) {
+      console.error('Error cancelling invitation:', error)
+      setInviteError('Failed to cancel invitation')
+      setInviteSuccess(null)
     }
   }
 
@@ -216,24 +255,49 @@ export default function AdminPage() {
           <UserPlus className="h-6 w-6 text-gray-600" />
           <h2 className="text-lg font-semibold text-gray-900">Invite New Member</h2>
         </div>
-        <form onSubmit={handleInviteUser} className="flex space-x-4">
-          <div className="flex-1">
-            <input
-              type="email"
-              value={inviteEmail}
-              onChange={(e) => setInviteEmail(e.target.value)}
-              placeholder="Enter email address"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-              required
-            />
+        
+        {/* Success/Error Messages */}
+        {inviteSuccess && (
+          <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+            {inviteSuccess}
           </div>
-          <button
-            type="submit"
-            disabled={inviteLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {inviteLoading ? 'Sending...' : 'Send Invite'}
-          </button>
+        )}
+        {inviteError && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {inviteError}
+          </div>
+        )}
+
+        <form onSubmit={handleInviteUser} className="space-y-4">
+          <div className="flex space-x-4">
+            <div className="flex-1">
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="Enter email address"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                required
+              />
+            </div>
+            <div className="w-32">
+              <select
+                value={inviteRole}
+                onChange={(e) => setInviteRole(e.target.value as 'user' | 'admin')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              disabled={inviteLoading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {inviteLoading ? 'Sending...' : 'Send Invite'}
+            </button>
+          </div>
         </form>
       </div>
 
@@ -306,9 +370,13 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">{invitation.email}</p>
-                      <p className="text-sm text-gray-600">
-                        Invited: {new Date(invitation.created_at).toLocaleDateString()}
-                      </p>
+                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                        <span>Role: {invitation.role}</span>
+                        <span>Invited: {new Date(invitation.created_at).toLocaleDateString()}</span>
+                        {invitation.inviter && (
+                          <span>by {invitation.inviter.full_name}</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -319,6 +387,15 @@ export default function AdminPage() {
                     <div className="text-sm text-gray-500">
                       Expires: {new Date(invitation.expires_at).toLocaleDateString()}
                     </div>
+                    {invitation.status === 'pending' && (
+                      <button
+                        onClick={() => handleCancelInvitation(invitation.id)}
+                        className="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded"
+                        title="Cancel invitation"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

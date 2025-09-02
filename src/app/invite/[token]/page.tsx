@@ -52,25 +52,32 @@ export default function InviteAcceptancePage() {
       setLoading(true)
       setError(null)
 
-      // For now, we'll create a mock invitation since we're not storing them in the database yet
-      // In a real implementation, you'd fetch this from your API
-      const mockInvitation: InvitationData = {
-        id: 'temp-id',
-        email: 'sebbydkeating@gmail.com', // This would come from the database
-        organizationName: 'Test Organization',
-        inviterName: 'Test Admin',
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        status: 'pending'
-      }
-
-      // Check if invitation is expired
-      if (new Date(mockInvitation.expiresAt) < new Date()) {
-        setError('This invitation has expired. Please request a new invitation.')
-        setInvitation({ ...mockInvitation, status: 'expired' })
+      // Validate the invitation token by calling the API
+      const response = await fetch(`/api/validate-invitation?token=${token}`)
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        setError(errorData.error || 'Invalid or expired invitation link.')
         return
       }
 
-      setInvitation(mockInvitation)
+      const invitationData = await response.json()
+      
+      // Check if invitation is expired
+      if (new Date(invitationData.expires_at) < new Date()) {
+        setError('This invitation has expired. Please request a new invitation.')
+        setInvitation({ ...invitationData, status: 'expired' })
+        return
+      }
+
+      setInvitation({
+        id: invitationData.id,
+        email: invitationData.email,
+        organizationName: invitationData.organization_name,
+        inviterName: invitationData.inviter_name || 'Team Admin',
+        expiresAt: invitationData.expires_at,
+        status: invitationData.status
+      })
     } catch (err) {
       console.error('Error validating invitation:', err)
       setError('Invalid or expired invitation link.')

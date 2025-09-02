@@ -65,14 +65,20 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Check if user has admin or super_admin role
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profile?.role !== 'admin' && profile?.role !== 'super_admin') {
+    // Check if user has admin or super_admin role using our API endpoint
+    try {
+      const profileResponse = await fetch(`${request.nextUrl.origin}/api/get-profile?userId=${session.user.id}`)
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json()
+        if (profileData.profile?.role !== 'admin' && profileData.profile?.role !== 'super_admin') {
+          return NextResponse.redirect(new URL('/dashboard', request.url))
+        }
+      } else {
+        // If profile fetch fails, redirect to dashboard
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
+    } catch (error) {
+      console.error('Middleware profile check error:', error)
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }

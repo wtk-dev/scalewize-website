@@ -127,9 +127,13 @@ export default function InvitationSignupPage() {
 
       if (response.ok) {
         setSuccess(true)
-        // Redirect to dashboard after a short delay
+        
+        // Show success message and redirect to login
+        console.log('Account created successfully:', result.message)
+        
+        // Redirect to login page after a short delay
         setTimeout(() => {
-          router.push('/dashboard')
+          router.push('/login')
         }, 2000)
       } else {
         setError(result.error || 'Failed to create account')
@@ -171,20 +175,27 @@ export default function InvitationSignupPage() {
     )
   }
 
-  if (success) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
-          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome!</h1>
-          <p className="text-gray-600 mb-6">
-            Your account has been created successfully. You're now a member of {invitation?.organizationName}.
-          </p>
-          <p className="text-sm text-gray-500">Redirecting to dashboard...</p>
-        </div>
-      </div>
-    )
-  }
+           if (success) {
+           return (
+             <div className="min-h-screen flex items-center justify-center bg-gray-50">
+               <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
+                 <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                 <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to {invitation?.organizationName}!</h1>
+                 <p className="text-gray-600 mb-4">
+                   Your account has been created successfully. Please log in to access your dashboard.
+                 </p>
+                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                   <p className="text-sm text-green-800">
+                     <strong>Success!</strong> You're now a member of {invitation?.organizationName} and have access to all AI tools and features.
+                   </p>
+                 </div>
+                 <p className="text-sm text-gray-500">
+                   Redirecting you to the login page...
+                 </p>
+               </div>
+             </div>
+           )
+         }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

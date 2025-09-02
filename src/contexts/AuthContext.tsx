@@ -102,79 +102,65 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchProfile = async (userId: any) => {
     console.log('fetchProfile called with userId:', userId)
     try {
-      console.log('Making Supabase query for profile...')
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
+      console.log('Making API call to get-profile endpoint...')
       
-      console.log('Supabase query completed. Data:', profileData, 'Error:', profileError)
+      // Use our new API endpoint that bypasses RLS
+      const response = await fetch(`/api/get-profile?userId=${userId}`)
+      const result = await response.json()
       
-      if (profileError) {
-        console.error('fetchProfile error:', profileError)
+      console.log('API response:', result)
+      
+      if (!response.ok) {
+        console.error('Profile fetch error:', result.error)
+        console.error('Profile error details:', result.details)
+        
         // If no profile exists, create one
-        if (profileError.code === 'PGRST116') { // No rows returned
+        if (result.error === 'Profile not found') {
           console.log('No profile found, creating new profile...')
           const { data: user } = await supabase.auth.getUser()
           if (user?.user) {
             console.log('Creating profile for user:', user.user.email)
-            const { data: newProfile, error: createError } = await supabase
-              .from('profiles')
-              // @ts-ignore
-              .insert({
-                id: userId,
+            
+            // Use service role to create profile
+            const createResponse = await fetch('/api/create-profile', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: userId,
                 email: user.user.email || '',
-                full_name: user.user.user_metadata?.full_name || null,
-                role: 'user',
-                is_active: true
+                fullName: user.user.user_metadata?.full_name || user.user.email?.split('@')[0] || 'User',
+                role: 'user'
               })
-              .select()
-              .single()
+            })
             
-            console.log('Profile creation result:', newProfile, 'Error:', createError)
+            const createResult = await createResponse.json()
+            console.log('Profile creation result:', createResult)
             
-            if (createError) {
-              console.error('Error creating profile:', createError)
+            if (!createResponse.ok) {
+              console.error('Error creating profile:', createResult.error)
               setProfile(null)
               setOrganization(null)
               return
             }
             
-            console.log('New profile created:', newProfile)
-            setProfile(newProfile)
-            setOrganization(null) // No organization for new users
+            console.log('New profile created:', createResult.profile)
+            setProfile(createResult.profile)
+            setOrganization(createResult.organization)
           }
         } else {
-          console.log('Profile error is not PGRST116, setting profile to null')
+          console.log('Profile error is not "Profile not found", setting profile to null')
           setProfile(null)
           setOrganization(null)
         }
         return
       }
       
-      console.log('fetchProfile result:', profileData)
-      setProfile(profileData)
+      console.log('fetchProfile result:', result.profile)
+      setProfile(result.profile)
+      setOrganization(result.organization)
       
-      if (profileData?.organization_id) {
-        console.log('Fetching organization data for ID:', profileData.organization_id)
-        const { data: orgData, error: orgError } = await supabase
-          .from('organizations')
-          .select('*')
-          .eq('id', profileData.organization_id)
-          .single()
-        console.log('Organization query result:', orgData, 'Error:', orgError)
-        if (orgError) {
-          console.error('fetchProfile organization error:', orgError)
-          setOrganization(null)
-        } else {
-          console.log('fetchProfile organization result:', orgData)
-          setOrganization(orgData)
-        }
-      } else {
-        console.log('No organization_id found, setting organization to null')
-        setOrganization(null)
-      }
     } catch (error) {
       console.error('Unexpected error in fetchProfile:', error)
       setProfile(null)
