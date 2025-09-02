@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { Database } from '@/types/database'
 
@@ -140,33 +141,78 @@ export async function POST(request: NextRequest) {
 
     console.log('Invitation URL created:', inviteUrl)
 
-    // Send invitation email using our email service
-    try {
-      const { sendInvitationEmail } = await import('@/lib/email-service')
-      
-      const emailResult = await sendInvitationEmail({
-        to: email,
-        inviteUrl,
-        organizationName: organization.name || 'Your Organization',
-        inviterName: (profile as any).full_name || 'Team Admin',
-        expiresAt: expiresAt.toLocaleDateString()
-      })
+               // Send invitation email using our email service
+           let emailSuccess = false
+           let emailError = null
+           
+           try {
+             const { sendInvitationEmail } = await import('@/lib/email-service')
 
-      if (!emailResult.success) {
-        console.error('Failed to send invitation email:', emailResult.error)
-        // Don't fail the entire invitation creation, just log the email error
-        // The invitation is still created and can be resent later
-      } else {
-        console.log('Invitation email sent successfully:', emailResult.messageId)
-      }
-    } catch (emailError) {
-      console.error('Email service error:', emailError)
-      // Continue with invitation creation even if email fails
-    }
+             const emailResult = await sendInvitationEmail({
+               to: email,
+               inviteUrl,
+               organizationName: organization.name || 'Your Organization',
+               inviterName: (profile as any).full_name || 'Team Admin',
+               expiresAt: expiresAt.toLocaleDateString()
+             })
+
+             if (!emailResult.success) {
+               console.error('Failed to send invitation email:', emailResult.error)
+               emailError = emailResult.error
+             } else {
+               console.log('Invitation email sent successfully:', emailResult.messageId)
+               emailSuccess = true
+             }
+           } catch (emailServiceError) {
+             console.error('Email service error:', emailServiceError)
+             emailError = (emailServiceError as Error).message || 'Email service failed'
+           }
+
+           // If n8n failed, try Supabase admin client as fallback
+           if (!emailSuccess && !emailError?.includes('n8n webhook error')) {
+             try {
+               console.log('Attempting Supabase admin fallback...')
+               
+               // Create admin client for invitation
+               const supabaseAdmin = createClient<Database>(
+                 process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                 process.env.SUPABASE_SERVICE_ROLE_KEY!,
+                 {
+                   auth: {
+                     autoRefreshToken: false,
+                     persistSession: false
+                   }
+                 }
+               )
+
+               const { data: adminData, error: adminError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
+                 data: {
+                   organization_name: organization.name || 'Your Organization',
+                   inviter_name: (profile as any).full_name || 'Team Admin',
+                   invite_url: inviteUrl,
+                   expires_at: expiresAt.toISOString()
+                 }
+               })
+
+               if (adminError) {
+                 console.error('Supabase admin invitation failed:', adminError)
+                 emailError = `Email failed: ${adminError.message}`
+               } else {
+                 console.log('Supabase admin invitation sent successfully')
+                 emailSuccess = true
+                 emailError = null
+               }
+             } catch (adminFallbackError) {
+               console.error('Supabase admin fallback error:', adminFallbackError)
+               emailError = `Email service unavailable: ${(adminFallbackError as Error).message}`
+             }
+           }
 
     return NextResponse.json({
-      success: true,
-      message: 'Invitation sent successfully',
+      success: emailSuccess,
+      message: emailSuccess ? 'Invitation sent successfully' : 'Invitation created but email failed to send',
+      emailSuccess,
+      emailError,
       data: {
         id: invitation.id,
         email: invitation.email,

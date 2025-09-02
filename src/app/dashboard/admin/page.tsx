@@ -40,6 +40,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true)
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteLoading, setInviteLoading] = useState(false)
+  const [inviteError, setInviteError] = useState<string | null>(null)
+  const [inviteSuccess, setInviteSuccess] = useState<string | null>(null)
 
   // Check if user has admin access
   if (!profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
@@ -98,13 +100,22 @@ export default function AdminPage() {
         setInviteEmail('')
         // Reload invitations
         loadInvitations()
-        alert('Invitation sent successfully!')
+        
+        if (result.emailSuccess) {
+          setInviteSuccess('Invitation sent successfully!')
+          setInviteError(null)
+        } else {
+          setInviteError(`Invitation created but email failed: ${result.emailError || 'Unknown error'}`)
+          setInviteSuccess(null)
+        }
       } else {
-        alert(result.error || 'Failed to send invitation')
+        setInviteError(result.error || 'Failed to send invitation')
+        setInviteSuccess(null)
       }
     } catch (error) {
       console.error('Error sending invitation:', error)
-      alert('Failed to send invitation')
+      setInviteError('Failed to send invitation')
+      setInviteSuccess(null)
     } finally {
       setInviteLoading(false)
     }
