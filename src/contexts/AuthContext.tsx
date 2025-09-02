@@ -99,13 +99,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [router])
 
-  const fetchProfile = async (userId: any) => {
-    console.log('fetchProfile called with userId:', userId)
+  const fetchProfile = async (userId: any, retryCount = 0) => {
+    console.log('fetchProfile called with userId:', userId, 'retry:', retryCount)
     try {
       console.log('Making API call to get-profile endpoint...')
       
-      // Use our new API endpoint that bypasses RLS
-      const response = await fetch(`/api/get-profile?userId=${userId}`)
+      // Use absolute URL for production compatibility
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+      const response = await fetch(`${baseUrl}/api/get-profile?userId=${userId}`, {
+        credentials: 'include', // Ensure cookies are sent
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
       const result = await response.json()
       
       console.log('API response:', result)
@@ -113,6 +119,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) {
         console.error('Profile fetch error:', result.error)
         console.error('Profile error details:', result.details)
+        
+        // Retry once if it's a network error and we haven't retried yet
+        if (retryCount === 0 && (result.error?.includes('fetch') || result.error?.includes('network'))) {
+          console.log('Retrying profile fetch...')
+          setTimeout(() => fetchProfile(userId, 1), 1000)
+          return
+        }
         
         // If no profile exists, create one
         if (result.error === 'Profile not found') {
@@ -122,8 +135,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.log('Creating profile for user:', user.user.email)
             
             // Use service role to create profile
-            const createResponse = await fetch('/api/create-profile', {
+            const createResponse = await fetch(`${baseUrl}/api/create-profile`, {
               method: 'POST',
+              credentials: 'include',
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -163,6 +177,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
     } catch (error) {
       console.error('Unexpected error in fetchProfile:', error)
+      
+      // Retry once if it's a network error and we haven't retried yet
+      if (retryCount === 0) {
+        console.log('Retrying profile fetch due to error...')
+        setTimeout(() => fetchProfile(userId, 1), 1000)
+        return
+      }
+      
       setProfile(null)
       setOrganization(null)
     }
