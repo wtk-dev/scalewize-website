@@ -84,8 +84,18 @@ export default function SignupPage() {
         return
       }
 
-      // Success! Redirect to dashboard
-      router.push('/dashboard')
+      // Success! Handle the response
+      if (result.redirectUrl) {
+        // If we have a redirect URL from Supabase, use it
+        window.location.href = result.redirectUrl
+      } else if (result.session) {
+        // If we have session tokens, we could set them manually
+        // For now, just redirect to dashboard and let the auth context handle it
+        router.push('/dashboard')
+      } else {
+        // Fallback: redirect to dashboard
+        router.push('/dashboard')
+      }
       
     } catch (error) {
       console.error('Signup error:', error)

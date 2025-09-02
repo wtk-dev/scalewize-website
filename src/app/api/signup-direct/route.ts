@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: true
+      email_confirm: process.env.NODE_ENV === 'production' ? false : true // Require email verification in production
     })
     
     if (userError) {
@@ -67,8 +67,8 @@ export async function POST(request: NextRequest) {
       email,
       organization_id: orgData.id,
       role: 'admin',
-      is_verified: true,
-      email_verification_required: false
+      is_verified: process.env.NODE_ENV === 'production' ? false : true, // Require verification in production
+      email_verification_required: process.env.NODE_ENV === 'production' ? true : false // Require verification in production
     }
     
     console.log('Attempting to create profile with data:', profileData)
@@ -98,11 +98,31 @@ export async function POST(request: NextRequest) {
     
     console.log('Profile created successfully:', createdProfile)
     
+    // Generate a session for the newly created user
+    const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
+      type: 'signup',
+      email: email,
+      password: password,
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/dashboard`
+      }
+    })
+
+    if (sessionError) {
+      console.error('Session generation error:', sessionError)
+      // Don't fail the signup, just log the error
+    }
+
     return NextResponse.json({
       message: 'User, organization, and profile created successfully',
       userId,
       organizationId: orgData.id,
-      profileId: createdProfile.id
+      profileId: createdProfile.id,
+      session: sessionData?.properties ? {
+        access_token: (sessionData.properties as any).access_token,
+        refresh_token: (sessionData.properties as any).refresh_token
+      } : null,
+      redirectUrl: (sessionData?.properties as any)?.action_link || null
     })
     
   } catch (error) {

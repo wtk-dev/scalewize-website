@@ -60,19 +60,19 @@ export async function middleware(request: NextRequest) {
   }
 
   // Admin route protection
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (request.nextUrl.pathname.startsWith('/dashboard/admin')) {
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Check if user has admin role (this will be checked in the component as well)
+    // Check if user has admin or super_admin role
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    if (profile?.role !== 'super_admin') {
+    if (profile?.role !== 'admin' && profile?.role !== 'super_admin') {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
