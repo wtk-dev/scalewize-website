@@ -101,9 +101,9 @@ export default function InviteAcceptancePage() {
       
       setAccepted(true)
       
-      // Redirect to signup page after a short delay
+      // Redirect to invitation-specific signup page after a short delay
       setTimeout(() => {
-        router.push('/signup')
+        router.push(`/signup/invite/${token}`)
       }, 2000)
 
     } catch (err) {
