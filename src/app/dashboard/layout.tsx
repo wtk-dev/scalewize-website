@@ -108,9 +108,7 @@ className="h-16 w-auto" />
         <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
           <div className="flex h-16 items-center px-4 justify-between">
             <div className="flex items-center">
-              {sidebarCollapsed ? (
-                <Image src="/scalewize_logo.png" alt="ScaleWize AI Logo" width={40} height={40} className="h-10 w-10" />
-              ) : (
+              {!sidebarCollapsed && (
                 <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Cover Logo" width={360} height={80} className="h-16 w-auto" />
               )}
             </div>
@@ -166,7 +164,7 @@ className="h-16 w-auto" />
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main content - Fixed positioning to adjust with sidebar */}
       <div className={`lg:pl-64 transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'}`}>
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
