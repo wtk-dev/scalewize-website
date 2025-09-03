@@ -16,9 +16,10 @@ const Particle = ({ delay, startX, startY, targetX, targetY }: {
 }) => {
   return (
     <motion.div
-      className="absolute w-2 h-2 bg-green-400 rounded-full opacity-0"
+      className="absolute w-1.5 h-1.5 rounded-full opacity-0"
       style={{
-        boxShadow: '0 0 6px #4ade80, 0 0 12px #4ade80',
+        background: '#595F39',
+        boxShadow: '0 0 4px #595F39, 0 0 8px #595F39',
       }}
       initial={{
         x: startX,
@@ -29,14 +30,14 @@ const Particle = ({ delay, startX, startY, targetX, targetY }: {
       animate={{
         x: targetX,
         y: targetY,
-        opacity: [0, 0.8, 0],
+        opacity: [0, 0.7, 0],
         scale: [0, 1, 0],
       }}
       transition={{
-        duration: 3,
+        duration: 4,
         delay: delay,
         repeat: Infinity,
-        repeatDelay: 2,
+        repeatDelay: Math.random() * 3 + 2, // Random delay between 2-5 seconds
         ease: "easeInOut",
       }}
     />
@@ -52,40 +53,100 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
     delay: number
   }>>([])
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 })
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    // Generate particles
-    const newParticles = Array.from({ length: 20 }, (_, i) => ({
-      id: i,
-      startX: Math.random() * window.innerWidth,
-      startY: Math.random() * window.innerHeight,
-      delay: Math.random() * 5,
-    }))
-    setParticles(newParticles)
+    // Update window size
+    const updateWindowSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      })
+    }
 
-    // Update target position based on video position
+    updateWindowSize()
+    window.addEventListener('resize', updateWindowSize)
+
+    // Generate particles that start from edges
+    const generateParticles = () => {
+      const newParticles = Array.from({ length: 25 }, (_, i) => {
+        const edge = Math.floor(Math.random() * 4) // 0: top, 1: right, 2: bottom, 3: left
+        let startX, startY
+        
+        switch (edge) {
+          case 0: // Top edge
+            startX = Math.random() * window.innerWidth
+            startY = -10
+            break
+          case 1: // Right edge
+            startX = window.innerWidth + 10
+            startY = Math.random() * window.innerHeight
+            break
+          case 2: // Bottom edge
+            startX = Math.random() * window.innerWidth
+            startY = window.innerHeight + 10
+            break
+          case 3: // Left edge
+            startX = -10
+            startY = Math.random() * window.innerHeight
+            break
+          default:
+            startX = 0
+            startY = 0
+        }
+
+        return {
+          id: i,
+          startX,
+          startY,
+          delay: Math.random() * 8, // Stagger over 8 seconds
+        }
+      })
+      setParticles(newParticles)
+    }
+
+    generateParticles()
+
+    // Update target position based on video position (accounting for scroll)
     const updateTarget = () => {
       if (videoRef.current) {
         const rect = videoRef.current.getBoundingClientRect()
+        const scrollX = window.pageXOffset || document.documentElement.scrollLeft
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop
+        
         setTargetPosition({
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
+          x: rect.left + scrollX + rect.width / 2,
+          y: rect.top + scrollY + rect.height / 2,
         })
       }
     }
 
     updateTarget()
+    
+    // Use requestAnimationFrame for smooth updates
+    let animationFrame: number
+    const handleScroll = () => {
+      cancelAnimationFrame(animationFrame)
+      animationFrame = requestAnimationFrame(updateTarget)
+    }
+    
     window.addEventListener('resize', updateTarget)
-    window.addEventListener('scroll', updateTarget)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    // Regenerate particles periodically
+    const interval = setInterval(generateParticles, 10000) // Every 10 seconds
 
     return () => {
       window.removeEventListener('resize', updateTarget)
-      window.removeEventListener('scroll', updateTarget)
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', updateWindowSize)
+      cancelAnimationFrame(animationFrame)
+      clearInterval(interval)
     }
   }, [videoRef])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-10">
+    <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
       {particles.map((particle) => (
         <Particle
           key={particle.id}
@@ -103,6 +164,7 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
 export default function Home() {
   const videoRef = useRef<HTMLDivElement | null>(null)
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+  const [videoError, setVideoError] = useState(false)
 
   return (
     <div className="min-h-screen bg-white overflow-hidden">
@@ -111,13 +173,13 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
-              <Image 
-                src="/scalewize_cover_logo.png" 
-                alt="ScaleWize AI" 
-                width={200} 
-                height={45} 
-                className="h-12 w-auto" 
-                priority 
+              <Image
+                src="/scalewize_cover_logo.png"
+                alt="ScaleWize AI"
+                width={200}
+                height={45}
+                className="h-12 w-auto"
+                priority
               />
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -135,7 +197,8 @@ export default function Home() {
               </Link>
               <Link 
                 href="#book-call" 
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="text-white px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#595F39' }}
               >
                 Book a Call
               </Link>
@@ -150,7 +213,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
         {/* Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-green-50/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-amber-50/30" style={{ background: 'linear-gradient(135deg, #f8f7f4 0%, #f0ede8 100%)' }} />
         
         <div className="relative z-20 max-w-7xl mx-auto text-center">
           {/* Headlines */}
@@ -160,9 +223,9 @@ export default function Home() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="mb-16"
           >
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-bold mb-8 leading-tight tracking-tight">
-              <span className="block text-gray-900 mb-4">Make AI</span>
-              <span className="block text-green-600 bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
+            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-light mb-8 leading-tight tracking-tight">
+              <span className="block text-gray-900 mb-4 font-extralight">Make AI</span>
+              <span className="block font-normal bg-gradient-to-r from-[#595F39] to-[#9C8B5E] bg-clip-text text-transparent">
                 work for you
               </span>
             </h1>
@@ -186,48 +249,76 @@ export default function Home() {
             className="relative mb-20"
           >
             {/* Ambient Glow */}
-            <div className="absolute inset-0 bg-green-500/20 rounded-3xl blur-3xl scale-110 animate-pulse" />
-            <div className="absolute inset-0 bg-green-400/10 rounded-2xl blur-2xl scale-105" />
+            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: 'rgba(89, 95, 57, 0.2)' }} />
+            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: 'rgba(89, 95, 57, 0.1)' }} />
             
             {/* Video Container */}
             <div className="relative w-full max-w-4xl mx-auto bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
               <div className="aspect-video relative">
                 {/* Video */}
-                <video
-                  className="w-full h-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  onLoadedData={() => setIsVideoLoaded(true)}
-                >
-                  <source src="/chatbot_demo_video.mov" type="video/quicktime" />
-                  {/* Fallback for browsers that don't support .mov */}
-                  <source src="/chatbot_demo_video.mp4" type="video/mp4" />
-                </video>
+                {!videoError && (
+                  <video
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    onLoadedData={() => {
+                      console.log('Video loaded successfully')
+                      setIsVideoLoaded(true)
+                    }}
+                    onError={(e) => {
+                      console.error('Video loading error:', e)
+                      setVideoError(true)
+                    }}
+                    onCanPlay={() => {
+                      console.log('Video can play')
+                      setIsVideoLoaded(true)
+                    }}
+                  >
+                    <source src="/chatbot_demo_video.mov" type="video/quicktime" />
+                    <source src="/chatbot_demo_video.mp4" type="video/mp4" />
+                    <source src="/chatbot_demo_video.webm" type="video/webm" />
+                    Your browser does not support the video tag.
+                  </video>
+                )}
                 
-                {/* Fallback placeholder if video doesn't load */}
-                {!isVideoLoaded && (
+                {/* Loading state or video placeholder */}
+                {(!isVideoLoaded || videoError) && (
                   <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900/20 flex items-center justify-center">
                     <div className="text-center text-white">
-                      <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                      <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style={{ backgroundColor: '#595F39' }}>
                         <Play className="w-8 h-8 ml-1" fill="white" />
                       </div>
                       <p className="text-lg font-medium mb-2">ScaleWize AI Demo</p>
-                      <p className="text-gray-300 text-sm">Loading demo video...</p>
+                      <p className="text-gray-300 text-sm">
+                        {videoError ? 'Video unavailable - Click to view demo' : 'Loading demo video...'}
+                      </p>
+                      {videoError && (
+                        <button 
+                          onClick={() => window.open('https://github.com/scalewizeai/scalewize-website/blob/main/public/chatbot_demo_video.mov', '_blank')}
+                          className="mt-4 px-6 py-2 rounded-lg text-white font-medium transition-colors hover:opacity-80"
+                          style={{ backgroundColor: '#595F39' }}
+                        >
+                          View Demo Video
+                        </button>
+                      )}
                     </div>
                   </div>
                 )}
               </div>
               
               {/* Video Controls Overlay */}
-              <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-white text-sm font-medium">Live Demo</span>
+              {isVideoLoaded && !videoError && (
+                <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#595F39' }} />
+                    <span className="text-white text-sm font-medium">Live Demo</span>
+                  </div>
+                  <div className="text-white/70 text-sm">AI-powered business automation</div>
                 </div>
-                <div className="text-white/70 text-sm">AI-powered business automation</div>
-              </div>
+              )}
             </div>
           </motion.div>
 
@@ -238,7 +329,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
             className="mb-12"
           >
-            <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10">
+            <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
               At ScaleWize AI, our mission is to simplify the power of artificial intelligence for our clients — 
               delivering tailored, human-centric solutions that save time, maximize operational efficiency, and 
               provide measurable results.
@@ -251,7 +342,8 @@ export default function Home() {
             >
               <Link 
                 href="#book-call" 
-                className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center text-white px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                style={{ backgroundColor: '#595F39' }}
               >
                 Book a Call
                 <ArrowRight className="ml-3 h-5 w-5" />
@@ -270,10 +362,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8 leading-tight">
               We put customers first, ensuring every journey is seamless
             </h2>
-            <p className="text-xl text-gray-600 leading-relaxed">
+            <p className="text-xl text-gray-600 leading-relaxed font-light">
               Offering innovative AI at a fraction of traditional costs.
             </p>
           </motion.div>
@@ -289,10 +381,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight tracking-tight">
-              <span className="block text-gray-900 mb-2">TIME IS</span>
-              <span className="block text-green-600 mb-2">MONEY,</span>
-              <span className="block text-gray-900">SAVE BOTH</span>
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-extralight mb-8 leading-tight tracking-tight">
+              <span className="block text-gray-900 mb-2 font-extralight">TIME IS</span>
+              <span className="block mb-2 font-light" style={{ color: '#595F39' }}>MONEY,</span>
+              <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
             </h2>
             <p className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
               ScaleWize AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
@@ -312,10 +404,10 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-              Solutions that <span className="text-green-600">scale</span>
+            <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
+              Solutions that <span style={{ color: '#595F39' }}>scale</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light">
               Comprehensive AI automation across every aspect of your business
             </p>
           </motion.div>
@@ -325,7 +417,7 @@ export default function Home() {
               {
                 icon: TrendingUp,
                 title: "Sales",
-                color: "#10b981",
+                color: "#595F39",
                 problem: "Generating qualified leads at scale and running high-conversion outreach is time-consuming.",
                 solution: "We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.",
                 impact: "Accelerated pipeline growth, higher email open rates, and more closed deals."
@@ -333,7 +425,7 @@ export default function Home() {
               {
                 icon: MessageSquare,
                 title: "Marketing",
-                color: "#059669",
+                color: "#9C8B5E",
                 problem: "Generic campaigns waste budget. Content generation lacks personalization.",
                 solution: "AI-powered audience insights personalize messaging and timing for maximum engagement.",
                 impact: "Better click-through rates, higher ROI, stronger brand engagement."
@@ -341,7 +433,7 @@ export default function Home() {
               {
                 icon: Users,
                 title: "Support",
-                color: "#10b981",
+                color: "#595F39",
                 problem: "Manual support processes create bottlenecks and inconsistent experiences.",
                 solution: "AI chatbots handle basic issues intelligently, route complex cases to specialists.",
                 impact: "Quicker resolution times, higher satisfaction scores, significant cost savings."
@@ -349,7 +441,7 @@ export default function Home() {
               {
                 icon: UserCheck,
                 title: "Talent",
-                color: "#059669",
+                color: "#9C8B5E",
                 problem: "Manual screening delays hiring top candidates in competitive markets.",
                 solution: "AI-powered candidate screening and automated interview scheduling.",
                 impact: "Faster hiring cycles, improved candidate quality, reduced recruitment costs."
@@ -357,7 +449,7 @@ export default function Home() {
               {
                 icon: Settings,
                 title: "Operations",
-                color: "#10b981",
+                color: "#595F39",
                 problem: "Complex processes slow product delivery and create inefficiencies.",
                 solution: "Workflow automation and predictive analytics optimize supply chains and operations.",
                 impact: "Shortened turnaround, fewer bottlenecks, consistent output quality."
@@ -365,7 +457,7 @@ export default function Home() {
               {
                 icon: DollarSign,
                 title: "Finance",
-                color: "#059669",
+                color: "#9C8B5E",
                 problem: "Tedious invoicing and error-prone reconciliations drain resources.",
                 solution: "Automated billing systems and real-time financial dashboards with AI insights.",
                 impact: "Reduced processing time, fewer errors, stronger cash flow oversight."
@@ -386,19 +478,19 @@ export default function Home() {
                 >
                   <solution.icon className="h-8 w-8" style={{ color: solution.color }} />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">{solution.title}</h3>
+                <h3 className="text-2xl font-medium text-gray-900 mb-6">{solution.title}</h3>
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Problem</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed">{solution.problem}</p>
+                    <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Problem</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.problem}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Solution</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed">{solution.solution}</p>
+                    <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Solution</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.solution}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2 text-sm uppercase tracking-wide">Impact</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed">{solution.impact}</p>
+                    <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Impact</h4>
+                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.impact}</p>
                   </div>
                 </div>
               </motion.div>
@@ -408,7 +500,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8 bg-green-600">
+      <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#595F39' }}>
         <div className="max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -416,10 +508,10 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
               Get Started Today
             </h2>
-            <p className="text-xl text-white/90 mb-10 leading-relaxed">
+            <p className="text-xl text-white/90 mb-10 leading-relaxed font-light">
               Book a free workflow & AI readiness audit for your business today
             </p>
             <motion.div
@@ -428,7 +520,8 @@ export default function Home() {
             >
               <Link 
                 href="#book-call" 
-                className="inline-flex items-center bg-white text-green-600 hover:bg-gray-50 px-10 py-4 rounded-2xl text-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center bg-white hover:bg-gray-50 px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                style={{ color: '#595F39' }}
               >
                 Book Now
                 <ArrowRight className="ml-3 h-5 w-5" />
@@ -447,8 +540,8 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl sm:text-5xl font-bold mb-4">WORLD-CLASS</h2>
-            <p className="text-xl text-gray-300 mb-16">Agents & automations that improve your bottom line</p>
+            <h2 className="text-4xl sm:text-5xl font-light mb-4">WORLD-CLASS</h2>
+            <p className="text-xl text-gray-300 mb-16 font-light">Agents & automations that improve your bottom line</p>
             
             <div className="grid md:grid-cols-3 gap-12">
               {[
@@ -464,8 +557,8 @@ export default function Home() {
                   transition={{ duration: 0.8, delay: index * 0.2 }}
                   className="text-center"
                 >
-                  <div className="text-6xl sm:text-7xl font-bold mb-4 text-green-400">{stat.value}</div>
-                  <p className="text-gray-300 text-lg">{stat.label}</p>
+                  <div className="text-6xl sm:text-7xl font-light mb-4" style={{ color: '#9C8B5E' }}>{stat.value}</div>
+                  <p className="text-gray-300 text-lg font-light">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -484,8 +577,8 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="text-center md:text-left"
             >
-              <h3 className="text-3xl font-bold text-gray-900 mb-6">Our Vision</h3>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <h3 className="text-3xl font-light text-gray-900 mb-6">Our Vision</h3>
+              <p className="text-lg text-gray-600 leading-relaxed font-light">
                 Accelerate business growth with AI solutions that cut complexity, boost performance, and scale with you
               </p>
             </motion.div>
@@ -496,8 +589,8 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-center md:text-left"
             >
-              <h3 className="text-3xl font-bold text-gray-900 mb-6">Our Mission</h3>
-              <p className="text-lg text-gray-600 leading-relaxed">
+              <h3 className="text-3xl font-light text-gray-900 mb-6">Our Mission</h3>
+              <p className="text-lg text-gray-600 leading-relaxed font-light">
                 Make automation a reality, helping companies worldwide unlock new levels of efficiency and sustainable growth
               </p>
             </motion.div>
@@ -512,30 +605,31 @@ export default function Home() {
             <div className="col-span-2">
               <div className="flex items-center mb-6">
                 <Image src="/scalewize_logo.png" alt="ScaleWize AI Logo" width={48} height={48} className="h-10 w-10" />
-                <span className="ml-3 text-2xl font-bold">ScaleWize AI</span>
+                <span className="ml-3 text-2xl font-light">ScaleWize AI</span>
               </div>
-              <p className="text-gray-400 mb-6 leading-relaxed">
+              <p className="text-gray-400 mb-6 leading-relaxed font-light">
                 Your vision, our expertise. We customize AI solutions to meet your everyday challenges—delivering faster results and freeing you to focus on what really matters.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-lg">Locations</h4>
-              <div className="space-y-3 text-gray-400">
+              <h4 className="font-medium mb-6 text-lg">Locations</h4>
+              <div className="space-y-3 text-gray-400 font-light">
                 <p>Calgary, Canada</p>
                 <p>Copenhagen, Denmark</p>
                 <p>Toronto, Canada</p>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-6 text-lg">Newsletter</h4>
-              <p className="text-gray-400 mb-6">START UNLOCKING TIME TODAY!</p>
+              <h4 className="font-medium mb-6 text-lg">Newsletter</h4>
+              <p className="text-gray-400 mb-6 font-light">START UNLOCKING TIME TODAY!</p>
               <div className="flex">
                 <input 
                   type="email" 
                   placeholder="Email*" 
-                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-l-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2"
+                  style={{ '--tw-ring-color': '#595F39' } as React.CSSProperties}
                 />
-                <button className="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-r-xl text-white font-medium transition-colors">
+                <button className="px-6 py-3 rounded-r-xl text-white font-medium transition-colors" style={{ backgroundColor: '#595F39' }}>
                   Subscribe
                 </button>
               </div>
