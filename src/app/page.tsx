@@ -192,19 +192,7 @@ export default function Home() {
             {/* Video Container */}
             <div className="relative w-full max-w-4xl mx-auto bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
               <div className="aspect-video relative">
-                {/* Placeholder for video - will be replaced when video file is added */}
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900/20 flex items-center justify-center">
-                  <div className="text-center text-white">
-                    <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                      <Play className="w-8 h-8 ml-1" fill="white" />
-                    </div>
-                    <p className="text-lg font-medium mb-2">ScaleWize AI Demo</p>
-                    <p className="text-gray-300 text-sm">Watch how AI connects your business systems</p>
-                  </div>
-                </div>
-                
-                {/* Uncomment when video file is added */}
-                {/*
+                {/* Video */}
                 <video
                   className="w-full h-full object-cover"
                   autoPlay
@@ -213,10 +201,23 @@ export default function Home() {
                   playsInline
                   onLoadedData={() => setIsVideoLoaded(true)}
                 >
-                  <source src="/chatbot_demo_video.mov" type="video/mp4" />
+                  <source src="/chatbot_demo_video.mov" type="video/quicktime" />
+                  {/* Fallback for browsers that don't support .mov */}
                   <source src="/chatbot_demo_video.mp4" type="video/mp4" />
                 </video>
-                */}
+                
+                {/* Fallback placeholder if video doesn't load */}
+                {!isVideoLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900/20 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <div className="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <Play className="w-8 h-8 ml-1" fill="white" />
+                      </div>
+                      <p className="text-lg font-medium mb-2">ScaleWize AI Demo</p>
+                      <p className="text-gray-300 text-sm">Loading demo video...</p>
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Video Controls Overlay */}
