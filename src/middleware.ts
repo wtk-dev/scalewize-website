@@ -60,19 +60,25 @@ export async function middleware(request: NextRequest) {
   }
 
   // Admin route protection
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  if (request.nextUrl.pathname.startsWith('/dashboard/admin')) {
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
 
-    // Check if user has admin role (this will be checked in the component as well)
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-
-    if (profile?.role !== 'super_admin') {
+    // Check if user has admin or super_admin role using our API endpoint
+    try {
+      const profileResponse = await fetch(`${request.nextUrl.origin}/api/get-profile?userId=${session.user.id}`)
+      if (profileResponse.ok) {
+        const profileData = await profileResponse.json()
+        if (profileData.profile?.role !== 'admin' && profileData.profile?.role !== 'super_admin') {
+          return NextResponse.redirect(new URL('/dashboard', request.url))
+        }
+      } else {
+        // If profile fetch fails, redirect to dashboard
+        return NextResponse.redirect(new URL('/dashboard', request.url))
+      }
+    } catch (error) {
+      console.error('Middleware profile check error:', error)
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }

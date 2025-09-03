@@ -300,6 +300,79 @@ export interface Database {
           updated_at?: string
         }
       }
+      invitations: {
+        Row: {
+          id: string
+          organization_id: string
+          email: string
+          token: string
+          invited_by: string
+          expires_at: string
+          status: 'pending' | 'accepted' | 'expired'
+          created_at: string
+          magic_link_token: string | null
+          magic_link_expires_at: string | null
+          accepted_at: string | null
+          accepted_by: string | null
+          email_sent: boolean
+          email_sent_at: string | null
+        }
+        Insert: {
+          id?: string
+          organization_id: string
+          email: string
+          token: string
+          invited_by: string
+          expires_at: string
+          status?: 'pending' | 'accepted' | 'expired'
+          created_at?: string
+          magic_link_token?: string | null
+          magic_link_expires_at?: string | null
+          accepted_at?: string | null
+          accepted_by?: string | null
+          email_sent?: boolean
+          email_sent_at?: string | null
+        }
+        Update: {
+          id?: string
+          organization_id?: string
+          email?: string
+          token?: string
+          invited_by?: string
+          expires_at?: string
+          status?: 'pending' | 'accepted' | 'expired'
+          created_at?: string
+          magic_link_token?: string | null
+          magic_link_expires_at?: string | null
+          accepted_at?: string | null
+          accepted_by?: string | null
+          email_sent?: boolean
+          email_sent_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_accepted_by_fkey"
+            columns: ["accepted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       messages: {
         Row: {
           id: string
@@ -391,5 +464,6 @@ export type BillingRecord = Database['public']['Tables']['billing_records']['Row
 export type ApiKey = Database['public']['Tables']['api_keys']['Row']
 export type Lead = Database['public']['Tables']['leads']['Row']
 export type Message = Database['public']['Tables']['messages']['Row']
+export type Invitation = Database['public']['Tables']['invitations']['Row']
 
 export type LinkedInAnalytics = Database['public']['Views']['linkedin_analytics']['Row'] 

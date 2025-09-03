@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [organization, setOrganization] = useState<Organization | null>(null)
   const [loading, setLoading] = useState(true)
+  const [profileLoading, setProfileLoading] = useState(false)
   const router = useRouter()
 
   // Fallback to prevent infinite loading
@@ -99,86 +100,108 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [router])
 
-  const fetchProfile = async (userId: any) => {
-    console.log('fetchProfile called with userId:', userId)
+  const fetchProfile = async (userId: any, retryCount = 0) => {
+    // Prevent duplicate profile fetches
+    if (profileLoading) {
+      console.log('Profile fetch already in progress, skipping...')
+      return
+    }
+    
+    console.log('fetchProfile called with userId:', userId, 'retry:', retryCount)
+    setProfileLoading(true)
+    
     try {
-      console.log('Making Supabase query for profile...')
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
+      console.log('Making API call to get-profile endpoint...')
       
-      console.log('Supabase query completed. Data:', profileData, 'Error:', profileError)
+      // Use absolute URL for production compatibility
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+      const response = await fetch(`${baseUrl}/api/get-profile?userId=${userId}`, {
+        credentials: 'include', // Ensure cookies are sent
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      const result = await response.json()
       
-      if (profileError) {
-        console.error('fetchProfile error:', profileError)
+      console.log('API response:', result)
+      
+      if (!response.ok) {
+        console.error('Profile fetch error:', result.error)
+        console.error('Profile error details:', result.details)
+        
+        // Retry once if it's a network error and we haven't retried yet
+        if (retryCount === 0 && (result.error?.includes('fetch') || result.error?.includes('network'))) {
+          console.log('Retrying profile fetch...')
+          setProfileLoading(false)
+          setTimeout(() => fetchProfile(userId, 1), 1000)
+          return
+        }
+        
         // If no profile exists, create one
-        if (profileError.code === 'PGRST116') { // No rows returned
+        if (result.error === 'Profile not found') {
           console.log('No profile found, creating new profile...')
           const { data: user } = await supabase.auth.getUser()
           if (user?.user) {
             console.log('Creating profile for user:', user.user.email)
-            const { data: newProfile, error: createError } = await supabase
-              .from('profiles')
-              // @ts-ignore
-              .insert({
-                id: userId,
+            
+            // Use service role to create profile
+            const createResponse = await fetch(`${baseUrl}/api/create-profile`, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                userId: userId,
                 email: user.user.email || '',
-                full_name: user.user.user_metadata?.full_name || null,
-                role: 'user',
-                is_active: true
+                fullName: user.user.user_metadata?.full_name || user.user.email?.split('@')[0] || 'User',
+                role: 'user'
               })
-              .select()
-              .single()
+            })
             
-            console.log('Profile creation result:', newProfile, 'Error:', createError)
+            const createResult = await createResponse.json()
+            console.log('Profile creation result:', createResult)
             
-            if (createError) {
-              console.error('Error creating profile:', createError)
+            if (!createResponse.ok) {
+              console.error('Error creating profile:', createResult.error)
               setProfile(null)
               setOrganization(null)
+              setProfileLoading(false)
               return
             }
             
-            console.log('New profile created:', newProfile)
-            setProfile(newProfile)
-            setOrganization(null) // No organization for new users
+            console.log('New profile created:', createResult.profile)
+            setProfile(createResult.profile)
+            setOrganization(createResult.organization)
           }
         } else {
-          console.log('Profile error is not PGRST116, setting profile to null')
+          console.log('Profile error is not "Profile not found", setting profile to null')
           setProfile(null)
           setOrganization(null)
         }
+        setProfileLoading(false)
         return
       }
       
-      console.log('fetchProfile result:', profileData)
-      setProfile(profileData)
+      console.log('fetchProfile result:', result.profile)
+      setProfile(result.profile)
+      setOrganization(result.organization)
+      setProfileLoading(false)
       
-      if (profileData?.organization_id) {
-        console.log('Fetching organization data for ID:', profileData.organization_id)
-        const { data: orgData, error: orgError } = await supabase
-          .from('organizations')
-          .select('*')
-          .eq('id', profileData.organization_id)
-          .single()
-        console.log('Organization query result:', orgData, 'Error:', orgError)
-        if (orgError) {
-          console.error('fetchProfile organization error:', orgError)
-          setOrganization(null)
-        } else {
-          console.log('fetchProfile organization result:', orgData)
-          setOrganization(orgData)
-        }
-      } else {
-        console.log('No organization_id found, setting organization to null')
-        setOrganization(null)
-      }
     } catch (error) {
       console.error('Unexpected error in fetchProfile:', error)
+      
+      // Retry once if it's a network error and we haven't retried yet
+      if (retryCount === 0) {
+        console.log('Retrying profile fetch due to error...')
+        setProfileLoading(false)
+        setTimeout(() => fetchProfile(userId, 1), 1000)
+        return
+      }
+      
       setProfile(null)
       setOrganization(null)
+      setProfileLoading(false)
     }
   }
 

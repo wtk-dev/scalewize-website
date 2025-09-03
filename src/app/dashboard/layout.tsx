@@ -43,8 +43,8 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     { name: 'Explore', href: '/dashboard/explore', icon: Search },
   ]
 
-  if (profile?.role === 'super_admin') {
-    navigation.push({ name: 'Admin', href: '/admin', icon: Building2 })
+  if (profile?.role === 'admin' || profile?.role === 'super_admin') {
+    navigation.push({ name: 'Admin', href: '/dashboard/admin', icon: Building2 })
   }
 
   return (

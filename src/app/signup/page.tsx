@@ -1,11 +1,11 @@
-// @ts-nocheck
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Bot, Eye, EyeOff, Loader2, Building2 } from 'lucide-react'
-import { supabase } from '@/lib/supabase-client'
+// Remove this import - we don't need direct Supabase access
+// import { supabase } from '@/lib/supabase-client'
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -62,69 +62,43 @@ export default function SignupPage() {
     }
 
     try {
-      // Create user account
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
+      // ✅ CORRECT: Use your API route instead of direct Supabase calls
+      const response = await fetch('/api/signup-direct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+          organizationName: formData.organizationName,
+        }),
       })
 
-      if (authError) {
-        setError(authError.message)
+      const result = await response.json()
+
+      if (!response.ok) {
+        setError(result.error || 'Failed to create account')
         setLoading(false)
         return
       }
 
-      // @ts-ignore
-      if (authData.user) {
-        // Create organization
-        // @ts-ignore
-        const { data: orgData, error: orgError }: any = await supabase
-          .from('organizations')
-          // @ts-ignore
-          // @ts-ignore
-          .insert({
-            name: formData.organizationName,
-            slug: formData.organizationSlug,
-            subscription_status: 'trial',
-            plan_type: 'starter',
-            max_users: 50,
-            max_chat_sessions: 1000,
-            monthly_token_limit: 100000,
-            librechat_config: {},
-          })
-          .select()
-          .single()
-
-        if (orgError) {
-          setError('Failed to create organization: ' + orgError.message)
-          setLoading(false)
-          return
-        }
-
-        // Create user profile
-        const { error: profileError } = await supabase
-          .from('profiles')
-          // @ts-ignore
-          // @ts-ignore
-          .insert({
-            id: authData.user.id,
-            email: formData.email,
-            full_name: formData.fullName,
-            organization_id: orgData.id,
-            role: 'admin', // First user is admin
-            is_active: true,
-          })
-
-        if (profileError) {
-          setError('Failed to create user profile: ' + profileError.message)
-          setLoading(false)
-          return
-        }
-
-        // Redirect to dashboard
+      // Success! Handle the response
+      if (result.redirectUrl) {
+        // If we have a redirect URL from Supabase, use it
+        window.location.href = result.redirectUrl
+      } else if (result.session) {
+        // If we have session tokens, we could set them manually
+        // For now, just redirect to dashboard and let the auth context handle it
+        router.push('/dashboard')
+      } else {
+        // Fallback: redirect to dashboard
         router.push('/dashboard')
       }
+      
     } catch (error) {
+      console.error('Signup error:', error)
       setError('An unexpected error occurred')
       setLoading(false)
     }
