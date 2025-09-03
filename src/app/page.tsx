@@ -53,94 +53,70 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
     delay: number
   }>>([])
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 })
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
 
   useEffect(() => {
-    // Update window size
-    const updateWindowSize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      })
-    }
-
-    updateWindowSize()
-    window.addEventListener('resize', updateWindowSize)
-
-    // Generate particles that start from edges
+    // Generate particles that start from left and right edges only
     const generateParticles = () => {
-      const newParticles = Array.from({ length: 25 }, (_, i) => {
-        const edge = Math.floor(Math.random() * 4) // 0: top, 1: right, 2: bottom, 3: left
+      const newParticles = Array.from({ length: 20 }, (_, i) => {
+        // Only spawn from left (0) or right (1) sides
+        const side = Math.random() < 0.5 ? 0 : 1
         let startX, startY
         
-        switch (edge) {
-          case 0: // Top edge
-            startX = Math.random() * window.innerWidth
-            startY = -10
-            break
-          case 1: // Right edge
-            startX = window.innerWidth + 10
-            startY = Math.random() * window.innerHeight
-            break
-          case 2: // Bottom edge
-            startX = Math.random() * window.innerWidth
-            startY = window.innerHeight + 10
-            break
-          case 3: // Left edge
-            startX = -10
-            startY = Math.random() * window.innerHeight
-            break
-          default:
-            startX = 0
-            startY = 0
+        if (side === 0) {
+          // Left side
+          startX = -20
+          startY = Math.random() * window.innerHeight
+        } else {
+          // Right side  
+          startX = window.innerWidth + 20
+          startY = Math.random() * window.innerHeight
         }
 
         return {
           id: i,
           startX,
           startY,
-          delay: Math.random() * 8, // Stagger over 8 seconds
+          delay: Math.random() * 6, // Stagger over 6 seconds
         }
       })
       setParticles(newParticles)
     }
 
-    generateParticles()
-
-    // Update target position based on video position (accounting for scroll)
+    // Update target position to video center in viewport coordinates
     const updateTarget = () => {
       if (videoRef.current) {
         const rect = videoRef.current.getBoundingClientRect()
-        const scrollX = window.pageXOffset || document.documentElement.scrollLeft
-        const scrollY = window.pageYOffset || document.documentElement.scrollTop
-        
+        // Use viewport coordinates (no scroll offset needed for animations)
         setTargetPosition({
-          x: rect.left + scrollX + rect.width / 2,
-          y: rect.top + scrollY + rect.height / 2,
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2,
         })
       }
     }
 
+    // Initialize
+    generateParticles()
     updateTarget()
     
-    // Use requestAnimationFrame for smooth updates
-    let animationFrame: number
-    const handleScroll = () => {
-      cancelAnimationFrame(animationFrame)
-      animationFrame = requestAnimationFrame(updateTarget)
+    // Update on window events
+    const handleResize = () => {
+      generateParticles()
+      updateTarget()
     }
     
-    window.addEventListener('resize', updateTarget)
+    const handleScroll = () => {
+      updateTarget()
+    }
+    
+    window.addEventListener('resize', handleResize)
     window.addEventListener('scroll', handleScroll, { passive: true })
 
     // Regenerate particles periodically
-    const interval = setInterval(generateParticles, 10000) // Every 10 seconds
+    const interval = setInterval(generateParticles, 8000) // Every 8 seconds
 
     return () => {
-      window.removeEventListener('resize', updateTarget)
+      window.removeEventListener('resize', handleResize)
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', updateWindowSize)
-      cancelAnimationFrame(animationFrame)
       clearInterval(interval)
     }
   }, [videoRef])
@@ -211,7 +187,7 @@ export default function Home() {
       <ParticleField videoRef={videoRef} />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         {/* Background Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-amber-50/30" style={{ background: 'linear-gradient(135deg, #f8f7f4 0%, #f0ede8 100%)' }} />
         
@@ -221,10 +197,10 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mb-16"
+            className="mb-20"
           >
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-light mb-8 leading-tight tracking-tight">
-              <span className="block text-gray-900 mb-4 font-extralight">Make AI</span>
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-[0.9] tracking-tight">
+              <span className="block text-gray-900 mb-2 font-extralight">Make AI</span>
               <span className="block font-normal bg-gradient-to-r from-[#595F39] to-[#9C8B5E] bg-clip-text text-transparent">
                 work for you
               </span>
@@ -234,7 +210,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-              className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light mb-16"
+              className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light"
             >
               All-in-one secure AI platform, uniting your systems, knowledge, and people.
             </motion.p>
@@ -246,7 +222,7 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
-            className="relative mb-20"
+            className="relative mb-16"
           >
             {/* Ambient Glow */}
             <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: 'rgba(89, 95, 57, 0.2)' }} />
@@ -329,7 +305,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
             className="mb-12"
           >
-            <p className="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed mb-10 font-light">
+            <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-8 font-light">
               At ScaleWize AI, our mission is to simplify the power of artificial intelligence for our clients — 
               delivering tailored, human-centric solutions that save time, maximize operational efficiency, and 
               provide measurable results.
@@ -342,11 +318,11 @@ export default function Home() {
             >
               <Link 
                 href="#book-call" 
-                className="inline-flex items-center text-white px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center text-white px-8 py-3 rounded-xl text-base font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
                 style={{ backgroundColor: '#595F39' }}
               >
                 Book a Call
-                <ArrowRight className="ml-3 h-5 w-5" />
+                <ArrowRight className="ml-3 h-4 w-4" />
               </Link>
             </motion.div>
           </motion.div>
