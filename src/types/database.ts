@@ -308,7 +308,7 @@ export interface Database {
           token: string
           invited_by: string
           expires_at: string
-          status: 'pending' | 'accepted' | 'expired'
+          status: 'pending' | 'accepted' | 'expired' | 'cancelled'
           created_at: string
           magic_link_token: string | null
           magic_link_expires_at: string | null
@@ -324,7 +324,7 @@ export interface Database {
           token: string
           invited_by: string
           expires_at: string
-          status?: 'pending' | 'accepted' | 'expired'
+          status?: 'pending' | 'accepted' | 'expired' | 'cancelled'
           created_at?: string
           magic_link_token?: string | null
           magic_link_expires_at?: string | null
@@ -340,7 +340,7 @@ export interface Database {
           token?: string
           invited_by?: string
           expires_at?: string
-          status?: 'pending' | 'accepted' | 'expired'
+          status?: 'pending' | 'accepted' | 'expired' | 'cancelled'
           created_at?: string
           magic_link_token?: string | null
           magic_link_expires_at?: string | null
