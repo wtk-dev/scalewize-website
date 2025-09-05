@@ -211,7 +211,7 @@ export default function Home() {
             transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mb-20"
           >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-[0.9] tracking-tight pb-2">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-8 leading-[1.1] tracking-tight pb-4">
               <span className="block text-gray-900 mb-2 font-extralight">Make AI</span>
               <span className="block font-normal bg-gradient-to-r from-[#595F39] to-[#9C8B5E] bg-clip-text text-transparent">
                 work for you
@@ -299,12 +299,9 @@ export default function Home() {
               
               {/* Video Controls Overlay */}
               {isVideoLoaded && !videoError && (
-                <div className="absolute bottom-4 left-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg p-3 flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#595F39' }} />
-                    <span className="text-white text-sm font-medium">Live Demo</span>
-                  </div>
-                  <div className="text-white/70 text-sm">AI-powered business automation</div>
+                <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm rounded-lg p-2 flex items-center space-x-2 max-w-xs">
+                  <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#595F39' }} />
+                  <span className="text-white text-xs font-medium">Live Demo</span>
                 </div>
               )}
             </div>
