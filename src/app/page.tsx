@@ -16,10 +16,10 @@ const Particle = ({ delay, startX, startY, targetX, targetY }: {
 }) => {
   return (
     <motion.div
-      className="absolute w-1.5 h-1.5 rounded-full opacity-0"
+      className="absolute w-2.5 h-2.5 rounded-full opacity-0"
       style={{
         background: '#595F39',
-        boxShadow: '0 0 4px #595F39, 0 0 8px #595F39',
+        boxShadow: '0 0 6px #595F39, 0 0 12px #595F39',
       }}
       initial={{
         x: startX,
@@ -30,14 +30,14 @@ const Particle = ({ delay, startX, startY, targetX, targetY }: {
       animate={{
         x: targetX,
         y: targetY,
-        opacity: [0, 0.7, 0],
-        scale: [0, 1, 0],
+        opacity: [0, 0.8, 0],
+        scale: [0, 1.2, 0],
       }}
       transition={{
-        duration: 4,
+        duration: Math.random() * 2 + 3, // Random duration between 3-5 seconds
         delay: delay,
         repeat: Infinity,
-        repeatDelay: Math.random() * 3 + 2, // Random delay between 2-5 seconds
+        repeatDelay: Math.random() * 4 + 1, // Random delay between 1-5 seconds
         ease: "easeInOut",
       }}
     />
@@ -55,71 +55,61 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
+    // Set fixed target position (center of screen, roughly where video will be)
+    const setFixedTarget = () => {
+      setTargetPosition({
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+      })
+    }
+
     // Generate particles that start from left and right edges only
     const generateParticles = () => {
-      const newParticles = Array.from({ length: 20 }, (_, i) => {
+      const newParticles = Array.from({ length: 15 }, (_, i) => {
         // Only spawn from left (0) or right (1) sides
         const side = Math.random() < 0.5 ? 0 : 1
         let startX, startY
         
         if (side === 0) {
-          // Left side
-          startX = -20
+          // Left side - more sporadic positioning
+          startX = -30 - Math.random() * 20
           startY = Math.random() * window.innerHeight
         } else {
-          // Right side  
-          startX = window.innerWidth + 20
+          // Right side - more sporadic positioning
+          startX = window.innerWidth + 30 + Math.random() * 20
           startY = Math.random() * window.innerHeight
         }
 
         return {
-          id: i,
+          id: i + Date.now(), // Unique ID to force re-render
           startX,
           startY,
-          delay: Math.random() * 6, // Stagger over 6 seconds
+          delay: Math.random() * 8, // Stagger over 8 seconds
         }
       })
       setParticles(newParticles)
     }
 
-    // Update target position to video center in viewport coordinates
-    const updateTarget = () => {
-      if (videoRef.current) {
-        const rect = videoRef.current.getBoundingClientRect()
-        // Use viewport coordinates (no scroll offset needed for animations)
-        setTargetPosition({
-          x: rect.left + rect.width / 2,
-          y: rect.top + rect.height / 2,
-        })
-      }
-    }
-
-    // Initialize
+    // Initialize once
+    setFixedTarget()
     generateParticles()
-    updateTarget()
     
-    // Update on window events
+    // Only regenerate particles on window resize (no scroll events)
     const handleResize = () => {
+      setFixedTarget()
       generateParticles()
-      updateTarget()
-    }
-    
-    const handleScroll = () => {
-      updateTarget()
     }
     
     window.addEventListener('resize', handleResize)
-    window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // Regenerate particles periodically
-    const interval = setInterval(generateParticles, 8000) // Every 8 seconds
+    // Regenerate particles periodically with more sporadic timing
+    const interval = setInterval(generateParticles, 6000) // Every 6 seconds
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      window.removeEventListener('scroll', handleScroll)
       clearInterval(interval)
     }
-  }, [videoRef])
+  }, []) // Remove videoRef dependency to prevent scroll updates
 
   return (
     <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
