@@ -126,6 +126,8 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const invitationId = searchParams.get('id')
 
+    console.log('DELETE invitation request for ID:', invitationId)
+
     if (!invitationId) {
       return NextResponse.json(
         { error: 'Invitation ID is required' },
@@ -166,6 +168,7 @@ export async function DELETE(request: NextRequest) {
     const { data: { session }, error: sessionError } = await supabase.auth.getSession()
     
     if (sessionError || !session) {
+      console.error('Session error:', sessionError)
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
@@ -173,8 +176,8 @@ export async function DELETE(request: NextRequest) {
     }
 
     const user = session.user
-
     const userId = user.id
+    console.log('User ID:', userId)
 
     // Verify user is admin of the organization that owns this invitation
     const { data: invitation, error: invitationError } = await supabaseAdmin
@@ -189,11 +192,14 @@ export async function DELETE(request: NextRequest) {
       .single()
 
     if (invitationError || !invitation) {
+      console.error('Invitation lookup error:', invitationError)
       return NextResponse.json(
         { error: 'Invitation not found' },
         { status: 404 }
       )
     }
+
+    console.log('Found invitation:', invitation.id, 'for organization:', invitation.organization_id)
 
     // Check if user is admin of this organization
     const { data: profile, error: profileError } = await supabaseAdmin
@@ -205,11 +211,15 @@ export async function DELETE(request: NextRequest) {
       .single()
 
     if (profileError || !profile) {
+      console.error('Profile lookup error:', profileError)
+      console.log('User organization:', profile?.organization_id, 'Invitation organization:', invitation.organization_id)
       return NextResponse.json(
         { error: 'You must be an admin to cancel invitations' },
         { status: 403 }
       )
     }
+
+    console.log('User is admin, proceeding with cancellation')
 
     // Cancel the invitation
     const { error: deleteError } = await supabaseAdmin
@@ -223,11 +233,12 @@ export async function DELETE(request: NextRequest) {
     if (deleteError) {
       console.error('Failed to cancel invitation:', deleteError)
       return NextResponse.json(
-        { error: 'Failed to cancel invitation' },
+        { error: 'Failed to cancel invitation: ' + deleteError.message },
         { status: 500 }
       )
     }
 
+    console.log('Invitation cancelled successfully:', invitationId)
     return NextResponse.json({
       success: true,
       message: 'Invitation cancelled successfully'

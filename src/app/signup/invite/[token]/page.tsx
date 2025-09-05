@@ -34,6 +34,7 @@ export default function InvitationSignupPage() {
   // Form state
   const [formData, setFormData] = useState({
     fullName: '',
+    email: '',
     password: '',
     confirmPassword: ''
   })
@@ -51,29 +52,39 @@ export default function InvitationSignupPage() {
       setLoading(true)
       setError(null)
 
-      // TODO: Replace with actual API call to validate invitation
-      // For now, we'll simulate the validation with the actual token from the logs
-      const mockInvitation = {
-        id: 'mock-invite-id',
-        email: 'sebbydkeating@gmail.com', // This should come from the actual invitation
-        organizationName: 'seb inc',
-        inviterName: 'Team Admin',
-        expiresAt: new Date(Date.now() + 86400000).toISOString(), // Expires tomorrow
-        status: 'pending' as const
+      // Call the actual API to validate invitation
+      const response = await fetch(`/api/validate-invitation?token=${token}`)
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        setError(errorData.error || 'Invalid or expired invitation link.')
+        return
       }
 
-      // Simulate validation logic - accept any valid UUID format token
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-      if (uuidRegex.test(token)) {
-        if (new Date(mockInvitation.expiresAt) < new Date()) {
-          setError('This invitation has expired.')
-        } else {
-          setInvitation(mockInvitation)
-          setFormData(prev => ({ ...prev, fullName: mockInvitation.email.split('@')[0] }))
-        }
-      } else {
-        setError('Invalid invitation token.')
+      const invitationData = await response.json()
+      
+      // Check if invitation is expired
+      if (new Date(invitationData.expires_at) < new Date()) {
+        setError('This invitation has expired. Please request a new invitation.')
+        return
       }
+
+      const invitation = {
+        id: invitationData.id,
+        email: invitationData.email,
+        organizationName: invitationData.organization_name,
+        inviterName: invitationData.inviter_name || 'Team Admin',
+        expiresAt: invitationData.expires_at,
+        status: invitationData.status
+      }
+
+      setInvitation(invitation)
+      // Pre-fill the form with invitation data
+      setFormData(prev => ({ 
+        ...prev, 
+        fullName: invitation.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        email: invitation.email
+      }))
     } catch (err) {
       console.error('Error validating invitation:', err)
       setError('Failed to validate invitation. Please try again.')
@@ -119,7 +130,7 @@ export default function InvitationSignupPage() {
           token,
           fullName: formData.fullName,
           password: formData.password,
-          email: invitation.email
+          email: formData.email
         }),
       })
 
@@ -210,19 +221,24 @@ export default function InvitationSignupPage() {
 
         <div className="bg-white rounded-lg shadow-md p-6">
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="flex items-center mb-2">
+            <div className="flex items-center mb-3">
               <Building2 className="h-5 w-5 text-blue-600 mr-2" />
-              <span className="font-medium text-blue-900">Organization Details</span>
+              <span className="font-medium text-blue-900">Invitation Details</span>
             </div>
-            <p className="text-sm text-blue-800">
-              <strong>Organization:</strong> {invitation?.organizationName}
-            </p>
-            <p className="text-sm text-blue-800">
-              <strong>Email:</strong> {invitation?.email}
-            </p>
-            <p className="text-sm text-blue-800">
-              <strong>Invited by:</strong> {invitation?.inviterName}
-            </p>
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-blue-800">Organization:</span>
+                <span className="text-sm text-blue-800">{invitation?.organizationName}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-blue-800">Email:</span>
+                <span className="text-sm text-blue-800">{invitation?.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm font-medium text-blue-800">Invited by:</span>
+                <span className="text-sm text-blue-800">{invitation?.inviterName}</span>
+              </div>
+            </div>
           </div>
 
           {error && (
@@ -232,6 +248,26 @@ export default function InvitationSignupPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  readOnly
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-600 cursor-not-allowed"
+                  placeholder="Email address from invitation"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-1">This email is from your invitation and cannot be changed</p>
+            </div>
+
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name
