@@ -53,8 +53,16 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
     delay: number
   }>>([])
   const [targetPosition, setTargetPosition] = useState({ x: 0, y: 0 })
+  const [isInHeroSection, setIsInHeroSection] = useState(true)
 
   useEffect(() => {
+    // Check if we're in the hero section
+    const checkHeroSection = () => {
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop
+      const heroHeight = window.innerHeight
+      setIsInHeroSection(scrollY < heroHeight * 0.8) // Hide particles when 80% scrolled past hero
+    }
+
     // Set fixed target position (center of screen, roughly where video will be)
     const setFixedTarget = () => {
       setTargetPosition({
@@ -93,23 +101,37 @@ const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement 
     // Initialize once
     setFixedTarget()
     generateParticles()
+    checkHeroSection()
     
-    // Only regenerate particles on window resize (no scroll events)
+    // Add scroll listener to check hero section
+    const handleScroll = () => {
+      checkHeroSection()
+    }
+    
+    // Only regenerate particles on window resize
     const handleResize = () => {
       setFixedTarget()
       generateParticles()
+      checkHeroSection()
     }
     
     window.addEventListener('resize', handleResize)
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
     // Regenerate particles periodically with more sporadic timing
     const interval = setInterval(generateParticles, 6000) // Every 6 seconds
 
     return () => {
       window.removeEventListener('resize', handleResize)
+      window.removeEventListener('scroll', handleScroll)
       clearInterval(interval)
     }
-  }, []) // Remove videoRef dependency to prevent scroll updates
+  }, [])
+
+  // Don't render particles if not in hero section
+  if (!isInHeroSection) {
+    return null
+  }
 
   return (
     <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
@@ -186,10 +208,10 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mb-20"
           >
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-[0.9] tracking-tight">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-6 leading-[0.9] tracking-tight pb-2">
               <span className="block text-gray-900 mb-2 font-extralight">Make AI</span>
               <span className="block font-normal bg-gradient-to-r from-[#595F39] to-[#9C8B5E] bg-clip-text text-transparent">
                 work for you
@@ -199,7 +221,7 @@ export default function Home() {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+              transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light"
             >
               All-in-one secure AI platform, uniting your systems, knowledge, and people.
@@ -209,9 +231,9 @@ export default function Home() {
           {/* Video Demo Section */}
           <motion.div
             ref={videoRef}
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
+            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="relative mb-16"
           >
             {/* Ambient Glow */}
@@ -292,7 +314,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1, ease: "easeOut" }}
+            transition={{ duration: 1, delay: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mb-12"
           >
             <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-8 font-light">
@@ -303,12 +325,13 @@ export default function Home() {
             
             {/* CTA Button */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <Link 
                 href="#book-call" 
-                className="inline-flex items-center text-white px-8 py-3 rounded-xl text-base font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center text-white px-8 py-3 rounded-xl text-base font-medium transition-all duration-500 ease-out shadow-lg hover:shadow-xl"
                 style={{ backgroundColor: '#595F39' }}
               >
                 Book a Call
@@ -326,7 +349,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8 leading-tight">
               We put customers first, ensuring every journey is seamless
@@ -345,7 +368,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-5xl sm:text-6xl lg:text-7xl font-extralight mb-8 leading-tight tracking-tight">
               <span className="block text-gray-900 mb-2 font-extralight">TIME IS</span>
@@ -367,7 +390,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
@@ -379,65 +402,65 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: TrendingUp,
-                title: "Sales",
-                color: "#595F39",
-                problem: "Generating qualified leads at scale and running high-conversion outreach is time-consuming.",
-                solution: "We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.",
-                impact: "Accelerated pipeline growth, higher email open rates, and more closed deals."
-              },
-              {
-                icon: MessageSquare,
-                title: "Marketing",
-                color: "#9C8B5E",
-                problem: "Generic campaigns waste budget. Content generation lacks personalization.",
-                solution: "AI-powered audience insights personalize messaging and timing for maximum engagement.",
-                impact: "Better click-through rates, higher ROI, stronger brand engagement."
-              },
-              {
-                icon: Users,
-                title: "Support",
-                color: "#595F39",
-                problem: "Manual support processes create bottlenecks and inconsistent experiences.",
-                solution: "AI chatbots handle basic issues intelligently, route complex cases to specialists.",
-                impact: "Quicker resolution times, higher satisfaction scores, significant cost savings."
-              },
-              {
-                icon: UserCheck,
-                title: "Talent",
-                color: "#9C8B5E",
-                problem: "Manual screening delays hiring top candidates in competitive markets.",
-                solution: "AI-powered candidate screening and automated interview scheduling.",
-                impact: "Faster hiring cycles, improved candidate quality, reduced recruitment costs."
-              },
-              {
-                icon: Settings,
-                title: "Operations",
-                color: "#595F39",
-                problem: "Complex processes slow product delivery and create inefficiencies.",
-                solution: "Workflow automation and predictive analytics optimize supply chains and operations.",
-                impact: "Shortened turnaround, fewer bottlenecks, consistent output quality."
-              },
-              {
-                icon: DollarSign,
-                title: "Finance",
-                color: "#9C8B5E",
-                problem: "Tedious invoicing and error-prone reconciliations drain resources.",
-                solution: "Automated billing systems and real-time financial dashboards with AI insights.",
-                impact: "Reduced processing time, fewer errors, stronger cash flow oversight."
-              }
-            ].map((solution, index) => (
-              <motion.div
-                key={solution.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
-              >
+             {[
+               {
+                 icon: TrendingUp,
+                 title: "Sales",
+                 color: "#595F39",
+                 problem: "Generating qualified leads at scale and running high-conversion outreach is time-consuming.",
+                 solution: "We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.",
+                 impact: "Accelerated pipeline growth, higher email open rates, and more closed deals."
+               },
+               {
+                 icon: MessageSquare,
+                 title: "Marketing",
+                 color: "#9C8B5E",
+                 problem: "Generic campaigns waste budget. Content generation lacks personalization.",
+                 solution: "AI-powered audience insights personalize messaging and timing for maximum engagement.",
+                 impact: "Better click-through rates, higher ROI, stronger brand engagement."
+               },
+               {
+                 icon: Users,
+                 title: "Support",
+                 color: "#595F39",
+                 problem: "Manual support processes create bottlenecks and inconsistent experiences.",
+                 solution: "AI chatbots handle basic issues intelligently, route complex cases to specialists.",
+                 impact: "Quicker resolution times, higher satisfaction scores, significant cost savings."
+               },
+               {
+                 icon: UserCheck,
+                 title: "Talent",
+                 color: "#9C8B5E",
+                 problem: "Manual screening delays hiring top candidates in competitive markets.",
+                 solution: "AI-powered candidate screening and automated interview scheduling.",
+                 impact: "Faster hiring cycles, improved candidate quality, reduced recruitment costs."
+               },
+               {
+                 icon: Settings,
+                 title: "Operations",
+                 color: "#595F39",
+                 problem: "Complex processes slow product delivery and create inefficiencies.",
+                 solution: "Workflow automation and predictive analytics optimize supply chains and operations.",
+                 impact: "Shortened turnaround, fewer bottlenecks, consistent output quality."
+               },
+               {
+                 icon: DollarSign,
+                 title: "Finance",
+                 color: "#9C8B5E",
+                 problem: "Tedious invoicing and error-prone reconciliations drain resources.",
+                 solution: "Automated billing systems and real-time financial dashboards with AI insights.",
+                 impact: "Reduced processing time, fewer errors, stronger cash flow oversight."
+               }
+             ].map((solution, index) => (
+               <motion.div
+                 key={solution.title}
+                 initial={{ opacity: 0, y: 30 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true }}
+                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+                 whileHover={{ y: -4, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } }}
+                 className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-500 ease-out border border-gray-100"
+               >
                 <div 
                   className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6 shadow-lg"
                   style={{ backgroundColor: `${solution.color}20` }}
@@ -472,7 +495,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
               Get Started Today
@@ -481,12 +504,13 @@ export default function Home() {
               Book a free workflow & AI readiness audit for your business today
             </p>
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
               <Link 
                 href="#book-call" 
-                className="inline-flex items-center bg-white hover:bg-gray-50 px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center bg-white hover:bg-gray-50 px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out shadow-lg hover:shadow-xl"
                 style={{ color: '#595F39' }}
               >
                 Book Now
@@ -504,7 +528,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-4xl sm:text-5xl font-light mb-4">WORLD-CLASS</h2>
             <p className="text-xl text-gray-300 mb-16 font-light">Agents & automations that improve your bottom line</p>
@@ -520,7 +544,7 @@ export default function Home() {
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="text-center"
                 >
                   <div className="text-6xl sm:text-7xl font-light mb-4" style={{ color: '#9C8B5E' }}>{stat.value}</div>
@@ -540,7 +564,7 @@ export default function Home() {
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-center md:text-left"
             >
               <h3 className="text-3xl font-light text-gray-900 mb-6">Our Vision</h3>
@@ -552,7 +576,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-center md:text-left"
             >
               <h3 className="text-3xl font-light text-gray-900 mb-6">Our Mission</h3>
