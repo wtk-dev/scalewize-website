@@ -162,7 +162,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <Image
-                src="/henly_ai_cover_logo.png"
+                src="/henly_ai_logo.png"
                 alt="Henly AI"
                 width={200}
                 height={45}
@@ -242,7 +242,7 @@ export default function Home() {
             
             {/* Video Container */}
             <div className="relative w-full max-w-4xl mx-auto bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
-              <div className="aspect-video relative">
+              <div className="aspect-[11/8] relative">
                 {/* Video */}
                 {!videoError && (
                   <video

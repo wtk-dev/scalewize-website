@@ -123,7 +123,7 @@ export default function LoginPageInner() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
-            <Image src="/henly_ai_cover_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-24 w-auto" />
+            <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-24 w-auto" />
           </div>
           <h2 className="mt-6 text-3xl font-bold" style={{ color: '#595F39' }}>
             Sign in
