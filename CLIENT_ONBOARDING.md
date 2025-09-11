@@ -1,4 +1,4 @@
-# Client Onboarding Guide - ScaleWize AI Platform
+# Client Onboarding Guide - Henly AI Platform
 
 This guide explains how to onboard new clients to your multi-tenant AI platform, offering LibreChat and other AI agents as a service.
 

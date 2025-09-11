@@ -1,12 +1,12 @@
-# 📧 ScaleWize AI Email System Setup Guide
+# 📧 Henly AI Email System Setup Guide
 
 ## 🎯 **Overview**
 
-This guide will help you set up a robust email system for ScaleWize AI using Supabase's email templates and custom SMTP configuration. The system includes:
+This guide will help you set up a robust email system for Henly AI using Supabase's email templates and custom SMTP configuration. The system includes:
 
 - **Invitation emails** for new team members
 - **Welcome emails** when users join organizations
-- **Professional HTML templates** with ScaleWize branding
+- **Professional HTML templates** with Henly branding
 - **Fallback SMTP service** for reliability
 
 ## 🚨 **Current Issue**
@@ -69,13 +69,13 @@ Once you have an ESP account, you'll need:
 #### **A. Invite User Template**
 
 1. **Click the "Invite user" tab** in Supabase
-2. **Subject heading:** `You're invited to join {{ .SiteURL }} on ScaleWize AI`
+2. **Subject heading:** `You're invited to join {{ .SiteURL }} on Henly AI`
 3. **Message body (HTML):**
 
 ```html
 <h2>You're Invited!</h2>
 
-<p>{{ .SiteURL }} has invited you to join their organization on ScaleWize AI. 
+<p>{{ .SiteURL }} has invited you to join their organization on Henly AI. 
 You'll have access to AI-powered chatbots, analytics, and business automation tools.</p>
 
 <p><strong>Organization:</strong> {{ .SiteURL }}</p>
@@ -100,17 +100,17 @@ Please accept it before then to join the organization.</p>
 <p>If you have any questions, please contact your organization administrator.</p>
 
 <hr>
-<p><em>Powered by ScaleWize AI - Simplifying AI for businesses</em></p>
+<p><em>Powered by Henly AI - Simplifying AI for businesses</em></p>
 ```
 
 #### **B. Confirm Signup Template**
 
 1. **Click the "Confirm signup" tab**
-2. **Subject heading:** `Welcome to ScaleWize AI - Confirm your account`
+2. **Subject heading:** `Welcome to Henly AI - Confirm your account`
 3. **Message body (HTML):**
 
 ```html
-<h2>Welcome to ScaleWize AI!</h2>
+<h2>Welcome to Henly AI!</h2>
 
 <p>Thank you for signing up! Please confirm your email address to get started.</p>
 
@@ -130,17 +130,17 @@ Please accept it before then to join the organization.</p>
 <p>If you didn't create this account, you can safely ignore this email.</p>
 
 <hr>
-<p><em>ScaleWize AI - Simplifying AI for businesses</em></p>
+<p><em>Henly AI - Simplifying AI for businesses</em></p>
 ```
 
 #### **C. Magic Link Template**
 
 1. **Click the "Magic Link" tab**
-2. **Subject heading:** `Sign in to ScaleWize AI`
+2. **Subject heading:** `Sign in to Henly AI`
 3. **Message body (HTML):**
 
 ```html
-<h2>Sign in to ScaleWize AI</h2>
+<h2>Sign in to Henly AI</h2>
 
 <p>Click the link below to sign in to your account:</p>
 
@@ -162,13 +162,13 @@ Please accept it before then to join the organization.</p>
 <p>If you didn't request this sign-in link, you can safely ignore this email.</p>
 
 <hr>
-<p><em>ScaleWize AI - Simplifying AI for businesses</em></p>
+<p><em>Henly AI - Simplifying AI for businesses</em></p>
 ```
 
 #### **D. Reset Password Template**
 
 1. **Click the "Reset Password" tab**
-2. **Subject heading:** `Reset your ScaleWize AI password`
+2. **Subject heading:** `Reset your Henly AI password`
 3. **Message body (HTML):**
 
 ```html
@@ -194,7 +194,7 @@ Please accept it before then to join the organization.</p>
 <p>If you didn't request a password reset, you can safely ignore this email.</p>
 
 <hr>
-<p><em>ScaleWize AI - Simplifying AI for businesses</em></p>
+<p><em>Henly AI - Simplifying AI for businesses</em></p>
 ```
 
 ### **Step 5: Test the Email System**
@@ -244,7 +244,7 @@ All email templates are designed to work perfectly on:
 ## 🎨 **Branding & Styling**
 
 The email templates use:
-- **ScaleWize brand colors** (#595F39, #6B7357)
+- **Henly brand colors** (#595F39, #6B7357)
 - **Professional typography** (system fonts for compatibility)
 - **Modern design elements** (gradients, shadows, rounded corners)
 - **Consistent spacing** and layout

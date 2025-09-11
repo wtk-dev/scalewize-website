@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-console.log('🔧 ScaleWize AI - Environment Setup\n')
+console.log('🔧 Henly AI - Environment Setup\n')
 console.log('===================================\n')
 
 // Check if .env.local already exists

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ScaleWize AI - Multi-Tenant ChatBot Platform",
+  title: "Henly AI - Multi-Tenant ChatBot Platform",
   description: "Enterprise AI automation solutions with custom chatbots for your business",
 };
 

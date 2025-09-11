@@ -13,10 +13,10 @@ export const EMAIL_CONFIG = {
   }
 }
 
-// Email templates with ScaleWize branding
+// Email templates with Henly branding
 export const EMAIL_TEMPLATES = {
   invitation: {
-    subject: 'You\'re invited to join {{organizationName}} on ScaleWize AI',
+    subject: 'You\'re invited to join {{organizationName}} on Henly AI',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -49,13 +49,13 @@ export const EMAIL_TEMPLATES = {
       <body>
         <div class="container">
           <div class="header">
-            <div class="logo">ScaleWize AI</div>
+            <div class="logo">Henly AI</div>
             <div class="tagline">Simplifying AI for businesses</div>
           </div>
           <div class="content">
             <h1 class="invitation-title">You're Invited!</h1>
             <p class="invitation-text">
-              {{inviterName}} has invited you to join <strong>{{organizationName}}</strong> on ScaleWize AI. 
+              {{inviterName}} has invited you to join <strong>{{organizationName}}</strong> on Henly AI. 
               You'll have access to AI-powered chatbots, analytics, and business automation tools.
             </p>
             <a href="{{inviteUrl}}" class="cta-button">Accept Invitation</a>
@@ -82,7 +82,7 @@ export const EMAIL_TEMPLATES = {
             </p>
           </div>
           <div class="footer">
-            <p>This invitation was sent by ScaleWize AI</p>
+            <p>This invitation was sent by Henly AI</p>
             <p>If you didn't expect this invitation, you can safely ignore this email.</p>
           </div>
         </div>
@@ -90,9 +90,9 @@ export const EMAIL_TEMPLATES = {
       </html>
     `,
     text: `
-      You're invited to join {{organizationName}} on ScaleWize AI!
+      You're invited to join {{organizationName}} on Henly AI!
       
-      {{inviterName}} has invited you to join their organization on ScaleWize AI. 
+      {{inviterName}} has invited you to join their organization on Henly AI. 
       You'll have access to AI-powered chatbots, analytics, and business automation tools.
       
       Accept your invitation: {{inviteUrl}}
@@ -106,18 +106,18 @@ export const EMAIL_TEMPLATES = {
       If you have questions, contact your organization administrator.
       
       ---
-      ScaleWize AI - Simplifying AI for businesses
+      Henly AI - Simplifying AI for businesses
     `
   },
   welcome: {
-    subject: 'Welcome to {{organizationName}} on ScaleWize AI!',
+    subject: 'Welcome to {{organizationName}} on Henly AI!',
     html: `
       <!DOCTYPE html>
       <html lang="en">
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to ScaleWize AI</title>
+        <title>Welcome to Henly AI</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background-color: #f8f9fa; }
@@ -140,13 +140,13 @@ export const EMAIL_TEMPLATES = {
       <body>
         <div class="container">
           <div class="header">
-            <div class="logo">ScaleWize AI</div>
+            <div class="logo">Henly AI</div>
             <div class="tagline">Simplifying AI for businesses</div>
             </div>
           <div class="content">
-            <h1 class="welcome-title">Welcome to ScaleWize AI!</h1>
+            <h1 class="welcome-title">Welcome to Henly AI!</h1>
             <p class="welcome-text">
-              Congratulations! You're now a member of <strong>{{organizationName}}</strong> on ScaleWize AI. 
+              Congratulations! You're now a member of <strong>{{organizationName}}</strong> on Henly AI. 
               You have access to powerful AI tools that will help streamline your business operations.
             </p>
             <a href="{{dashboardUrl}}" class="cta-button">Go to Dashboard</a>
@@ -175,16 +175,16 @@ export const EMAIL_TEMPLATES = {
           </div>
           <div class="footer">
             <p>Welcome to the future of business automation!</p>
-            <p>ScaleWize AI - Simplifying AI for businesses</p>
+            <p>Henly AI - Simplifying AI for businesses</p>
           </div>
         </div>
       </body>
       </html>
     `,
     text: `
-      Welcome to ScaleWize AI!
+      Welcome to Henly AI!
       
-      Congratulations! You're now a member of {{organizationName}} on ScaleWize AI. 
+      Congratulations! You're now a member of {{organizationName}} on Henly AI. 
       You have access to powerful AI tools that will help streamline your business operations.
       
       Go to Dashboard: {{dashboardUrl}}
@@ -198,11 +198,11 @@ export const EMAIL_TEMPLATES = {
       If you have any questions or need help getting started, don't hesitate to reach out to your team administrator.
       
       ---
-      ScaleWize AI - Simplifying AI for businesses
+      Henly AI - Simplifying AI for businesses
     `
   },
   verification: {
-    subject: 'Verify your email to join {{organizationName}} on ScaleWize AI',
+    subject: 'Verify your email to join {{organizationName}} on Henly AI',
     html: `
       <!DOCTYPE html>
       <html lang="en">
@@ -235,7 +235,7 @@ export const EMAIL_TEMPLATES = {
       <body>
         <div class="container">
           <div class="header">
-            <div class="logo">ScaleWize AI</div>
+            <div class="logo">Henly AI</div>
             <div class="tagline">Simplifying AI for businesses</div>
           </div>
           <div class="content">
@@ -264,7 +264,7 @@ export const EMAIL_TEMPLATES = {
             </p>
           </div>
           <div class="footer">
-            <p>This verification email was sent by ScaleWize AI</p>
+            <p>This verification email was sent by Henly AI</p>
             <p>If you have any questions, contact your organization administrator.</p>
           </div>
         </div>
@@ -272,7 +272,7 @@ export const EMAIL_TEMPLATES = {
       </html>
     `,
     text: `
-      Verify Your Email - ScaleWize AI
+      Verify Your Email - Henly AI
       
       Hi {{fullName}}, welcome to {{organizationName}}!
       
@@ -289,7 +289,7 @@ export const EMAIL_TEMPLATES = {
       Once verified, you'll have full access to your organization's AI tools and dashboard.
       
       ---
-      ScaleWize AI - Simplifying AI for businesses
+      Henly AI - Simplifying AI for businesses
     `
   }
 }

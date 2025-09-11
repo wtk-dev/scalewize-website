@@ -183,7 +183,7 @@ export default function InviteAcceptancePage() {
           <UserPlus className="h-12 w-12 text-blue-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">You're Invited!</h2>
           <p className="text-gray-600">
-            Join <span className="font-semibold">{invitation.organizationName}</span> on ScaleWize AI
+            Join <span className="font-semibold">{invitation.organizationName}</span> on Henly AI
           </p>
         </div>
 

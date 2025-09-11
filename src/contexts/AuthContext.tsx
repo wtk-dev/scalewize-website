@@ -220,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
               <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-t-2" style={{ borderColor: '#595F39' }}></div>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading ScaleWize AI</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Henly AI</h2>
             <p className="text-gray-600">Connecting to your workspace...</p>
           </div>
         </div>

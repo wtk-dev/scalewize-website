@@ -1,6 +1,6 @@
-# Supabase Setup Guide for ScaleWize AI
+# Supabase Setup Guide for Henly AI
 
-This guide will help you set up your Supabase database with the correct tables, Row Level Security (RLS) policies, and functions for the ScaleWize AI platform.
+This guide will help you set up your Supabase database with the correct tables, Row Level Security (RLS) policies, and functions for the Henly AI platform.
 
 ## 1. Database Tables
 

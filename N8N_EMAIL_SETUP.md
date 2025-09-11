@@ -1,7 +1,7 @@
 # 🚀 n8n Email Workflow Setup Guide
 
 ## Overview
-This guide shows you how to set up n8n workflows to handle email sending for ScaleWize AI via webhooks. This approach gives you complete control over the email process, allows you to use any email service, and provides advanced automation capabilities.
+This guide shows you how to set up n8n workflows to handle email sending for Henly AI via webhooks. This approach gives you complete control over the email process, allows you to use any email service, and provides advanced automation capabilities.
 
 ## 🎯 Benefits of n8n + Webhook Approach
 
@@ -72,17 +72,17 @@ Webhook Trigger → Process Data → Send Email → Log Results → Error Handli
    switch(type) {
      case 'invitation':
        fromEmail = 'admin@scalewize.ai';
-       fromName = 'ScaleWize AI';
+       fromName = 'Henly AI';
        replyTo = 'support@scalewize.ai';
        break;
      case 'welcome':
        fromEmail = 'admin@scalewize.ai';
-       fromName = 'ScaleWize AI';
+       fromName = 'Henly AI';
        replyTo = 'support@scalewize.ai';
        break;
      default:
        fromEmail = 'noreply@scalewize.ai';
-       fromName = 'ScaleWize AI';
+       fromName = 'Henly AI';
        replyTo = 'support@scalewize.ai';
    }
    
@@ -284,7 +284,7 @@ Track email performance in n8n:
 - **Error types**
 - **Recipient engagement**
 
-### Integration with ScaleWize
+### Integration with Henly
 Connect email metrics to your main application:
 - **Email status updates** in user profiles
 - **Invitation tracking** in admin dashboard
@@ -317,8 +317,8 @@ Connect email metrics to your main application:
 
 1. **Set up n8n** (local or cloud)
 2. **Create the email workflow** following this guide
-3. **Test with your ScaleWize application**
+3. **Test with your Henly application**
 4. **Add advanced features** as needed
 5. **Deploy to production**
 
-This n8n solution gives you a **professional, scalable, and flexible** email system that integrates perfectly with ScaleWize AI! 🎉
+This n8n solution gives you a **professional, scalable, and flexible** email system that integrates perfectly with Henly AI! 🎉

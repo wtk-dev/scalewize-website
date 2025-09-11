@@ -171,7 +171,7 @@ async function cleanupTestData() {
 }
 
 async function main() {
-  console.log('🚀 ScaleWize AI - Supabase Test Suite\n')
+  console.log('🚀 Henly AI - Supabase Test Suite\n')
   console.log('=====================================\n')
 
   const connectionTest = await testSupabaseConnection()

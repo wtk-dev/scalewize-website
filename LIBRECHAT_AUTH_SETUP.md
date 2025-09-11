@@ -1,11 +1,11 @@
 # LibreChat Authentication & Multi-Tenancy Setup
 
-This document explains how authentication works between ScaleWize AI and LibreChat, enabling secure multi-tenant access with organization-specific configurations.
+This document explains how authentication works between Henly AI and LibreChat, enabling secure multi-tenant access with organization-specific configurations.
 
 ## 🔐 Authentication Architecture
 
 ### Overview
-ScaleWize AI uses a **JWT-based authentication system** to seamlessly integrate with LibreChat while maintaining multi-tenant isolation. Each user gets their own authenticated session in LibreChat with organization-specific configurations.
+Henly AI uses a **JWT-based authentication system** to seamlessly integrate with LibreChat while maintaining multi-tenant isolation. Each user gets their own authenticated session in LibreChat with organization-specific configurations.
 
 ### Flow Diagram
 ```
@@ -245,7 +245,7 @@ INSERT INTO usage_metrics (
 
 2. **Environment Variables**
    ```env
-   # ScaleWize AI
+   # Henly AI
    LIBRECHAT_JWT_SECRET=your-production-jwt-secret
    NEXT_PUBLIC_LIBRECHAT_URL=https://your-librechat-domain.com
    

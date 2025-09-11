@@ -112,7 +112,7 @@ export default function SignupPage() {
             <Bot className="h-12 w-12 text-blue-600" />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Create your ScaleWize AI account
+            Create your Henly AI account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Set up your organization and start automating with AI

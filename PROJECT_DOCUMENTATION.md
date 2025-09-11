@@ -1,4 +1,4 @@
-# ScaleWize AI - Multi-Tenant ChatBot Platform
+# Henly AI - Multi-Tenant ChatBot Platform
 
 ## Project Overview
 

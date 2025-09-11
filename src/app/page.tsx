@@ -163,7 +163,7 @@ export default function Home() {
             <div className="flex items-center">
               <Image
                 src="/scalewize_cover_logo.png"
-                alt="ScaleWize AI"
+                alt="Henly AI"
                 width={200}
                 height={45}
                 className="h-12 w-auto"
@@ -279,7 +279,7 @@ export default function Home() {
                       <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style={{ backgroundColor: '#595F39' }}>
                         <Play className="w-8 h-8 ml-1" fill="white" />
                       </div>
-                      <p className="text-lg font-medium mb-2">ScaleWize AI Demo</p>
+                      <p className="text-lg font-medium mb-2">Henly AI Demo</p>
                       <p className="text-gray-300 text-sm">
                         {videoError ? 'Video unavailable - Click to view demo' : 'Loading demo video...'}
                       </p>
@@ -315,7 +315,7 @@ export default function Home() {
             className="mb-12"
           >
             <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-8 font-light">
-              At ScaleWize AI, our mission is to simplify the power of artificial intelligence for our clients — 
+              At Henly AI, our mission is to simplify the power of artificial intelligence for our clients — 
               delivering tailored, human-centric solutions that save time, maximize operational efficiency, and 
               provide measurable results.
             </p>
@@ -353,7 +353,7 @@ export default function Home() {
             </h2>
             <p className="text-xl text-gray-600 leading-relaxed font-light">
               Offering innovative AI at a fraction of traditional costs.
-            </p>
+          </p>
           </motion.div>
         </div>
       </section>
@@ -371,11 +371,11 @@ export default function Home() {
               <span className="block text-gray-900 mb-2 font-extralight">TIME IS</span>
               <span className="block mb-2 font-light" style={{ color: '#595F39' }}>MONEY,</span>
               <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
-            </h2>
+          </h2>
             <p className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
-              ScaleWize AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
-              and delightful customer experiences, always putting people first
-            </p>
+              Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
+            and delightful customer experiences, always putting people first
+          </p>
           </motion.div>
         </div>
       </section>
@@ -465,19 +465,19 @@ export default function Home() {
                   <solution.icon className="h-8 w-8" style={{ color: solution.color }} />
                 </div>
                 <h3 className="text-2xl font-medium text-gray-900 mb-6">{solution.title}</h3>
-                <div className="space-y-4">
-                  <div>
+              <div className="space-y-4">
+                <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Problem</h4>
                     <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.problem}</p>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Solution</h4>
                     <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.solution}</p>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Impact</h4>
                     <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.impact}</p>
-                  </div>
+              </div>
                 </div>
               </motion.div>
             ))}
@@ -495,24 +495,24 @@ export default function Home() {
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
-              Get Started Today
-            </h2>
+            Get Started Today
+          </h2>
             <p className="text-xl text-white/90 mb-10 leading-relaxed font-light">
-              Book a free workflow & AI readiness audit for your business today
-            </p>
+            Book a free workflow & AI readiness audit for your business today
+          </p>
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <Link 
-                href="#book-call" 
+          <Link 
+            href="#book-call" 
                 className="inline-flex items-center bg-white hover:bg-gray-50 px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out shadow-lg hover:shadow-xl"
                 style={{ color: '#595F39' }}
-              >
-                Book Now
+          >
+            Book Now
                 <ArrowRight className="ml-3 h-5 w-5" />
-              </Link>
+          </Link>
             </motion.div>
           </motion.div>
         </div>
@@ -529,7 +529,7 @@ export default function Home() {
           >
             <h2 className="text-4xl sm:text-5xl font-light mb-4">WORLD-CLASS</h2>
             <p className="text-xl text-gray-300 mb-16 font-light">Agents & automations that improve your bottom line</p>
-            
+          
             <div className="grid md:grid-cols-3 gap-12">
               {[
                 { value: "20K", label: "Hours Saved Annually" },
@@ -591,8 +591,8 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-12">
             <div className="col-span-2">
               <div className="flex items-center mb-6">
-                <Image src="/scalewize_logo.png" alt="ScaleWize AI Logo" width={48} height={48} className="h-10 w-10" />
-                <span className="ml-3 text-2xl font-light">ScaleWize AI</span>
+                <Image src="/scalewize_logo.png" alt="Henly AI Logo" width={48} height={48} className="h-10 w-10" />
+                <span className="ml-3 text-2xl font-light">Henly AI</span>
               </div>
               <p className="text-gray-400 mb-6 leading-relaxed font-light">
                 Your vision, our expertise. We customize AI solutions to meet your everyday challenges—delivering faster results and freeing you to focus on what really matters.
@@ -623,7 +623,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            © 2024 ScaleWize AI. All rights reserved.
+            © 2024 Henly AI. All rights reserved.
           </div>
         </div>
       </footer>

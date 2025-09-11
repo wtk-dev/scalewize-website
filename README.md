@@ -1,4 +1,4 @@
-# ScaleWize AI - Multi-Tenant ChatBot Platform
+# Henly AI - Multi-Tenant ChatBot Platform
 
 A B2B SaaS platform that provides custom AI automation solutions to businesses. Built with Next.js 13+, Supabase, and LibreChat integration.
 

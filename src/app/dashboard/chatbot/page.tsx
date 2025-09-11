@@ -57,7 +57,7 @@ export default function ChatbotPage() {
             <div>
               <h3 className="text-lg font-medium text-gray-900">{organization?.name || 'AI'} Chatbot</h3>
               <p className="text-sm text-gray-600">
-                Powered by ScaleWize AI - Connected to your business systems and databases
+                Powered by Henly AI - Connected to your business systems and databases
               </p>
             </div>
             <div className="flex items-center space-x-2">
@@ -91,7 +91,7 @@ export default function ChatbotPage() {
             <iframe
               src={`${libreChatUrl}`}
               className="w-full h-full rounded-b-lg"
-              title="ScaleWize AI Chatbot"
+              title="Henly AI Chatbot"
               frameBorder="0"
             />
           ) : (

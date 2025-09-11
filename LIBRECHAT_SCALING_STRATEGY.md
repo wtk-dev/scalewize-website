@@ -1,8 +1,8 @@
-# LibreChat Scaling Strategy for ScaleWize AI
+# LibreChat Scaling Strategy for Henly AI
 
 ## Executive Summary
 
-This document outlines the recommended scaling strategy for LibreChat integration in the ScaleWize AI platform, addressing multi-tenant architecture, client onboarding, and enterprise scaling considerations.
+This document outlines the recommended scaling strategy for LibreChat integration in the Henly AI platform, addressing multi-tenant architecture, client onboarding, and enterprise scaling considerations.
 
 ## Current Architecture Assessment
 
