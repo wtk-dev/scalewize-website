@@ -162,7 +162,7 @@ export default function Home() {
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <Image
-                src="/scalewize_cover_logo.png"
+                src="/henly_ai_cover_logo.png"
                 alt="Henly AI"
                 width={200}
                 height={45}
@@ -591,7 +591,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-12">
             <div className="col-span-2">
               <div className="flex items-center mb-6">
-                <Image src="/scalewize_logo.png" alt="Henly AI Logo" width={48} height={48} className="h-10 w-10" />
+                <Image src="/henly_logo.png" alt="Henly AI Logo" width={48} height={48} className="h-10 w-10" />
                 <span className="ml-3 text-2xl font-light">Henly AI</span>
               </div>
               <p className="text-gray-400 mb-6 leading-relaxed font-light">
