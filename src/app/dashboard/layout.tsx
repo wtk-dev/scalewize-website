@@ -81,7 +81,7 @@ className="h-16 w-auto" />
           <div className="border-t border-gray-200 p-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-full style="backgroundColor: #595F39" flex items-center justify-center">
                   <span className="text-sm font-medium text-white">
                     {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                   </span>
@@ -140,7 +140,7 @@ className="h-16 w-auto" />
             {!sidebarCollapsed && (
               <div className="flex items-center mb-3">
                 <div className="flex-shrink-0">
-                  <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full style="backgroundColor: #595F39" flex items-center justify-center">
                     <span className="text-sm font-medium text-white">
                       {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                     </span>

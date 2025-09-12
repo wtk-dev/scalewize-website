@@ -123,10 +123,10 @@ export default function SignupPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Organization Information */}
-            <div className="bg-green-50 p-4 rounded-lg">
+            <div className="style="backgroundColor: rgba(89, 95, 57, 0.1)" p-4 rounded-lg">
               <div className="flex items-center mb-3">
-                <Building2 className="h-5 w-5 text-green-600 mr-2" />
-                <h3 className="text-sm font-medium text-green-900">Organization</h3>
+                <Building2 className="h-5 w-5 style="color: #595F39" mr-2" />
+                <h3 className="text-sm font-medium style="color: rgba(89, 95, 57, 0.9)"">Organization</h3>
               </div>
               
               <div className="space-y-3">
@@ -141,7 +141,7 @@ export default function SignupPage() {
                     required
                     value={formData.organizationName}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39]"
                     placeholder="Your company name"
                   />
                 </div>
@@ -161,7 +161,7 @@ export default function SignupPage() {
                       required
                       value={formData.organizationSlug}
                       onChange={handleInputChange}
-                      className="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-none rounded-r-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                      className="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-none rounded-r-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39]"
                       placeholder="your-company"
                     />
                   </div>
@@ -181,7 +181,7 @@ export default function SignupPage() {
                 required
                 value={formData.fullName}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39]"
                 placeholder="Your full name"
               />
             </div>
@@ -198,7 +198,7 @@ export default function SignupPage() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39]"
                 placeholder="Enter your email"
               />
             </div>
@@ -216,7 +216,7 @@ export default function SignupPage() {
                   required
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 pr-10"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39] pr-10"
                   placeholder="Create a password"
                 />
                 <button
@@ -246,7 +246,7 @@ export default function SignupPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 pr-10"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#595F39] focus:border-[#595F39] pr-10"
                   placeholder="Confirm your password"
                 />
                 <button
@@ -274,7 +274,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white style="backgroundColor: #595F39" hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -287,7 +287,7 @@ export default function SignupPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="font-medium text-green-600 hover:text-green-500">
+              <Link href="/login" className="font-medium style="color: #595F39" hover:style="color: #595F39"">
                 Sign in
               </Link>
             </p>

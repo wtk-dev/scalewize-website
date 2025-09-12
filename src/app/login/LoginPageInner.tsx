@@ -113,7 +113,7 @@ export default function LoginPageInner() {
   if (checkingSession) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+        <Loader2 className="h-8 w-8 animate-spin style="color: #595F39"" />
       </div>
     );
   }
