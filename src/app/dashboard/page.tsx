@@ -174,11 +174,11 @@ export default function DashboardPage() {
           <div className="p-6">
             <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
               <div className="text-center">
-                <MessageSquare className="h-12 w-12 style="color: #595F39" mx-auto mb-4" />
+                <MessageSquare style="color: #595F39" mx-auto mb-4" />
                 <p className="text-gray-600 mb-4">Preview of your AI Chatbot</p>
                 <Link 
                   href="/dashboard/chatbot"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white style="backgroundColor: #595F39" hover:opacity-90"
+                  style="backgroundColor: #595F39" hover:opacity-90"
                 >
                   Open Chatbot
                 </Link>
@@ -198,11 +198,11 @@ export default function DashboardPage() {
           <div className="p-6">
             <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
               <div className="text-center">
-                <Users className="h-12 w-12 style="color: #595F39" mx-auto mb-4" />
+                <Users style="color: #595F39" mx-auto mb-4" />
                 <p className="text-gray-600 mb-4">
                   {detailedMetrics ? (
                     <>
-                      <span className="block text-2xl font-bold style="color: #595F39"">
+                      <span style="color: #595F39"">
                         {detailedMetrics.totalLeads}
                       </span>
                       <span className="text-sm">Total Leads</span>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 </p>
                 <Link 
                   href="/dashboard/linkedin"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white style="backgroundColor: #595F39" hover:opacity-90"
+                  style="backgroundColor: #595F39" hover:opacity-90"
                 >
                   View Leads
                 </Link>
@@ -236,11 +236,11 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Connections Made</span>
-                <span className="text-lg font-semibold style="color: #595F39"">{detailedMetrics.connectionsMade}</span>
+                <span style="color: #595F39"">{detailedMetrics.connectionsMade}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Responses Received</span>
-                <span className="text-lg font-semibold style="color: #595F39"">{detailedMetrics.responses}</span>
+                <span style="color: #595F39"">{detailedMetrics.responses}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Active Conversations</span>
@@ -255,11 +255,11 @@ export default function DashboardPage() {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Connection Rate</span>
-                <span className="text-lg font-semibold style="color: #595F39"">{detailedMetrics.connectionRate}%</span>
+                <span style="color: #595F39"">{detailedMetrics.connectionRate}%</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Response Rate</span>
-                <span className="text-lg font-semibold style="color: #595F39"">{detailedMetrics.responseRate}%</span>
+                <span style="color: #595F39"">{detailedMetrics.responseRate}%</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">Active Conversation Rate</span>
@@ -294,7 +294,7 @@ export default function DashboardPage() {
         <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/chatbot" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <MessageSquare className="h-5 w-5 style="color: #595F39" mr-3" />
+            <MessageSquare style="color: #595F39" mr-3" />
             <div className="text-left">
               <div className="font-medium text-gray-900">Start Chat</div>
               <div className="text-sm text-gray-500">Open AI chatbot</div>
@@ -302,7 +302,7 @@ export default function DashboardPage() {
           </Link>
           
           <Link href="/dashboard/linkedin" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <Users className="h-5 w-5 style="color: #595F39" mr-3" />
+            <Users style="color: #595F39" mr-3" />
             <div className="text-left">
               <div className="font-medium text-gray-900">View Leads</div>
               <div className="text-sm text-gray-500">Check LinkedIn leads</div>

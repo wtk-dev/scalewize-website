@@ -118,7 +118,7 @@ export default function AnalyticsPage() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Users className="h-6 w-6 style="color: #595F39"" />
+                <Users style="color: #595F39"" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
@@ -138,7 +138,7 @@ export default function AnalyticsPage() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <MessageSquare className="h-6 w-6 style="color: #595F39"" />
+                <MessageSquare style="color: #595F39"" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
@@ -274,7 +274,7 @@ export default function AnalyticsPage() {
               leadSources.map((source, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 style="backgroundColor: #595F39" rounded-full"></div>
+                    <div style="backgroundColor: #595F39" rounded-full"></div>
                     <span className="text-sm font-medium text-gray-900">{source.source}</span>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -284,7 +284,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="w-20 bg-gray-200 rounded-full h-2">
                       <div 
-                        className="style="backgroundColor: #595F39" h-2 rounded-full" 
+                        style="backgroundColor: #595F39" h-2 rounded-full" 
                         style={{ width: `${source.percentage}%` }}
                       ></div>
                     </div>
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
             {topChatbotTopics.map((topic, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 style="backgroundColor: #595F39" rounded-full"></div>
+                  <div style="backgroundColor: #595F39" rounded-full"></div>
                   <span className="text-sm font-medium text-gray-900">{topic.topic}</span>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -317,7 +317,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="w-20 bg-gray-200 rounded-full h-2">
                     <div 
-                      className="style="backgroundColor: #595F39" h-2 rounded-full" 
+                      style="backgroundColor: #595F39" h-2 rounded-full" 
                       style={{ width: `${topic.percentage}%` }}
                     ></div>
                   </div>
@@ -342,11 +342,11 @@ export default function AnalyticsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Connections Made</span>
-                <span className="font-semibold style="color: #595F39"">{detailedData.connectionsMade}</span>
+                <span style="color: #595F39"">{detailedData.connectionsMade}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Responses Received</span>
-                <span className="font-semibold style="color: #595F39"">{detailedData.responses}</span>
+                <span style="color: #595F39"">{detailedData.responses}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Active Conversations</span>
@@ -361,11 +361,11 @@ export default function AnalyticsPage() {
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Connection Rate</span>
-                <span className="font-semibold style="color: #595F39"">{detailedData.connectionRate}%</span>
+                <span style="color: #595F39"">{detailedData.connectionRate}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Response Rate</span>
-                <span className="font-semibold style="color: #595F39"">{detailedData.responseRate}%</span>
+                <span style="color: #595F39"">{detailedData.responseRate}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Active Conversation Rate</span>
@@ -385,13 +385,13 @@ export default function AnalyticsPage() {
         <h3 className="text-lg font-medium text-gray-900 mb-4">Usage Breakdown</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-3xl font-bold style="color: #595F39" mb-2">
+            <div style="color: #595F39" mb-2">
               {linkedinMetrics.reduce((sum, day) => sum + day.leads, 0)}
             </div>
             <div className="text-sm text-gray-600">LinkedIn Leads</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold style="color: #595F39" mb-2">
+            <div style="color: #595F39" mb-2">
               {chatbotMetrics.reduce((sum, day) => sum + day.sessions, 0)}
             </div>
             <div className="text-sm text-gray-600">Chat Sessions</div>

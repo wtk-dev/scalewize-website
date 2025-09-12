@@ -119,7 +119,7 @@ function VerifyEmailContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin style="color: #595F39" mx-auto mb-4" />
+          <Loader2 style="color: #595F39" mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Verifying Email</h1>
           <p className="text-gray-600">Please wait while we verify your email address...</p>
         </div>
@@ -137,7 +137,7 @@ function VerifyEmailContent() {
           <div className="space-y-3">
             <Link
               href="/login"
-              className="w-full style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors inline-block"
+              style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors inline-block"
             >
               Go to Login
             </Link>
@@ -157,13 +157,13 @@ function VerifyEmailContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
-          <CheckCircle className="h-16 w-16 style="color: #595F39" mx-auto mb-4" />
+          <CheckCircle style="color: #595F39" mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h1>
           <p className="text-gray-600 mb-4">
             Your email has been successfully verified. You can now log in to access your organization's dashboard.
           </p>
-          <div className="style="backgroundColor: rgba(89, 95, 57, 0.1)" border style="borderColor: rgba(89, 95, 57, 0.3)" rounded-lg p-4 mb-6">
-            <p className="text-sm style="color: rgba(89, 95, 57, 0.8)"">
+          <div style="backgroundColor: rgba(89, 95, 57, 0.1)" border style="borderColor: rgba(89, 95, 57, 0.3)" rounded-lg p-4 mb-6">
+            <p style="color: rgba(89, 95, 57, 0.8)"">
               <strong>Welcome!</strong> You're now a verified member of your organization. Please log in to continue.
             </p>
           </div>
@@ -183,7 +183,7 @@ export default function VerifyEmailPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 style="color: #595F39"" />
+          <Loader2 style="color: #595F39"" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>

@@ -130,7 +130,7 @@ export default function InviteAcceptancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 style="color: #595F39"" />
+          <Loader2 style="color: #595F39"" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Validating Invitation</h2>
           <p className="text-gray-600">Please wait while we verify your invitation...</p>
         </div>
@@ -147,7 +147,7 @@ export default function InviteAcceptancePage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            className="w-full style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors"
+            style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors"
           >
             Go to Homepage
           </button>
@@ -160,13 +160,13 @@ export default function InviteAcceptancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-          <CheckCircle className="h-12 w-12 style="color: #595F39" mx-auto mb-4" />
+          <CheckCircle style="color: #595F39" mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Welcome to the Team!</h2>
           <p className="text-gray-600 mb-6">
             You've successfully joined {invitation?.organizationName}. 
             Redirecting you to the dashboard...
           </p>
-          <Loader2 className="h-6 w-6 animate-spin mx-auto style="color: #595F39"" />
+          <Loader2 style="color: #595F39"" />
         </div>
       </div>
     )
@@ -247,7 +247,7 @@ export default function InviteAcceptancePage() {
               <button
                 onClick={handleAcceptInvitation}
                 disabled={accepting}
-                className="w-full style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {accepting ? (
                   <>
