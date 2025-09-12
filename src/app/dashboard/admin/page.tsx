@@ -258,7 +258,7 @@ export default function AdminPage() {
         
         {/* Success/Error Messages */}
         {inviteSuccess && (
-          <div style="backgroundColor: rgba(89, 95, 57, 0.2)" border border-green-400 text-green-700 rounded">
+          <div style="backgroundColor: rgba(89, 95, 57, 0.2)" border style={{ borderColor: "rgba(89, 95, 57, 0.5)" }} style={{ color: "rgba(89, 95, 57, 0.8)" }} rounded">
             {inviteSuccess}
           </div>
         )}
@@ -293,7 +293,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={inviteLoading}
-              style="backgroundColor: #595F39" text-white rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#595F39] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ backgroundColor: "#595F39" }} text-white rounded-md hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#595F39] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {inviteLoading ? 'Sending...' : 'Send Invite'}
             </button>
@@ -320,7 +320,7 @@ export default function AdminPage() {
               {members.map((member) => (
                 <div key={member.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                   <div className="flex items-center space-x-4">
-                    <div style="backgroundColor: #595F39" flex items-center justify-center">
+                    <div style={{ backgroundColor: "#595F39" }} flex items-center justify-center">
                       <span className="text-sm font-medium text-white">
                         {member.full_name?.charAt(0) || member.email.charAt(0)}
                       </span>

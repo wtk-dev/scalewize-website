@@ -151,7 +151,7 @@ export default function DashboardPage() {
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
             className={`h-2 rounded-full ${
-              usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 60 ? 'bg-yellow-500' : 'style="backgroundColor: #595F39"'
+              usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 60 ? 'bg-yellow-500' : 'style={{ backgroundColor: "#595F39" }}'
             }`}
             style={{ width: `${Math.min(usagePercentage, 100)}%` }}
           />
@@ -178,7 +178,7 @@ export default function DashboardPage() {
                 <p className="text-gray-600 mb-4">Preview of your AI Chatbot</p>
                 <Link 
                   href="/dashboard/chatbot"
-                  style="backgroundColor: #595F39" hover:opacity-90"
+                  style={{ backgroundColor: "#595F39" }} hover:opacity-90"
                 >
                   Open Chatbot
                 </Link>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 </p>
                 <Link 
                   href="/dashboard/linkedin"
-                  style="backgroundColor: #595F39" hover:opacity-90"
+                  style={{ backgroundColor: "#595F39" }} hover:opacity-90"
                 >
                   View Leads
                 </Link>

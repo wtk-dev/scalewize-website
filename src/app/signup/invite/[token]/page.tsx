@@ -328,7 +328,7 @@ export default function InvitationSignupPage() {
             <button
               type="submit"
               disabled={signingUp}
-              style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              style={{ backgroundColor: "#595F39" }} text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {signingUp ? (
                 <>

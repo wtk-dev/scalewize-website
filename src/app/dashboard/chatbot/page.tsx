@@ -81,7 +81,7 @@ export default function ChatbotPage() {
                 <p className="text-red-600 mb-4">{error}</p>
                 <button 
                   onClick={() => window.location.reload()}
-                  style="backgroundColor: #595F39" text-white rounded-md hover:opacity-90"
+                  style={{ backgroundColor: "#595F39" }} text-white rounded-md hover:opacity-90"
                 >
                   Retry Connection
                 </button>

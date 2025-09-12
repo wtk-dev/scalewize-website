@@ -274,7 +274,7 @@ export default function Home() {
                 
                 {/* Loading state or video placeholder */}
                 {(!isVideoLoaded || videoError) && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-green-900/20 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-[rgba(89,95,57,0.2)] flex items-center justify-center">
                     <div className="text-center text-white">
                       <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style={{ backgroundColor: '#595F39' }}>
                         <Play className="w-8 h-8 ml-1" fill="white" />

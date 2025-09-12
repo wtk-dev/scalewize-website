@@ -147,7 +147,7 @@ export default function InviteAcceptancePage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors"
+            style={{ backgroundColor: "#595F39" }} text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors"
           >
             Go to Homepage
           </button>
@@ -247,7 +247,7 @@ export default function InviteAcceptancePage() {
               <button
                 onClick={handleAcceptInvitation}
                 disabled={accepting}
-                style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                style={{ backgroundColor: "#595F39" }} text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {accepting ? (
                   <>

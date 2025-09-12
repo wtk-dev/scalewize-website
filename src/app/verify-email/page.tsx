@@ -137,7 +137,7 @@ function VerifyEmailContent() {
           <div className="space-y-3">
             <Link
               href="/login"
-              style="backgroundColor: #595F39" text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors inline-block"
+              style={{ backgroundColor: "#595F39" }} text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors inline-block"
             >
               Go to Login
             </Link>

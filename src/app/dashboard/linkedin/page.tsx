@@ -180,7 +180,7 @@ export default function LinkedInPage() {
               Automated lead identification and outreach for {organization?.name}
             </p>
           </div>
-          <button style="backgroundColor: #595F39" hover:opacity-90">
+          <button style={{ backgroundColor: "#595F39" }} hover:opacity-90">
             <Plus className="h-4 w-4 mr-2" />
             Add Lead
           </button>
@@ -301,12 +301,12 @@ export default function LinkedInPage() {
                     <div className="relative h-32 bg-gray-100 rounded">
                       {/* Messages sent bar */}
                       <div 
-                        style="backgroundColor: #595F39" rounded-t"
+                        style={{ backgroundColor: "#595F39" }} rounded-t"
                         style={{ height: `${maxValue > 0 ? (week.messages_sent / maxValue) * 100 : 0}%` }}
                       ></div>
                       {/* Messages received bar */}
                       <div 
-                        style="backgroundColor: #595F39" rounded-t"
+                        style={{ backgroundColor: "#595F39" }} rounded-t"
                         style={{ height: `${maxValue > 0 ? (week.messages_received / maxValue) * 100 : 0}%` }}
                       ></div>
                       {/* Connections made bar */}
@@ -323,11 +323,11 @@ export default function LinkedInPage() {
             </div>
             <div className="flex justify-center space-x-6 mt-4 text-xs">
               <div className="flex items-center">
-                <div style="backgroundColor: #595F39" rounded mr-2"></div>
+                <div style={{ backgroundColor: "#595F39" }} rounded mr-2"></div>
                 <span className="text-gray-600">Messages Sent</span>
               </div>
               <div className="flex items-center">
-                <div style="backgroundColor: #595F39" rounded mr-2"></div>
+                <div style={{ backgroundColor: "#595F39" }} rounded mr-2"></div>
                 <span className="text-gray-600">Messages Received</span>
               </div>
               <div className="flex items-center">

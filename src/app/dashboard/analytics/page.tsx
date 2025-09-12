@@ -274,7 +274,7 @@ export default function AnalyticsPage() {
               leadSources.map((source, index) => (
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div style="backgroundColor: #595F39" rounded-full"></div>
+                    <div style={{ backgroundColor: "#595F39" }} rounded-full"></div>
                     <span className="text-sm font-medium text-gray-900">{source.source}</span>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -284,7 +284,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="w-20 bg-gray-200 rounded-full h-2">
                       <div 
-                        style="backgroundColor: #595F39" h-2 rounded-full" 
+                        style={{ backgroundColor: "#595F39" }} h-2 rounded-full" 
                         style={{ width: `${source.percentage}%` }}
                       ></div>
                     </div>
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
             {topChatbotTopics.map((topic, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div style="backgroundColor: #595F39" rounded-full"></div>
+                  <div style={{ backgroundColor: "#595F39" }} rounded-full"></div>
                   <span className="text-sm font-medium text-gray-900">{topic.topic}</span>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -317,7 +317,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="w-20 bg-gray-200 rounded-full h-2">
                     <div 
-                      style="backgroundColor: #595F39" h-2 rounded-full" 
+                      style={{ backgroundColor: "#595F39" }} h-2 rounded-full" 
                       style={{ width: `${topic.percentage}%` }}
                     ></div>
                   </div>

@@ -204,11 +204,11 @@ export default function ExplorePage() {
                   <button
                     onClick={() => handleAddToTeam(solution.id)}
                     disabled={selectedSolution === solution.id}
-                    style="color: #595F39" hover:style="backgroundColor: #595F39" hover:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    style="color: #595F39" hover:style={{ backgroundColor: "#595F39" }} hover:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     {selectedSolution === solution.id ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 style={{ borderColor: "#595F39" }} mr-2"></div>
                         Adding...
                       </>
                     ) : (
@@ -222,7 +222,7 @@ export default function ExplorePage() {
                   <button
                     onClick={() => handleAddToTeam(solution.id)}
                     disabled={selectedSolution === solution.id}
-                    style="backgroundColor: #595F39" text-white hover:opacity-90 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    style={{ backgroundColor: "#595F39" }} text-white hover:opacity-90 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
                     {selectedSolution === solution.id ? (
                       <>
