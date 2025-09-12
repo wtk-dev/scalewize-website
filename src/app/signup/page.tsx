@@ -123,10 +123,10 @@ export default function SignupPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Organization Information */}
-            <div className="style="backgroundColor: rgba(89, 95, 57, 0.1)" p-4 rounded-lg">
+            <div className="style={{ backgroundColor: "rgba(89, 95, 57, 0.1)" }} p-4 rounded-lg">
               <div className="flex items-center mb-3">
-                <Building2 className="h-5 w-5 style="color: #595F39" mr-2" />
-                <h3 className="text-sm font-medium style="color: rgba(89, 95, 57, 0.9)"">Organization</h3>
+                <Building2 className="h-5 w-5 style={{ color: "#595F39" }} mr-2" />
+                <h3 className="text-sm font-medium style={{ color: "rgba(89, 95, 57, 0.9)" }}">Organization</h3>
               </div>
               
               <div className="space-y-3">
@@ -274,7 +274,7 @@ export default function SignupPage() {
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white style="backgroundColor: #595F39" hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white style={{ backgroundColor: "#595F39" }} hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
@@ -287,7 +287,7 @@ export default function SignupPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="font-medium style="color: #595F39" hover:style="color: #595F39"">
+              <Link href="/login" className="font-medium style={{ color: "#595F39" }} hover:opacity-80">
                 Sign in
               </Link>
             </p>
