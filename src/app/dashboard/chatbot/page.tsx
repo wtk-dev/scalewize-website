@@ -71,7 +71,7 @@ export default function ChatbotPage() {
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-green-600" />
                 <p className="text-gray-600">Connecting to chat service...</p>
               </div>
             </div>
@@ -81,7 +81,7 @@ export default function ChatbotPage() {
                 <p className="text-red-600 mb-4">{error}</p>
                 <button 
                   onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
                 >
                   Retry Connection
                 </button>

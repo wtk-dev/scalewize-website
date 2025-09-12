@@ -130,7 +130,7 @@ export default function InviteAcceptancePage() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-green-600" />
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Validating Invitation</h2>
           <p className="text-gray-600">Please wait while we verify your invitation...</p>
         </div>
@@ -147,7 +147,7 @@ export default function InviteAcceptancePage() {
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => router.push('/')}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
           >
             Go to Homepage
           </button>
@@ -166,7 +166,7 @@ export default function InviteAcceptancePage() {
             You've successfully joined {invitation?.organizationName}. 
             Redirecting you to the dashboard...
           </p>
-          <Loader2 className="h-6 w-6 animate-spin mx-auto text-blue-600" />
+          <Loader2 className="h-6 w-6 animate-spin mx-auto text-green-600" />
         </div>
       </div>
     )
@@ -180,7 +180,7 @@ export default function InviteAcceptancePage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
         <div className="text-center mb-8">
-          <UserPlus className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+          <Image src="/henly_ai_logo.png" alt="Henly AI Logo" width={120} height={30} className="h-12 w-auto mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">You're Invited!</h2>
           <p className="text-gray-600">
             Join <span className="font-semibold">{invitation.organizationName}</span> on Henly AI
@@ -247,7 +247,7 @@ export default function InviteAcceptancePage() {
               <button
                 onClick={handleAcceptInvitation}
                 disabled={accepting}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 {accepting ? (
                   <>

@@ -119,7 +119,7 @@ function VerifyEmailContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
+          <Loader2 className="h-12 w-12 animate-spin text-green-600 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Verifying Email</h1>
           <p className="text-gray-600">Please wait while we verify your email address...</p>
         </div>
@@ -137,7 +137,7 @@ function VerifyEmailContent() {
           <div className="space-y-3">
             <Link
               href="/login"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors inline-block"
+              className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors inline-block"
             >
               Go to Login
             </Link>
@@ -183,7 +183,7 @@ export default function VerifyEmailPage() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-green-600" />
           <p className="text-gray-600">Loading...</p>
         </div>
       </div>

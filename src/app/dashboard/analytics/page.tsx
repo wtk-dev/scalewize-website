@@ -118,7 +118,7 @@ export default function AnalyticsPage() {
           <div className="p-5">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <Users className="h-6 w-6 text-blue-600" />
+                <Users className="h-6 w-6 text-green-600" />
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
@@ -307,7 +307,7 @@ export default function AnalyticsPage() {
             {topChatbotTopics.map((topic, index) => (
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
                   <span className="text-sm font-medium text-gray-900">{topic.topic}</span>
                 </div>
                 <div className="flex items-center space-x-4">
@@ -317,7 +317,7 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="w-20 bg-gray-200 rounded-full h-2">
                     <div 
-                      className="bg-blue-600 h-2 rounded-full" 
+                      className="bg-green-600 h-2 rounded-full" 
                       style={{ width: `${topic.percentage}%` }}
                     ></div>
                   </div>
@@ -346,7 +346,7 @@ export default function AnalyticsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Responses Received</span>
-                <span className="font-semibold text-blue-600">{detailedData.responses}</span>
+                <span className="font-semibold text-green-600">{detailedData.responses}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Active Conversations</span>
@@ -365,7 +365,7 @@ export default function AnalyticsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Response Rate</span>
-                <span className="font-semibold text-blue-600">{detailedData.responseRate}%</span>
+                <span className="font-semibold text-green-600">{detailedData.responseRate}%</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Active Conversation Rate</span>
@@ -385,7 +385,7 @@ export default function AnalyticsPage() {
         <h3 className="text-lg font-medium text-gray-900 mb-4">Usage Breakdown</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">
+            <div className="text-3xl font-bold text-green-600 mb-2">
               {linkedinMetrics.reduce((sum, day) => sum + day.leads, 0)}
             </div>
             <div className="text-sm text-gray-600">LinkedIn Leads</div>

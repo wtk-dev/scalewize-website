@@ -174,7 +174,7 @@ export default function AdminPage() {
       case 'super_admin':
         return <Crown className="h-4 w-4 text-purple-600" />
       case 'admin':
-        return <Shield className="h-4 w-4 text-blue-600" />
+        return <Shield className="h-4 w-4 text-green-600" />
       default:
         return <Users className="h-4 w-4 text-gray-600" />
     }
@@ -212,7 +212,7 @@ export default function AdminPage() {
           {isSuperAdmin ? (
             <Crown className="h-8 w-8 text-purple-600" />
           ) : (
-            <Shield className="h-8 w-8 text-blue-600" />
+            <Shield className="h-8 w-8 text-green-600" />
           )}
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
@@ -276,7 +276,7 @@ export default function AdminPage() {
                 value={inviteEmail}
                 onChange={(e) => setInviteEmail(e.target.value)}
                 placeholder="Enter email address"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-blue-500"
                 required
               />
             </div>
@@ -284,7 +284,7 @@ export default function AdminPage() {
               <select
                 value={inviteRole}
                 onChange={(e) => setInviteRole(e.target.value as 'user' | 'admin')}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-blue-500"
               >
                 <option value="user">User</option>
                 <option value="admin">Admin</option>
@@ -293,7 +293,7 @@ export default function AdminPage() {
             <button
               type="submit"
               disabled={inviteLoading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {inviteLoading ? 'Sending...' : 'Send Invite'}
             </button>
@@ -320,7 +320,7 @@ export default function AdminPage() {
               {members.map((member) => (
                 <div key={member.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                   <div className="flex items-center space-x-4">
-                    <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                    <div className="h-10 w-10 rounded-full bg-green-600 flex items-center justify-center">
                       <span className="text-sm font-medium text-white">
                         {member.full_name?.charAt(0) || member.email.charAt(0)}
                       </span>

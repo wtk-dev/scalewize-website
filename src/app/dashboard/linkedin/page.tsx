@@ -85,7 +85,7 @@ export default function LinkedInPage() {
   const getStatusIcon = (status: string | null) => {
     switch (status) {
       case 'SENT':
-        return <Mail className="h-4 w-4 text-blue-600" />
+        return <Mail className="h-4 w-4 text-green-600" />
       case 'CONNECTED':
         return <CheckCircle className="h-4 w-4 text-green-600" />
       case 'RESPONDED':
@@ -102,7 +102,7 @@ export default function LinkedInPage() {
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'SENT':
-        return 'bg-blue-100 text-blue-800'
+        return 'bg-green-100 text-green-800'
       case 'CONNECTED':
         return 'bg-green-100 text-green-800'
       case 'RESPONDED':
@@ -249,11 +249,11 @@ export default function LinkedInPage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Responses Received</span>
-                <span className="font-semibold text-blue-600">{analytics.responses_received || 0}</span>
+                <span className="font-semibold text-green-600">{analytics.responses_received || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Response Rate</span>
-                <span className="font-semibold text-blue-600">
+                <span className="font-semibold text-green-600">
                   {analytics.total_leads ? `${Math.round(((analytics.responded_leads + analytics.booked_leads + analytics.closed_leads) / analytics.total_leads) * 100)}%` : '0%'}
                 </span>
               </div>
@@ -301,7 +301,7 @@ export default function LinkedInPage() {
                     <div className="relative h-32 bg-gray-100 rounded">
                       {/* Messages sent bar */}
                       <div 
-                        className="absolute bottom-0 left-0 right-0 bg-blue-500 rounded-t"
+                        className="absolute bottom-0 left-0 right-0 bg-green-500 rounded-t"
                         style={{ height: `${maxValue > 0 ? (week.messages_sent / maxValue) * 100 : 0}%` }}
                       ></div>
                       {/* Messages received bar */}
@@ -323,7 +323,7 @@ export default function LinkedInPage() {
             </div>
             <div className="flex justify-center space-x-6 mt-4 text-xs">
               <div className="flex items-center">
-                <div className="w-3 h-3 bg-blue-500 rounded mr-2"></div>
+                <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
                 <span className="text-gray-600">Messages Sent</span>
               </div>
               <div className="flex items-center">
@@ -476,7 +476,7 @@ export default function LinkedInPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
                         <button className="text-green-600 hover:text-green-900">View</button>
-                        <button className="text-blue-600 hover:text-blue-900">Message</button>
+                        <button className="text-green-600 hover:text-green-900">Message</button>
                       </div>
                     </td>
                   </tr>
