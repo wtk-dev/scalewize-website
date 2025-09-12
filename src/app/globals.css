@@ -166,3 +166,41 @@ input:focus, textarea:focus {
     scroll-behavior: auto !important;
   }
 }
+
+/* Henly AI Brand Colors */
+.bg-henly-primary {
+  background-color: #595F39;
+}
+
+.bg-henly-primary-light {
+  background-color: rgba(89, 95, 57, 0.1);
+}
+
+.bg-henly-primary-medium {
+  background-color: rgba(89, 95, 57, 0.2);
+}
+
+.text-henly-primary {
+  color: #595F39;
+}
+
+.text-henly-primary-dark {
+  color: rgba(89, 95, 57, 0.9);
+}
+
+.text-henly-primary-medium {
+  color: rgba(89, 95, 57, 0.8);
+}
+
+.border-henly-primary {
+  border-color: rgba(89, 95, 57, 0.3);
+}
+
+.hover-henly-primary:hover {
+  opacity: 0.9;
+}
+
+.focus-henly-primary:focus {
+  ring-color: #595F39;
+  border-color: #595F39;
+}
