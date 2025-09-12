@@ -103,14 +103,14 @@ export default function ExplorePage() {
     switch (status) {
       case 'available':
         return (
-          <span style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"">
+          <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
             <CheckCircle className="w-3 h-3 mr-1" />
             Available
           </span>
         )
       case 'beta':
         return (
-          <span style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"">
+          <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
             <Clock className="w-3 h-3 mr-1" />
             Beta
           </span>

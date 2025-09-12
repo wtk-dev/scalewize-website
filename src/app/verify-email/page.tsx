@@ -162,7 +162,7 @@ function VerifyEmailContent() {
           <p className="text-gray-600 mb-4">
             Your email has been successfully verified. You can now log in to access your organization's dashboard.
           </p>
-          <div style="backgroundColor: rgba(89, 95, 57, 0.1)" border style="borderColor: rgba(89, 95, 57, 0.3)" rounded-lg p-4 mb-6">
+          <div style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }} rounded-lg p-4 mb-6">
             <p style="color: rgba(89, 95, 57, 0.8)"">
               <strong>Welcome!</strong> You're now a verified member of your organization. Please log in to continue.
             </p>

@@ -102,11 +102,11 @@ export default function LinkedInPage() {
   const getStatusColor = (status: string | null) => {
     switch (status) {
       case 'SENT':
-        return 'style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"'
+        return 'style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}'
       case 'CONNECTED':
-        return 'style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"'
+        return 'style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}'
       case 'RESPONDED':
-        return 'style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"'
+        return 'style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}'
       case 'BOOKED':
         return 'bg-purple-100 text-purple-800'
       case 'CLOSED':
@@ -346,7 +346,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Lead Discovery</h4>
-              <span style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"">
+              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -355,7 +355,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Outreach</h4>
-              <span style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"">
+              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -364,7 +364,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Status Tracking</h4>
-              <span style="backgroundColor: rgba(89, 95, 57, 0.2)" style="color: rgba(89, 95, 57, 0.8)"">
+              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -475,8 +475,8 @@ export default function LinkedInPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <button style="color: #595F39" hover:style="color: rgba(89, 95, 57, 0.9)"">View</button>
-                        <button style="color: #595F39" hover:style="color: rgba(89, 95, 57, 0.9)"">Message</button>
+                        <button style={{ color: "#595F39" }} className="hover:opacity-80"">View</button>
+                        <button style={{ color: "#595F39" }} className="hover:opacity-80"">Message</button>
                       </div>
                     </td>
                   </tr>

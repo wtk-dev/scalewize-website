@@ -195,7 +195,7 @@ export default function InvitationSignupPage() {
                  <p className="text-gray-600 mb-4">
                    Your account has been created successfully. Please log in to access your dashboard.
                  </p>
-                 <div style="backgroundColor: rgba(89, 95, 57, 0.1)" border style="borderColor: rgba(89, 95, 57, 0.3)" rounded-lg p-4 mb-6">
+                 <div style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }} rounded-lg p-4 mb-6">
                    <p style="color: rgba(89, 95, 57, 0.8)"">
                      <strong>Success!</strong> You're now a member of {invitation?.organizationName} and have access to all AI tools and features.
                    </p>
@@ -220,7 +220,7 @@ export default function InvitationSignupPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <div style="backgroundColor: rgba(89, 95, 57, 0.1)" border style="borderColor: rgba(89, 95, 57, 0.3)" rounded-lg">
+          <div style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }} rounded-lg">
             <div className="flex items-center mb-3">
               <Building2 style="color: #595F39" mr-2" />
               <span style="color: rgba(89, 95, 57, 0.9)"">Invitation Details</span>

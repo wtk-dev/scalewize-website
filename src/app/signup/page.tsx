@@ -126,7 +126,7 @@ export default function SignupPage() {
             <div className="style={{ backgroundColor: "rgba(89, 95, 57, 0.1)" }} p-4 rounded-lg">
               <div className="flex items-center mb-3">
                 <Building2 className="h-5 w-5 style={{ color: "#595F39" }} mr-2" />
-                <h3 className="text-sm font-medium style={{ color: "rgba(89, 95, 57, 0.9)" }}">Organization</h3>
+                <h3 style={{ color: "rgba(89, 95, 57, 0.9)" }}>Organization</h3>
               </div>
               
               <div className="space-y-3">
