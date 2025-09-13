@@ -61,7 +61,7 @@ export default function ChatbotPage() {
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+              <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}>
                 Connected
               </span>
             </div>

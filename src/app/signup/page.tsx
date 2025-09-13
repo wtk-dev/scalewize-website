@@ -123,9 +123,9 @@ export default function SignupPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Organization Information */}
-            <div className="style={{ backgroundColor: "rgba(89, 95, 57, 0.1)" }} p-4 rounded-lg">
+            <div className="p-4 rounded-lg" style={{ backgroundColor: "rgba(89, 95, 57, 0.1)" }}
               <div className="flex items-center mb-3">
-                <Building2 className="h-5 w-5 style={{ color: "#595F39" }} mr-2" />
+                <Building2 className="h-5 w-5 mr-2" style={{ color: "#595F39" }} />
                 <h3 style={{ color: "rgba(89, 95, 57, 0.9)" }}>Organization</h3>
               </div>
               
@@ -287,7 +287,7 @@ export default function SignupPage() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="font-medium style={{ color: "#595F39" }} hover:opacity-80">
+              <Link href="/login" className="font-medium hover:opacity-80" style={{ color: "#595F39" }}>
                 Sign in
               </Link>
             </p>
