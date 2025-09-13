@@ -58,7 +58,7 @@ export default function AdminPage() {
         <div className="text-center">
           <Shield className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600">You don't have permission to access this page.</p>
+          <p className="text-gray-800">You don't have permission to access this page.</p>
         </div>
       </div>
     )
@@ -176,7 +176,7 @@ export default function AdminPage() {
       case 'admin':
         return <Shield style={{ color: "#595F39" }} />
       default:
-        return <Users className="h-4 w-4 text-gray-600" />
+        return <Users className="h-4 w-4 text-gray-800" />
     }
   }
 
@@ -198,7 +198,7 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading admin panel...</p>
+          <p className="text-gray-800">Loading admin panel...</p>
         </div>
       </div>
     )
@@ -218,7 +218,7 @@ export default function AdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">
               {isSuperAdmin ? 'Super Admin Panel' : 'Organization Admin'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-gray-800">
               {isSuperAdmin 
                 ? 'Manage all organizations and users' 
                 : `Manage ${organization?.name || 'your organization'}`
@@ -231,16 +231,16 @@ export default function AdminPage() {
       {/* Organization Info */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center space-x-3 mb-4">
-          <Building2 className="h-6 w-6 text-gray-600" />
+          <Building2 className="h-6 w-6 text-gray-800" />
           <h2 className="text-lg font-semibold text-gray-900">Organization Details</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Organization Name</label>
+            <label className="block text-sm font-medium text-gray-900">Organization Name</label>
             <p className="mt-1 text-sm text-gray-900">{organization?.name || 'N/A'}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Your Role</label>
+            <label className="block text-sm font-medium text-gray-900">Your Role</label>
             <div className="mt-1 flex items-center space-x-2">
               {getRoleIcon(profile.role)}
               <span className="text-sm text-gray-900 capitalize">{profile.role.replace('_', ' ')}</span>
@@ -252,7 +252,7 @@ export default function AdminPage() {
       {/* Invite New User */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center space-x-3 mb-4">
-          <UserPlus className="h-6 w-6 text-gray-600" />
+          <UserPlus className="h-6 w-6 text-gray-800" />
           <h2 className="text-lg font-semibold text-gray-900">Invite New Member</h2>
         </div>
         
@@ -305,7 +305,7 @@ export default function AdminPage() {
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <Users className="h-6 w-6 text-gray-600" />
+            <Users className="h-6 w-6 text-gray-800" />
             <h2 className="text-lg font-semibold text-gray-900">Organization Members</h2>
           </div>
         </div>
@@ -313,7 +313,7 @@ export default function AdminPage() {
           {members.length === 0 ? (
             <div className="text-center py-8">
               <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No members found. Invite users to get started!</p>
+              <p className="text-gray-800">No members found. Invite users to get started!</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -327,13 +327,13 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">{member.full_name}</p>
-                      <p className="text-sm text-gray-600">{member.email}</p>
+                      <p className="text-sm text-gray-800">{member.email}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getRoleIcon(member.role)}
-                      <span className="text-sm text-gray-600 capitalize">{member.role.replace('_', ' ')}</span>
+                      <span className="text-sm text-gray-800 capitalize">{member.role.replace('_', ' ')}</span>
                     </div>
                     <div className="text-sm text-gray-500">
                       {member.last_login ? `Last active: ${new Date(member.last_login).toLocaleDateString()}` : 'Never active'}
@@ -350,7 +350,7 @@ export default function AdminPage() {
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <Mail className="h-6 w-6 text-gray-600" />
+            <Mail className="h-6 w-6 text-gray-800" />
             <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
           </div>
         </div>
@@ -358,7 +358,7 @@ export default function AdminPage() {
           {invitations.length === 0 ? (
             <div className="text-center py-8">
               <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No pending invitations.</p>
+              <p className="text-gray-800">No pending invitations.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -370,7 +370,7 @@ export default function AdminPage() {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-900">{invitation.email}</p>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
+                      <div className="flex items-center space-x-4 text-sm text-gray-800">
                         <span>Role: {invitation.role}</span>
                         <span>Invited: {new Date(invitation.created_at).toLocaleDateString()}</span>
                         {invitation.inviter && (
@@ -382,7 +382,7 @@ export default function AdminPage() {
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2">
                       {getStatusIcon(invitation.status)}
-                      <span className="text-sm text-gray-600 capitalize">{invitation.status}</span>
+                      <span className="text-sm text-gray-800 capitalize">{invitation.status}</span>
                     </div>
                     <div className="text-sm text-gray-500">
                       Expires: {new Date(invitation.expires_at).toLocaleDateString()}

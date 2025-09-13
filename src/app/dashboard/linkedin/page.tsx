@@ -176,11 +176,11 @@ export default function LinkedInPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">LinkedIn Sales Agent</h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-gray-800 mt-1">
               Automated lead identification and outreach for {organization?.name}
             </p>
           </div>
-          <button className="hover:opacity-90" style={{ backgroundColor: "#595F39" }}>
+          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39]" style={{ backgroundColor: "#595F39" }}>
             <Plus className="h-4 w-4 mr-2" />
             Add Lead
           </button>
@@ -227,15 +227,15 @@ export default function LinkedInPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Connection Metrics</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Requests Sent</span>
+                <span className="text-sm text-gray-800">Requests Sent</span>
                 <span className="font-semibold text-gray-900">{analytics.connection_requests_sent || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Connections Made</span>
+                <span className="text-sm text-gray-800">Connections Made</span>
                 <span style={{ color: "#595F39" }}>{analytics.connected_leads || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Connection Rate</span>
+                <span className="text-sm text-gray-800">Connection Rate</span>
                 <span style={{ color: "#595F39" }}>
                   {analytics.total_leads ? `${Math.round((analytics.connected_leads / analytics.total_leads) * 100)}%` : '0%'}
                 </span>
@@ -248,17 +248,17 @@ export default function LinkedInPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Response Metrics</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Responses Received</span>
+                <span className="text-sm text-gray-800">Responses Received</span>
                 <span style={{ color: "#595F39" }}>{analytics.responses_received || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Response Rate</span>
+                <span className="text-sm text-gray-800">Response Rate</span>
                 <span style={{ color: "#595F39" }}>
                   {analytics.total_leads ? `${Math.round(((analytics.responded_leads + analytics.booked_leads + analytics.closed_leads) / analytics.total_leads) * 100)}%` : '0%'}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Active Conversations</span>
+                <span className="text-sm text-gray-800">Active Conversations</span>
                 <span className="font-semibold text-purple-600">{analytics.responded_leads + analytics.booked_leads || 0}</span>
               </div>
             </div>
@@ -269,15 +269,15 @@ export default function LinkedInPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Message Metrics</h3>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Total Messages</span>
+                <span className="text-sm text-gray-800">Total Messages</span>
                 <span className="font-semibold text-gray-900">{analytics.total_messages || 0}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Messages Sent</span>
+                <span className="text-sm text-gray-800">Messages Sent</span>
                 <span className="font-semibold text-gray-900">{(analytics.connection_requests_sent || 0) + (analytics.first_messages_sent || 0)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Avg per Lead</span>
+                <span className="text-sm text-gray-800">Avg per Lead</span>
                 <span className="font-semibold text-gray-900">
                   {analytics.total_leads ? Math.round((analytics.total_messages / analytics.total_leads) * 10) / 10 : 0}
                 </span>
@@ -297,7 +297,7 @@ export default function LinkedInPage() {
                 const maxValue = Math.max(...weeklyData.map(w => Math.max(w.messages_sent, w.messages_received, w.connections_made)))
                 return (
                   <div key={week.week_start} className="text-center">
-                    <div className="text-xs text-gray-600 mb-2">{new Date(week.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+                    <div className="text-xs text-gray-800 mb-2">{new Date(week.week_start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
                     <div className="relative h-32 bg-gray-100 rounded">
                       {/* Messages sent bar */}
                       <div 
@@ -324,15 +324,15 @@ export default function LinkedInPage() {
             <div className="flex justify-center space-x-6 mt-4 text-xs">
               <div className="flex items-center">
                 <div className="rounded mr-2" style={{ backgroundColor: "#595F39" }}></div>
-                <span className="text-gray-600">Messages Sent</span>
+                <span className="text-gray-800">Messages Sent</span>
               </div>
               <div className="flex items-center">
                 <div className="rounded mr-2" style={{ backgroundColor: "#595F39" }}></div>
-                <span className="text-gray-600">Messages Received</span>
+                <span className="text-gray-800">Messages Received</span>
               </div>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-purple-500 rounded mr-2"></div>
-                <span className="text-gray-600">Connections Made</span>
+                <span className="text-gray-800">Connections Made</span>
               </div>
             </div>
           </div>
@@ -350,7 +350,7 @@ export default function LinkedInPage() {
                 Active
               </span>
             </div>
-            <p className="text-sm text-gray-600">Automatically finding new leads based on criteria</p>
+            <p className="text-sm text-gray-800">Automatically finding new leads based on criteria</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
@@ -359,7 +359,7 @@ export default function LinkedInPage() {
                 Active
               </span>
             </div>
-            <p className="text-sm text-gray-600">Sending personalized connection requests and messages</p>
+            <p className="text-sm text-gray-800">Sending personalized connection requests and messages</p>
           </div>
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
@@ -368,7 +368,7 @@ export default function LinkedInPage() {
                 Active
               </span>
             </div>
-            <p className="text-sm text-gray-600">Monitoring connection status and responses</p>
+            <p className="text-sm text-gray-800">Monitoring connection status and responses</p>
           </div>
         </div>
       </div>

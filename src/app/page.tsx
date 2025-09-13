@@ -222,7 +222,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed font-light"
+              className="text-lg sm:text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed font-light"
             >
               All-in-one secure AI platform, uniting your systems, knowledge, and people.
             </motion.p>
@@ -351,7 +351,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8 leading-tight">
               We put customers first, ensuring every journey is seamless
             </h2>
-            <p className="text-xl text-gray-600 leading-relaxed font-light">
+            <p className="text-xl text-gray-800 leading-relaxed font-light">
               Offering innovative AI at a fraction of traditional costs.
           </p>
           </motion.div>
@@ -372,7 +372,7 @@ export default function Home() {
               <span className="block mb-2 font-light" style={{ color: '#595F39' }}>MONEY,</span>
               <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
           </h2>
-            <p className="text-xl sm:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
+            <p className="text-xl sm:text-2xl text-gray-800 max-w-4xl mx-auto leading-relaxed font-light">
               Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
             and delightful customer experiences, always putting people first
           </p>
@@ -393,7 +393,7 @@ export default function Home() {
             <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
               Solutions that <span style={{ color: '#595F39' }}>scale</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto font-light">
+            <p className="text-xl text-gray-800 max-w-3xl mx-auto font-light">
               Comprehensive AI automation across every aspect of your business
             </p>
           </motion.div>
@@ -468,15 +468,15 @@ export default function Home() {
               <div className="space-y-4">
                 <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Problem</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.problem}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.problem}</p>
                 </div>
                 <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Solution</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.solution}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.solution}</p>
                 </div>
                 <div>
                     <h4 className="font-medium text-gray-900 mb-2 text-sm uppercase tracking-wide">Impact</h4>
-                    <p className="text-gray-600 text-sm leading-relaxed font-light">{solution.impact}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.impact}</p>
               </div>
                 </div>
               </motion.div>
@@ -565,7 +565,7 @@ export default function Home() {
               className="text-center md:text-left"
             >
               <h3 className="text-3xl font-light text-gray-900 mb-6">Our Vision</h3>
-              <p className="text-lg text-gray-600 leading-relaxed font-light">
+              <p className="text-lg text-gray-800 leading-relaxed font-light">
                 Accelerate business growth with AI solutions that cut complexity, boost performance, and scale with you
               </p>
             </motion.div>
@@ -577,7 +577,7 @@ export default function Home() {
               className="text-center md:text-left"
             >
               <h3 className="text-3xl font-light text-gray-900 mb-6">Our Mission</h3>
-              <p className="text-lg text-gray-600 leading-relaxed font-light">
+              <p className="text-lg text-gray-800 leading-relaxed font-light">
                 Make automation a reality, helping companies worldwide unlock new levels of efficiency and sustainable growth
               </p>
             </motion.div>

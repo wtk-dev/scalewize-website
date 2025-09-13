@@ -106,7 +106,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-[rgba(89,95,57,0.1)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
@@ -115,7 +115,7 @@ export default function SignupPage() {
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Create your Henly AI account
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-800">
             Set up your organization and start automating with AI
           </p>
         </div>
@@ -123,7 +123,7 @@ export default function SignupPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Organization Information */}
-            <div className="p-4 rounded-lg" style={{ backgroundColor: "rgba(89, 95, 57, 0.1)" }}>
+            <div className="p-4 rounded-lg" className="bg-gray-50 border border-gray-200">
               <div className="flex items-center mb-3">
                 <Building2 className="h-5 w-5 mr-2" style={{ color: "#595F39" }} />
                 <h3 style={{ color: "rgba(89, 95, 57, 0.9)" }}>Organization</h3>
@@ -131,7 +131,7 @@ export default function SignupPage() {
               
               <div className="space-y-3">
                 <div>
-                  <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="organizationName" className="block text-sm font-medium text-gray-900">
                     Organization Name
                   </label>
                   <input
@@ -147,12 +147,12 @@ export default function SignupPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="organizationSlug" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="organizationSlug" className="block text-sm font-medium text-gray-900">
                     Organization URL
                   </label>
                   <div className="mt-1 flex rounded-md shadow-sm">
                     <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
-                      scalewize.ai/
+                      henly.ai/
                     </span>
                     <input
                       id="organizationSlug"
@@ -171,7 +171,7 @@ export default function SignupPage() {
 
             {/* Personal Information */}
             <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-900">
                 Full Name
               </label>
               <input
@@ -187,7 +187,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-900">
                 Email address
               </label>
               <input
@@ -204,7 +204,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-900">
                 Password
               </label>
               <div className="mt-1 relative">
@@ -234,7 +234,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-900">
                 Confirm Password
               </label>
               <div className="mt-1 relative">
@@ -285,7 +285,7 @@ export default function SignupPage() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-800">
               Already have an account?{' '}
               <Link href="/login" className="font-medium hover:opacity-80" style={{ color: "#595F39" }}>
                 Sign in

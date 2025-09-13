@@ -144,7 +144,7 @@ export default function ExplorePage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Explore AI Solutions</h1>
-            <p className="text-gray-600 mt-2">
+            <p className="text-gray-800 mt-2">
               Discover and add powerful AI agents to your team
             </p>
           </div>
@@ -175,7 +175,7 @@ export default function ExplorePage() {
                   <div>
                     <h3 className="text-lg font-bold text-gray-900">{solution.name}</h3>
                     {solution.price && (
-                      <p className="text-sm text-gray-600">{solution.price}</p>
+                      <p className="text-sm text-gray-800">{solution.price}</p>
                     )}
                   </div>
                 </div>
@@ -186,15 +186,15 @@ export default function ExplorePage() {
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Problem</h4>
-                  <p className="text-sm text-gray-600">{solution.problem}</p>
+                  <p className="text-sm text-gray-800">{solution.problem}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Solution</h4>
-                  <p className="text-sm text-gray-600">{solution.solution}</p>
+                  <p className="text-sm text-gray-800">{solution.solution}</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Impact</h4>
-                  <p className="text-sm text-gray-600">{solution.impact}</p>
+                  <p className="text-sm text-gray-800">{solution.impact}</p>
                 </div>
               </div>
 
@@ -222,7 +222,7 @@ export default function ExplorePage() {
                   <button
                     onClick={() => handleAddToTeam(solution.id)}
                     disabled={selectedSolution === solution.id}
-                    className="text-white hover:opacity-90 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" style={{ backgroundColor: "#595F39" }}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39] disabled:opacity-50 disabled:cursor-not-allowed" style={{ backgroundColor: "#595F39" }}
                   >
                     {selectedSolution === solution.id ? (
                       <>
@@ -260,21 +260,21 @@ export default function ExplorePage() {
               <span className="font-bold" style={{ color: "#595F39" }}>1</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Choose Solution</h4>
-            <p className="text-sm text-gray-600">Browse our AI solutions and select the ones that fit your needs</p>
+            <p className="text-sm text-gray-800">Browse our AI solutions and select the ones that fit your needs</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
               <span className="font-bold" style={{ color: "#595F39" }}>2</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Add to Team</h4>
-            <p className="text-sm text-gray-600">Click "Add to Team" to integrate the solution into your workspace</p>
+            <p className="text-sm text-gray-800">Click "Add to Team" to integrate the solution into your workspace</p>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
               <span className="font-bold" style={{ color: "#595F39" }}>3</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Start Using</h4>
-            <p className="text-sm text-gray-600">Configure and start using your new AI agents immediately</p>
+            <p className="text-sm text-gray-800">Configure and start using your new AI agents immediately</p>
           </div>
         </div>
       </div>

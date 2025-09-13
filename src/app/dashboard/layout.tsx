@@ -48,7 +48,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#f8f7f4', fontFamily: 'Arial, Helvetica, sans-serif' }}>
+    <div className="min-h-screen" className="bg-gray-50">
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
@@ -60,7 +60,7 @@ className="h-16 w-auto" />
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-gray-800"
             >
               <X className="h-6 w-6" />
             </button>
@@ -70,7 +70,7 @@ className="h-16 w-auto" />
               <Link
                 key={item.name}
                 href={item.href}
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-800 hover:bg-gray-50 hover:text-gray-900"
                 onClick={() => setSidebarOpen(false)}
               >
                 <item.icon className="mr-3 h-5 w-5" />
@@ -88,13 +88,13 @@ className="h-16 w-auto" />
                 </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-700">{profile?.full_name}</p>
+                <p className="text-sm font-medium text-gray-900">{profile?.full_name}</p>
                 <p className="text-xs text-gray-500">{organization?.name}</p>
               </div>
             </div>
             <button
               onClick={signOut}
-              className="mt-3 flex w-full items-center px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+              className="mt-3 flex w-full items-center px-2 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-900 rounded-md"
             >
               <LogOut className="mr-3 h-5 w-5" />
               Sign out
@@ -109,12 +109,12 @@ className="h-16 w-auto" />
           <div className="flex h-16 items-center px-4 justify-between">
             <div className="flex items-center">
               {!sidebarCollapsed && (
-                <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-16 w-auto" />
+                <Link href="/"><Link href="/"><Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-16 w-auto" /></Link></Link>
               )}
             </div>
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
+              className="text-gray-400 hover:text-gray-800 transition-colors"
             >
               {sidebarCollapsed ? (
                 <ChevronRight className="h-5 w-5" />
@@ -128,7 +128,7 @@ className="h-16 w-auto" />
               <Link
                 key={item.name}
                 href={item.href}
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-800 hover:bg-gray-50 hover:text-gray-900"
                 title={sidebarCollapsed ? item.name : undefined}
               >
                 <item.icon className={`h-5 w-5 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
@@ -147,14 +147,14 @@ className="h-16 w-auto" />
                   </div>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-700">{profile?.full_name}</p>
+                  <p className="text-sm font-medium text-gray-900">{profile?.full_name}</p>
                   <p className="text-xs text-gray-500">{organization?.name}</p>
                 </div>
               </div>
             )}
             <button
               onClick={signOut}
-              className={`flex items-center text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md ${sidebarCollapsed ? 'justify-center px-2 py-2' : 'w-full px-2 py-2'}`}
+              className={`flex items-center text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-900 rounded-md ${sidebarCollapsed ? 'justify-center px-2 py-2' : 'w-full px-2 py-2'}`}
               title={sidebarCollapsed ? 'Sign out' : undefined}
             >
               <LogOut className={`h-5 w-5 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
@@ -169,7 +169,7 @@ className="h-16 w-auto" />
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             type="button"
-            className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
+            className="-m-2.5 p-2.5 text-gray-900 lg:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-6 w-6" />

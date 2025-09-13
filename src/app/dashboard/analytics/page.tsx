@@ -107,7 +107,7 @@ export default function AnalyticsPage() {
       {/* Header */}
       <div className="bg-white rounded-lg shadow p-6">
         <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+        <p className="text-gray-800 mt-1">
           Track performance across all your AI automation tools
         </p>
       </div>
@@ -204,7 +204,7 @@ export default function AnalyticsPage() {
                 <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <Calendar className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-gray-800">
                       {new Date(metric.date).toLocaleDateString()}
                     </span>
                   </div>
@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
               <div key={index} className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <Calendar className="h-4 w-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-gray-800">
                     {new Date(metric.date).toLocaleDateString()}
                   </span>
                 </div>
@@ -337,19 +337,19 @@ export default function AnalyticsPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Connection & Response Metrics</h3>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Connection Requests Sent</span>
+                <span className="text-sm text-gray-800">Connection Requests Sent</span>
                 <span className="font-semibold">{detailedData.connectionRequestsSent}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Connections Made</span>
+                <span className="text-sm text-gray-800">Connections Made</span>
                 <span style={{ color: "#595F39" }}>{detailedData.connectionsMade}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Responses Received</span>
+                <span className="text-sm text-gray-800">Responses Received</span>
                 <span style={{ color: "#595F39" }}>{detailedData.responses}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Active Conversations</span>
+                <span className="text-sm text-gray-800">Active Conversations</span>
                 <span className="font-semibold text-purple-600">{detailedData.activeConversations}</span>
               </div>
             </div>
@@ -360,19 +360,19 @@ export default function AnalyticsPage() {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Performance Metrics</h3>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Connection Rate</span>
+                <span className="text-sm text-gray-800">Connection Rate</span>
                 <span style={{ color: "#595F39" }}>{detailedData.connectionRate}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Response Rate</span>
+                <span className="text-sm text-gray-800">Response Rate</span>
                 <span style={{ color: "#595F39" }}>{detailedData.responseRate}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Active Conversation Rate</span>
+                <span className="text-sm text-gray-800">Active Conversation Rate</span>
                 <span className="font-semibold text-purple-600">{detailedData.activeConversationRate}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Avg Messages per Lead</span>
+                <span className="text-sm text-gray-800">Avg Messages per Lead</span>
                 <span className="font-semibold text-gray-900">{detailedData.avgMessagesPerLead}</span>
               </div>
             </div>
@@ -388,19 +388,19 @@ export default function AnalyticsPage() {
             <div className="mb-2" style={{ color: "#595F39" }}>
               {linkedinMetrics.reduce((sum, day) => sum + day.leads, 0)}
             </div>
-            <div className="text-sm text-gray-600">LinkedIn Leads</div>
+            <div className="text-sm text-gray-800">LinkedIn Leads</div>
           </div>
           <div className="text-center">
             <div className="mb-2" style={{ color: "#595F39" }}>
               {chatbotMetrics.reduce((sum, day) => sum + day.sessions, 0)}
             </div>
-            <div className="text-sm text-gray-600">Chat Sessions</div>
+            <div className="text-sm text-gray-800">Chat Sessions</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-purple-600 mb-2">
               {chatbotMetrics.reduce((sum, day) => sum + day.tokens, 0).toLocaleString()}
             </div>
-            <div className="text-sm text-gray-600">Tokens Used</div>
+            <div className="text-sm text-gray-800">Tokens Used</div>
           </div>
         </div>
       </div>
