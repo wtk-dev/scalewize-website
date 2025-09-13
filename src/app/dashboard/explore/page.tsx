@@ -103,14 +103,14 @@ export default function ExplorePage() {
     switch (status) {
       case 'available':
         return (
-          <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
             <CheckCircle className="w-3 h-3 mr-1" />
             Available
           </span>
         )
       case 'beta':
         return (
-          <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
             <Clock className="w-3 h-3 mr-1" />
             Beta
           </span>
@@ -204,11 +204,11 @@ export default function ExplorePage() {
                   <button
                     onClick={() => handleAddToTeam(solution.id)}
                     disabled={selectedSolution === solution.id}
-                    style="color: #595F39" hover:style={{ backgroundColor: "#595F39" }} hover:text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="hover:text-white hover:bg-[#595F39] px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" style={{ color: "#595F39" }}
                   >
                     {selectedSolution === solution.id ? (
                       <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 style={{ borderColor: "#595F39" }} mr-2"></div>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 mr-2" style={{ borderColor: "#595F39" }}></div>
                         Adding...
                       </>
                     ) : (
@@ -222,7 +222,7 @@ export default function ExplorePage() {
                   <button
                     onClick={() => handleAddToTeam(solution.id)}
                     disabled={selectedSolution === solution.id}
-                    style={{ backgroundColor: "#595F39" }} text-white hover:opacity-90 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                    className="text-white hover:opacity-90 px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" style={{ backgroundColor: "#595F39" }}
                   >
                     {selectedSolution === solution.id ? (
                       <>
@@ -256,22 +256,22 @@ export default function ExplorePage() {
         <h3 className="text-lg font-semibold text-gray-900 mb-4">How it works</h3>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="text-center">
-            <div style="backgroundColor: rgba(89, 95, 57, 0.2)" flex items-center justify-center mx-auto mb-3">
-              <span style="color: #595F39" font-bold">1</span>
+            <div className="flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
+              <span className="font-bold" style={{ color: "#595F39" }}>1</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Choose Solution</h4>
             <p className="text-sm text-gray-600">Browse our AI solutions and select the ones that fit your needs</p>
           </div>
           <div className="text-center">
-            <div style="backgroundColor: rgba(89, 95, 57, 0.2)" flex items-center justify-center mx-auto mb-3">
-              <span style="color: #595F39" font-bold">2</span>
+            <div className="flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
+              <span className="font-bold" style={{ color: "#595F39" }}>2</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Add to Team</h4>
             <p className="text-sm text-gray-600">Click "Add to Team" to integrate the solution into your workspace</p>
           </div>
           <div className="text-center">
-            <div style="backgroundColor: rgba(89, 95, 57, 0.2)" flex items-center justify-center mx-auto mb-3">
-              <span style="color: #595F39" font-bold">3</span>
+            <div className="flex items-center justify-center mx-auto mb-3" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
+              <span className="font-bold" style={{ color: "#595F39" }}>3</span>
             </div>
             <h4 className="font-medium text-gray-900 mb-2">Start Using</h4>
             <p className="text-sm text-gray-600">Configure and start using your new AI agents immediately</p>

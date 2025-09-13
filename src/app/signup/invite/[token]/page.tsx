@@ -161,7 +161,7 @@ export default function InvitationSignupPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Loader2 style="color: #595F39" mx-auto mb-4" />
+          <Loader2 className="mx-auto mb-4" style={{ color: "#595F39" }} />
           <p className="text-gray-600">Validating invitation...</p>
         </div>
       </div>
@@ -190,13 +190,13 @@ export default function InvitationSignupPage() {
            return (
              <div className="min-h-screen flex items-center justify-center bg-gray-50">
                <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
-                 <CheckCircle style="color: #595F39" mx-auto mb-4" />
+                 <CheckCircle className="mx-auto mb-4" style={{ color: "#595F39" }} />
                  <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome to {invitation?.organizationName}!</h1>
                  <p className="text-gray-600 mb-4">
                    Your account has been created successfully. Please log in to access your dashboard.
                  </p>
-                 <div style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }} rounded-lg p-4 mb-6">
-                   <p style="color: rgba(89, 95, 57, 0.8)"">
+                 <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }}>
+                   <p style={{ color: "rgba(89, 95, 57, 0.8)" }}>
                      <strong>Success!</strong> You're now a member of {invitation?.organizationName} and have access to all AI tools and features.
                    </p>
                  </div>
@@ -212,7 +212,7 @@ export default function InvitationSignupPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <UserPlus style="color: #595F39" mx-auto mb-4" />
+          <UserPlus className="mx-auto mb-4" style={{ color: "#595F39" }} />
           <h2 className="text-3xl font-bold text-gray-900">Join {invitation?.organizationName}</h2>
           <p className="mt-2 text-sm text-gray-600">
             You've been invited by {invitation?.inviterName}
@@ -220,23 +220,23 @@ export default function InvitationSignupPage() {
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
-          <div style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }} rounded-lg">
+          <div className="rounded-lg" style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }}>
             <div className="flex items-center mb-3">
-              <Building2 style="color: #595F39" mr-2" />
-              <span style="color: rgba(89, 95, 57, 0.9)"">Invitation Details</span>
+              <Building2 className="mr-2" style={{ color: "#595F39" }} />
+              <span style={{ color: "rgba(89, 95, 57, 0.9)" }}>Invitation Details</span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span style="color: rgba(89, 95, 57, 0.8)"">Organization:</span>
-                <span style="color: rgba(89, 95, 57, 0.8)"">{invitation?.organizationName}</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>Organization:</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>{invitation?.organizationName}</span>
               </div>
               <div className="flex justify-between">
-                <span style="color: rgba(89, 95, 57, 0.8)"">Email:</span>
-                <span style="color: rgba(89, 95, 57, 0.8)"">{invitation?.email}</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>Email:</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>{invitation?.email}</span>
               </div>
               <div className="flex justify-between">
-                <span style="color: rgba(89, 95, 57, 0.8)"">Invited by:</span>
-                <span style="color: rgba(89, 95, 57, 0.8)"">{invitation?.inviterName}</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>Invited by:</span>
+                <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>{invitation?.inviterName}</span>
               </div>
             </div>
           </div>
@@ -328,7 +328,7 @@ export default function InvitationSignupPage() {
             <button
               type="submit"
               disabled={signingUp}
-              style={{ backgroundColor: "#595F39" }} text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+              className="text-white py-2 px-4 rounded-md hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" style={{ backgroundColor: "#595F39" }}
             >
               {signingUp ? (
                 <>

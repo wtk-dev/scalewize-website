@@ -81,7 +81,7 @@ className="h-16 w-auto" />
           <div className="border-t border-gray-200 p-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div style={{ backgroundColor: "#595F39" }} flex items-center justify-center">
+                <div className="flex items-center justify-center" style={{ backgroundColor: "#595F39" }}>
                   <span className="text-sm font-medium text-white">
                     {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                   </span>
@@ -140,7 +140,7 @@ className="h-16 w-auto" />
             {!sidebarCollapsed && (
               <div className="flex items-center mb-3">
                 <div className="flex-shrink-0">
-                  <div style={{ backgroundColor: "#595F39" }} flex items-center justify-center">
+                  <div className="flex items-center justify-center" style={{ backgroundColor: "#595F39" }}>
                     <span className="text-sm font-medium text-white">
                       {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                     </span>

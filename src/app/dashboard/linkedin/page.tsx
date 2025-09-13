@@ -85,11 +85,11 @@ export default function LinkedInPage() {
   const getStatusIcon = (status: string | null) => {
     switch (status) {
       case 'SENT':
-        return <Mail style="color: #595F39"" />
+        return <Mail style={{ color: "#595F39" }} />
       case 'CONNECTED':
-        return <CheckCircle style="color: #595F39"" />
+        return <CheckCircle style={{ color: "#595F39" }} />
       case 'RESPONDED':
-        return <CheckCircle style="color: #595F39"" />
+        return <CheckCircle style={{ color: "#595F39" }} />
       case 'BOOKED':
         return <CheckCircle className="h-4 w-4 text-purple-600" />
       case 'CLOSED':
@@ -180,7 +180,7 @@ export default function LinkedInPage() {
               Automated lead identification and outreach for {organization?.name}
             </p>
           </div>
-          <button style={{ backgroundColor: "#595F39" }} hover:opacity-90">
+          <button className="hover:opacity-90" style={{ backgroundColor: "#595F39" }}>
             <Plus className="h-4 w-4 mr-2" />
             Add Lead
           </button>
@@ -194,7 +194,7 @@ export default function LinkedInPage() {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <stat.icon style="color: #595F39"" />
+                  <stat.icon style={{ color: "#595F39" }} />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
@@ -232,11 +232,11 @@ export default function LinkedInPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Connections Made</span>
-                <span style="color: #595F39"">{analytics.connected_leads || 0}</span>
+                <span style={{ color: "#595F39" }}>{analytics.connected_leads || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Connection Rate</span>
-                <span style="color: #595F39"">
+                <span style={{ color: "#595F39" }}>
                   {analytics.total_leads ? `${Math.round((analytics.connected_leads / analytics.total_leads) * 100)}%` : '0%'}
                 </span>
               </div>
@@ -249,11 +249,11 @@ export default function LinkedInPage() {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Responses Received</span>
-                <span style="color: #595F39"">{analytics.responses_received || 0}</span>
+                <span style={{ color: "#595F39" }}>{analytics.responses_received || 0}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Response Rate</span>
-                <span style="color: #595F39"">
+                <span style={{ color: "#595F39" }}>
                   {analytics.total_leads ? `${Math.round(((analytics.responded_leads + analytics.booked_leads + analytics.closed_leads) / analytics.total_leads) * 100)}%` : '0%'}
                 </span>
               </div>
@@ -301,12 +301,12 @@ export default function LinkedInPage() {
                     <div className="relative h-32 bg-gray-100 rounded">
                       {/* Messages sent bar */}
                       <div 
-                        style={{ backgroundColor: "#595F39" }} rounded-t"
+                        className="rounded-t" style={{ backgroundColor: "#595F39" }}
                         style={{ height: `${maxValue > 0 ? (week.messages_sent / maxValue) * 100 : 0}%` }}
                       ></div>
                       {/* Messages received bar */}
                       <div 
-                        style={{ backgroundColor: "#595F39" }} rounded-t"
+                        className="rounded-t" style={{ backgroundColor: "#595F39" }}
                         style={{ height: `${maxValue > 0 ? (week.messages_received / maxValue) * 100 : 0}%` }}
                       ></div>
                       {/* Connections made bar */}
@@ -323,11 +323,11 @@ export default function LinkedInPage() {
             </div>
             <div className="flex justify-center space-x-6 mt-4 text-xs">
               <div className="flex items-center">
-                <div style={{ backgroundColor: "#595F39" }} rounded mr-2"></div>
+                <div className="rounded mr-2" style={{ backgroundColor: "#595F39" }}></div>
                 <span className="text-gray-600">Messages Sent</span>
               </div>
               <div className="flex items-center">
-                <div style={{ backgroundColor: "#595F39" }} rounded mr-2"></div>
+                <div className="rounded mr-2" style={{ backgroundColor: "#595F39" }}></div>
                 <span className="text-gray-600">Messages Received</span>
               </div>
               <div className="flex items-center">
@@ -346,7 +346,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Lead Discovery</h4>
-              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -355,7 +355,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Outreach</h4>
-              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -364,7 +364,7 @@ export default function LinkedInPage() {
           <div className="border border-gray-200 rounded-lg p-4">
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-medium text-gray-900">Status Tracking</h4>
-              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Active
               </span>
             </div>
@@ -444,8 +444,8 @@ export default function LinkedInPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <div style="backgroundColor: rgba(89, 95, 57, 0.2)" flex items-center justify-center">
-                            <span style="color: rgba(89, 95, 57, 0.8)"">
+                          <div className="flex items-center justify-center" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)" }}>
+                            <span style={{ color: "rgba(89, 95, 57, 0.8)" }}>
                               {lead.full_name?.split(' ').map(n => n[0]).join('') || '?'}
                             </span>
                           </div>
@@ -475,8 +475,8 @@ export default function LinkedInPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
-                        <button style={{ color: "#595F39" }} className="hover:opacity-80"">View</button>
-                        <button style={{ color: "#595F39" }} className="hover:opacity-80"">Message</button>
+                        <button className="hover:opacity-80" style={{ color: "#595F39" }}>View</button>
+                        <button className="hover:opacity-80" style={{ color: "#595F39" }}>Message</button>
                       </div>
                     </td>
                   </tr>

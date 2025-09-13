@@ -61,7 +61,7 @@ export default function ChatbotPage() {
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <span style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
+              <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ backgroundColor: "rgba(89, 95, 57, 0.2)", color: "rgba(89, 95, 57, 0.8)" }}">
                 Connected
               </span>
             </div>
@@ -71,7 +71,7 @@ export default function ChatbotPage() {
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <Loader2 style="color: #595F39"" />
+                <Loader2 style={{ color: "#595F39" }} />
                 <p className="text-gray-600">Connecting to chat service...</p>
               </div>
             </div>
@@ -81,7 +81,7 @@ export default function ChatbotPage() {
                 <p className="text-red-600 mb-4">{error}</p>
                 <button 
                   onClick={() => window.location.reload()}
-                  style={{ backgroundColor: "#595F39" }} text-white rounded-md hover:opacity-90"
+                  className="text-white rounded-md hover:opacity-90" style={{ backgroundColor: "#595F39" }}
                 >
                   Retry Connection
                 </button>
