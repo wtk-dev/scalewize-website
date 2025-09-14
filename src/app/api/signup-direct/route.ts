@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      email_confirm: process.env.NODE_ENV === 'production' ? false : true // Require email verification in production
+      email_confirm: false // Require email verification in production
     })
     
     if (userError) {

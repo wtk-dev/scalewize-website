@@ -86,7 +86,11 @@ export default function SignupPage() {
       }
 
       // Success! Handle the response
-      if (result.redirectUrl) {
+      if (result.message && result.message.includes("successfully")) {
+        // Account created successfully, redirect to email verification
+        router.push(`/verify-email?email=${encodeURIComponent(formData.email)}`)
+      } else if (result.redirectUrl) {
+        // Legacy redirect handling
         // If we have a redirect URL from Supabase, use it
         window.location.href = result.redirectUrl
       } else if (result.session) {
@@ -123,7 +127,7 @@ export default function SignupPage() {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             {/* Organization Information */}
-            <div className="p-4 rounded-lg" className="bg-gray-50 border border-gray-200">
+            <div className="p-6 rounded-lg bg-gray-50 border border-gray-200">
               <div className="flex items-center mb-3">
                 <Building2 className="h-5 w-5 mr-2" style={{ color: "#595F39" }} />
                 <h3 style={{ color: "rgba(89, 95, 57, 0.9)" }}>Organization</h3>
