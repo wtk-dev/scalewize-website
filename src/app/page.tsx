@@ -221,8 +221,8 @@ export default function Home() {
             <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: 'rgba(89, 95, 57, 0.08)' }} />
             
             {/* Video Container */}
-            <div className="relative w-full max-w-5xl mx-auto bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
-              <div className="aspect-[16/10] relative">
+            <div className="relative w-full max-w-4xl mx-auto bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+              <div className="aspect-[11/8] relative">
                 {/* Video */}
                 {!videoError && (
                   <video
@@ -325,7 +325,7 @@ export default function Home() {
               <span className="block mb-3 font-light" style={{ color: '#595F39' }}>MONEY,</span>
               <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-800 max-w-5xl mx-auto leading-relaxed font-light">
+            <p className="text-xl sm:text-2xl text-gray-800 max-w-4xl mx-auto leading-relaxed font-light">
               Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
               and delightful customer experiences, always putting people first
             </p>
