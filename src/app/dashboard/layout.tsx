@@ -48,53 +48,51 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen" className="bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4">
+        <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white shadow-xl">
+          <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
             <div className="flex items-center">
               <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} 
-className="h-16 w-auto" />
+                className="h-12 w-auto" />
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="text-gray-400 hover:text-gray-800"
+              className="text-gray-500 hover:text-gray-800 transition-colors"
             >
               <X className="h-6 w-6" />
             </button>
           </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
+          <nav className="flex-1 space-y-1 px-3 py-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-800 hover:bg-gray-50 hover:text-gray-900"
+                className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                 onClick={() => setSidebarOpen(false)}
               >
-                <item.icon className="mr-3 h-5 w-5" />
+                <item.icon className="mr-3 h-5 w-5 text-gray-500 group-hover:text-gray-700" />
                 {item.name}
               </Link>
             ))}
           </nav>
-          <div className="border-t border-gray-200 p-4">
-            <div className="flex items-center">
+          <div className="border-t border-gray-200 p-4 bg-gray-50">
+            <div className="flex items-center mb-3">
               <div className="flex-shrink-0">
-                <div className="flex items-center justify-center" style={{ backgroundColor: "#595F39" }}>
-                  <span className="text-sm font-medium text-white">
-                    {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
-                  </span>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-white shadow-sm" style={{ backgroundColor: "#595F39" }}>
+                  {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                 </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-gray-900">{profile?.full_name}</p>
-                <p className="text-xs text-gray-500">{organization?.name}</p>
+                <p className="text-sm font-semibold text-gray-900">{profile?.full_name}</p>
+                <p className="text-xs text-gray-600">{organization?.name}</p>
               </div>
             </div>
             <button
               onClick={signOut}
-              className="mt-3 flex w-full items-center px-2 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+              className="flex w-full items-center px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors"
             >
               <LogOut className="mr-3 h-5 w-5" />
               Sign out
@@ -105,16 +103,18 @@ className="h-16 w-auto" />
 
       {/* Desktop sidebar */}
       <div className={`hidden lg:fixed lg:inset-y-0 lg:flex lg:flex-col transition-all duration-300 ${sidebarCollapsed ? 'lg:w-16' : 'lg:w-64'}`}>
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
-          <div className="flex h-16 items-center px-4 justify-between">
+        <div className="flex flex-col flex-grow bg-white border-r border-gray-200 shadow-sm">
+          <div className="flex h-16 items-center px-4 justify-between border-b border-gray-200">
             <div className="flex items-center">
               {!sidebarCollapsed && (
-                <Link href="/"><Link href="/"><Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-16 w-auto" /></Link></Link>
+                <Link href="/">
+                  <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-12 w-auto" />
+                </Link>
               )}
             </div>
             <button
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-gray-400 hover:text-gray-800 transition-colors"
+              className="text-gray-500 hover:text-gray-800 transition-colors p-1 rounded-md hover:bg-gray-100"
             >
               {sidebarCollapsed ? (
                 <ChevronRight className="h-5 w-5" />
@@ -123,66 +123,66 @@ className="h-16 w-auto" />
               )}
             </button>
           </div>
-          <nav className="flex-1 space-y-1 px-2 py-4">
+          <nav className="flex-1 space-y-1 px-3 py-4">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-800 hover:bg-gray-50 hover:text-gray-900"
+                className="group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                 title={sidebarCollapsed ? item.name : undefined}
               >
-                <item.icon className={`h-5 w-5 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
+                <item.icon className={`h-5 w-5 text-gray-500 group-hover:text-gray-700 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
                 {!sidebarCollapsed && item.name}
               </Link>
             ))}
           </nav>
-          <div className="border-t border-gray-200 p-4">
+          <div className="border-t border-gray-200 p-4 bg-gray-50">
             {!sidebarCollapsed && (
               <div className="flex items-center mb-3">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center" style={{ backgroundColor: "#595F39" }}>
-                    <span className="text-sm font-medium text-white">
-                      {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
-                    </span>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-white shadow-sm" style={{ backgroundColor: "#595F39" }}>
+                    {profile?.full_name?.charAt(0) || user?.email?.charAt(0)}
                   </div>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">{profile?.full_name}</p>
-                  <p className="text-xs text-gray-500">{organization?.name}</p>
+                  <p className="text-sm font-semibold text-gray-900">{profile?.full_name}</p>
+                  <p className="text-xs text-gray-600">{organization?.name}</p>
                 </div>
               </div>
             )}
             <button
               onClick={signOut}
-              className={`flex items-center text-sm font-medium text-gray-800 hover:bg-gray-50 hover:text-gray-900 rounded-md ${sidebarCollapsed ? 'justify-center px-2 py-2' : 'w-full px-2 py-2'}`}
+              className={`flex items-center text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 rounded-lg transition-colors ${sidebarCollapsed ? 'justify-center px-3 py-2.5' : 'w-full px-3 py-2.5'}`}
               title={sidebarCollapsed ? 'Sign out' : undefined}
             >
-              <LogOut className={`h-5 w-5 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
+              <LogOut className={`h-5 w-5 text-gray-500 ${sidebarCollapsed ? 'mx-auto' : 'mr-3'}`} />
               {!sidebarCollapsed && 'Sign out'}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Main content - Fixed positioning to adjust with sidebar */}
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'}`}>
+      {/* Main content area */}
+      <div className={`min-h-screen transition-all duration-300 ${sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'}`}>
+        {/* Header */}
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             type="button"
-            className="-m-2.5 p-2.5 text-gray-900 lg:hidden"
+            className="-m-2.5 p-2.5 text-gray-700 hover:text-gray-900 lg:hidden transition-colors"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1 items-center">
-              <h1 className="text-lg font-semibold text-gray-900">Dashboard</h1>
+              <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
             </div>
           </div>
         </div>
 
-        <main className="py-6">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Main content */}
+        <main className="min-h-screen bg-gray-50">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
             {children}
           </div>
         </main>

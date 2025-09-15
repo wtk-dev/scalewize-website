@@ -99,9 +99,9 @@ export default function Home() {
   const videoRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="flex justify-between items-center h-20">
@@ -116,16 +116,16 @@ export default function Home() {
               />
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#solutions" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
+              <Link href="#solutions" className="text-gray-700 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
                 Solutions
               </Link>
-              <Link href="#results" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
+              <Link href="#results" className="text-gray-700 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
                 Results
               </Link>
-              <Link href="#blog" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
+              <Link href="#blog" className="text-gray-700 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
                 Blog
               </Link>
-              <Link href="/login" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
+              <Link href="/login" className="text-gray-700 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
                 Log In
               </Link>
               <Link 
@@ -144,9 +144,9 @@ export default function Home() {
       <ParticleField videoRef={videoRef} />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         {/* Enhanced Background Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-amber-50/20" style={{ background: 'linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f8f7f4 100%)' }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-amber-50/30" style={{ background: 'linear-gradient(135deg, #f8f7f4 0%, #f0ede8 50%, #faf9f6 100%)' }} />
         
         <div className="relative z-20 max-w-7xl mx-auto text-center">
           {/* Enhanced Headlines */}
@@ -154,7 +154,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="mb-24"
+            className="mb-20"
           >
             <h1 className="text-6xl sm:text-7xl lg:text-8xl font-light mb-8 leading-[1.05] tracking-tight pb-4">
               <span className="block text-gray-900 mb-3 font-extralight">Make AI</span>
@@ -167,7 +167,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto leading-relaxed font-light mb-10"
+              className="text-xl sm:text-2xl text-gray-800 max-w-4xl mx-auto leading-relaxed font-light mb-8"
             >
               All-in-one secure AI platform, uniting your systems, knowledge, and people.
             </motion.p>
@@ -177,7 +177,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <motion.div
                 whileHover={{ scale: 1.02 }}
@@ -186,7 +186,7 @@ export default function Home() {
               >
                 <Link 
                   href="#book-call" 
-                  className="inline-flex items-center text-white px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out shadow-xl hover:shadow-2xl"
+                  className="inline-flex items-center text-white px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out shadow-xl hover:shadow-2xl"
                   style={{ backgroundColor: '#595F39' }}
                 >
                   Book a Call
@@ -200,7 +200,7 @@ export default function Home() {
               >
                 <Link 
                   href="#solutions" 
-                  className="inline-flex items-center text-gray-800 hover:text-gray-900 px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out border-2 border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50"
+                  className="inline-flex items-center text-gray-700 hover:text-gray-900 px-10 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out border-2 border-gray-200 hover:border-gray-300"
                 >
                   View Solutions
                 </Link>
@@ -214,11 +214,11 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
+            className="relative mb-16"
           >
             {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: 'rgba(89, 95, 57, 0.1)' }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: 'rgba(89, 95, 57, 0.05)' }} />
+            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: 'rgba(89, 95, 57, 0.15)' }} />
+            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: 'rgba(89, 95, 57, 0.08)' }} />
             
             {/* Video Container */}
             <div className="relative w-full max-w-4xl mx-auto bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
@@ -260,7 +260,7 @@ export default function Home() {
                         <Play className="w-10 h-10 ml-1" fill="white" />
                       </div>
                       <p className="text-xl font-medium mb-3">Henly AI Demo</p>
-                      <p className="text-gray-200 text-base">
+                      <p className="text-gray-300 text-base">
                         {videoError ? 'Video unavailable - Click to view demo' : 'Loading demo video...'}
                       </p>
                       {videoError && (
@@ -304,7 +304,7 @@ export default function Home() {
             <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-8 leading-tight">
               We put customers first, ensuring every journey is <span style={{ color: '#595F39' }}>seamless</span>
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 leading-relaxed font-light max-w-4xl mx-auto">
+            <p className="text-xl sm:text-2xl text-gray-800 leading-relaxed font-light max-w-4xl mx-auto">
               Offering innovative AI at a fraction of traditional costs, with world-class support and measurable results.
             </p>
           </motion.div>
@@ -325,7 +325,7 @@ export default function Home() {
               <span className="block mb-3 font-light" style={{ color: '#595F39' }}>MONEY,</span>
               <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 max-w-5xl mx-auto leading-relaxed font-light">
+            <p className="text-xl sm:text-2xl text-gray-800 max-w-4xl mx-auto leading-relaxed font-light">
               Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
               and delightful customer experiences, always putting people first
             </p>
@@ -346,7 +346,7 @@ export default function Home() {
             <h2 className="text-5xl sm:text-6xl font-light text-gray-900 mb-6">
               Solutions that <span style={{ color: '#595F39' }}>scale</span>
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto font-light">
+            <p className="text-xl sm:text-2xl text-gray-800 max-w-4xl mx-auto font-light">
               Comprehensive AI automation across every aspect of your business
             </p>
           </motion.div>
@@ -424,21 +424,21 @@ export default function Home() {
                       <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
                       Problem
                     </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.problem}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.problem}</p>
                 </div>
                 <div>
                     <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
                       <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
                       Solution
                     </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.solution}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.solution}</p>
                 </div>
                 <div>
                     <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
                       <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
                       Impact
                     </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.impact}</p>
+                    <p className="text-gray-800 text-sm leading-relaxed font-light">{solution.impact}</p>
               </div>
                 </div>
               </motion.div>
@@ -490,7 +490,7 @@ export default function Home() {
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
             <h2 className="text-5xl sm:text-6xl font-light mb-6">WORLD-CLASS</h2>
-            <p className="text-xl sm:text-2xl text-gray-200 mb-20 font-light">Agents & automations that improve your bottom line</p>
+            <p className="text-xl sm:text-2xl text-gray-300 mb-20 font-light">Agents & automations that improve your bottom line</p>
           
             <div className="grid md:grid-cols-3 gap-16">
               {[
@@ -510,7 +510,7 @@ export default function Home() {
                     <stat.icon className="w-8 h-8" style={{ color: '#9C8B5E' }} />
                   </div>
                   <div className="text-7xl sm:text-8xl font-light mb-6" style={{ color: '#9C8B5E' }}>{stat.value}</div>
-                  <p className="text-gray-200 text-lg font-light">{stat.label}</p>
+                  <p className="text-gray-300 text-lg font-light">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -533,7 +533,7 @@ export default function Home() {
                 <Star className="w-8 h-8" style={{ color: '#595F39' }} />
               </div>
               <h3 className="text-4xl font-light text-gray-900 mb-8">Our Vision</h3>
-              <p className="text-xl text-gray-900 leading-relaxed font-light">
+              <p className="text-xl text-gray-800 leading-relaxed font-light">
                 Accelerate business growth with AI solutions that cut complexity, boost performance, and scale with you
               </p>
             </motion.div>
@@ -548,7 +548,7 @@ export default function Home() {
                 <CheckCircle className="w-8 h-8" style={{ color: '#9C8B5E' }} />
               </div>
               <h3 className="text-4xl font-light text-gray-900 mb-8">Our Mission</h3>
-              <p className="text-xl text-gray-900 leading-relaxed font-light">
+              <p className="text-xl text-gray-800 leading-relaxed font-light">
                 Make automation a reality, helping companies worldwide unlock new levels of efficiency and sustainable growth
               </p>
             </motion.div>
@@ -565,13 +565,13 @@ export default function Home() {
                 <Image src="/henly_logo.png" alt="Henly AI Logo" width={48} height={48} className="h-12 w-12" />
                 <span className="ml-4 text-3xl font-light">Henly AI</span>
               </div>
-              <p className="text-gray-300 mb-8 leading-relaxed font-light text-lg">
+              <p className="text-gray-400 mb-8 leading-relaxed font-light text-lg">
                 Your vision, our expertise. We customize AI solutions to meet your everyday challenges—delivering faster results and freeing you to focus on what really matters.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-8 text-xl">Locations</h4>
-              <div className="space-y-4 text-gray-300 font-light text-lg">
+              <div className="space-y-4 text-gray-400 font-light text-lg">
                 <p>Calgary, Canada</p>
                 <p>Copenhagen, Denmark</p>
                 <p>Toronto, Canada</p>
@@ -579,7 +579,7 @@ export default function Home() {
             </div>
             <div>
               <h4 className="font-semibold mb-8 text-xl">Newsletter</h4>
-              <p className="text-gray-300 mb-8 font-light text-lg">START UNLOCKING TIME TODAY!</p>
+              <p className="text-gray-400 mb-8 font-light text-lg">START UNLOCKING TIME TODAY!</p>
               <div className="flex">
                 <input 
                   type="email" 
@@ -593,7 +593,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-16 pt-8 text-center text-gray-300 text-lg">
+          <div className="border-t border-gray-800 mt-16 pt-8 text-center text-gray-400 text-lg">
             © 2024 Henly AI. All rights reserved.
           </div>
         </div>
