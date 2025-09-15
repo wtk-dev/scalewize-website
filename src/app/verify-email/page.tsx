@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect, Suspense } from 'react'
 import { createBrowserClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/types/database'
 import { Loader2, CheckCircle, XCircle, Mail, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
@@ -81,13 +82,66 @@ function VerifyEmailContent() {
         if (fallbackError || !fallbackProfile) {
           console.error('Profile not found by either ID or email:', { profileError, fallbackError })
           console.error('Searching for profile with token (user ID):', token)
-          setError('User profile not found. Please contact support.')
-          setLoading(false)
-          return
+          console.error('Email searched:', email)
+          
+          // Try to debug what profiles exist
+          const { data: allProfiles } = await supabase
+            .from('profiles')
+            .select('id, email, full_name')
+            .limit(10)
+          console.error('Available profiles:', allProfiles)
+          
+          // Check if this might be a timing issue - try to create the profile
+          console.log('Attempting to create profile for user ID:', token)
+          
+          // Create admin client for profile creation
+          const supabaseAdmin = createClient<Database>(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.SUPABASE_SERVICE_ROLE_KEY!,
+            {
+              auth: {
+                autoRefreshToken: false,
+                persistSession: false
+              }
+            }
+          )
+          
+          const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(token)
+          
+          if (authUser?.user) {
+            console.log('Auth user found, creating profile...')
+            // Try to create the profile
+            const { data: newProfile, error: createError } = await supabaseAdmin
+              .from('profiles')
+              .insert({
+                id: token,
+                email: email,
+                full_name: authUser.user.user_metadata?.full_name || 'User',
+                organization_id: null, // Will need to be set later
+                role: 'admin',
+                is_verified: false
+              })
+              .select()
+              .single()
+            
+            if (createError) {
+              console.error('Failed to create profile:', createError)
+              setError('User profile not found and could not be created. Please contact support.')
+              setLoading(false)
+              return
+            }
+            
+            profileData = newProfile
+            console.log('Profile created successfully:', profileData)
+          } else {
+            setError('User profile not found. Please contact support.')
+            setLoading(false)
+            return
+          }
+        } else {
+          profileData = fallbackProfile
+          profileError = null
         }
-        
-        profileData = fallbackProfile
-        profileError = null
       }
 
       console.log('Profile found:', profileData)
