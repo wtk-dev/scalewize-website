@@ -1,0 +1,901 @@
+{
+  "name": "Unified Outreach - Supabase",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0-59 9-16 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3040,
+        480
+      ],
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger (M-F 9-5 ET, every min)"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nconst DAILY_CAP_STAGE = 20;\nconst SEND_MINUTE_BLOCK = new Set([0,15,30,45]);\nconst BASE_SEND_RATE = 1;\n\nfunction nowEtParts() {\n  const parts = new Intl.DateTimeFormat('en-CA', {\n    timeZone: TZ, weekday: 'short', hour12: false,\n    year:'numeric', month:'2-digit', day:'2-digit',\n    hour:'2-digit', minute:'2-digit', second:'2-digit',\n  }).formatToParts(new Date());\n  const m = Object.fromEntries(parts.map(p => [p.type, p.value]));\n  const wd = ['sun','mon','tue','wed','thu','fri','sat']\n    .indexOf(m.weekday.toLowerCase().slice(0,3));\n  return { wd, h: +m.hour, mi: +m.minute, date: `${m.year}-${m.month}-${m.day}` };\n}\nfunction inEtWindow(h, mi) {\n  const t = h*60 + mi;\n  const amStart = 9*60, amEnd = 11*60 + 59;\n  const pmStart = 13*60, pmEnd = 16*60 + 59;\n  return (t>=amStart && t<=amEnd) || (t>=pmStart && t<=pmEnd);\n}\n\nconst g = $getWorkflowStaticData('global');\ng._outreachDaily = g._outreachDaily || {};\nconst { wd, h, mi, date } = nowEtParts();\nif (!g._outreachDaily.dateEt || g._outreachDaily.dateEt !== date) {\n  g._outreachDaily = { dateEt: date, OR1: 0, OR2: 0, OR3: 0 };\n}\n\nif (wd===0 || wd===6) return [];\nif (!inEtWindow(h, mi)) return [];\nif (SEND_MINUTE_BLOCK.has(mi)) return [];\n\nconst { OR1, OR2, OR3 } = g._outreachDaily;\nconst remaining = { OR1: Math.max(0, DAILY_CAP_STAGE-OR1), OR2: Math.max(0, DAILY_CAP_STAGE-OR2), OR3: Math.max(0, DAILY_CAP_STAGE-OR3) };\nif ((remaining.OR1 + remaining.OR2 + remaining.OR3) === 0) return [];\n\nif (Math.random() >= BASE_SEND_RATE) return [];\n\nreturn [{ json: { startedAt: new Date().toISOString(), remaining } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2860,
+        480
+      ],
+      "id": "gate-human-cadence",
+      "name": "Gate: human cadence + per-stage caps"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/campaigns?organizationId={{ $node[\"Get Organization\"].json.organizationId }}",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2680,
+        320
+      ],
+      "id": "get-campaigns",
+      "name": "Get Outreach Campaigns"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/daily-stats?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&campaignId={{ $node[\"Get Outreach Campaigns\"].json.campaigns[0].id }}",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2500,
+        320
+      ],
+      "id": "get-daily-stats",
+      "name": "Get Daily Stats"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2320,
+        320
+      ],
+      "id": "get-or1-leads",
+      "name": "Get OR1 Leads"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&stage=OR2&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2320,
+        480
+      ],
+      "id": "get-or2-leads",
+      "name": "Get OR2 Leads"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&stage=OR3&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2320,
+        640
+      ],
+      "id": "get-or3-leads",
+      "name": "Get OR3 Leads"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Filter leads based on daily caps\nconst dailyStats = $node[\"Get Daily Stats\"].json;\nconst remaining = {\n  OR1: Math.max(0, 20 - (dailyStats.or1_count || 0)),\n  OR2: Math.max(0, 20 - (dailyStats.or2_count || 0)),\n  OR3: Math.max(0, 20 - (dailyStats.or3_count || 0))\n};\n\n// Combine all leads and filter by remaining capacity\nconst allLeads = [\n  ...($node[\"Get OR1 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR1' })),\n  ...($node[\"Get OR2 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR2' })),\n  ...($node[\"Get OR3 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR3' }))\n];\n\n// Sort by priority and filter by capacity\nreturn allLeads\n  .filter(lead => remaining[lead.stage] > 0)\n  .sort((a, b) => {\n    const priority = { OR1: 1, OR2: 2, OR3: 3 };\n    return priority[a.stage] - priority[b.stage];\n  })\n  .slice(0, 1); // Take only 1 lead per run\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1960,
+        480
+      ],
+      "id": "filter-by-caps",
+      "name": "Filter by Daily Caps"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "stage-or1",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "stage-or2",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "stage-or3",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -640,
+        480
+      ],
+      "id": "switch-stage",
+      "name": "Switch Stage"
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Turnkey food-&-beverage content that outperforms stock shots",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Marketing leads at companies like McCormick, Chicken Farmers of Canada, Hard Rock, and Protein Candy call on Gotham Studios when:</p><ul><li>internal or agency teams can't keep up with the volume, polish, or creative vision required;</li><li>launching a new SKU, refreshing a menu, or driving brand awareness demands content that really performs;</li><li>they need an agile partner who delivers strategy, recipe ideation, food styling, and production—all without a big-agency retainer.</li></ul><p>Our in-house crew has produced 2,000+ high-impact food & beverage images and videos, including:</p><ul><li>Scroll-stopping hero shots and GIFs for social feeds</li><li>Step-by-step recipe videos that boost dwell time and add-to-cart rates</li><li>Campaign-ready lifestyle photography aligned to brand guidelines and deadlines</li></ul><p>We handle hosting, file delivery, and post-production, so your team can focus on distribution—not logistics.</p><p>If you're ever exploring ways to level up content or simply need overflow capacity, I'd love to share a short deck or set up a 10-minute walkthrough.</p><p>Best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        280
+      ],
+      "id": "gmail-send-or1",
+      "name": "Gmail - Send OR1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nfunction toEtDate(d) {\n  const p = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);\n  const m = Object.fromEntries(p.map(x => [x.type, x.value]));\n  return `${m.year}-${m.month}-${m.day}`;\n}\nfunction addBizDays(start, min, max) {\n  const add = min + Math.floor(Math.random() * (max - min + 1));\n  let d = new Date(start);\n  let k = 0;\n  while (k < add) {\n    d.setDate(d.getDate() + 1);\n    const w = d.getDay();\n    if (w !== 0 && w !== 6) k++;\n  }\n  return d;\n}\nconst now = new Date();\nconst f1 = addBizDays(now, 2, 4);\nreturn [{\n  json: {\n    ...$json,\n    followupDateStr: toEtDate(f1),\n    organizationId: $node[\"Get Organization\"].json.organizationId,\n    campaignId: $node[\"Get Outreach Campaigns\"].json.campaigns[0].id,\n    stage: 'OR1',\n    threadId: $node[\"Gmail - Send OR1\"].json.threadId\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        280
+      ],
+      "id": "compute-followup-or1",
+      "name": "Compute FollowUp Date (OR1)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "followupDate",
+              "value": "={{ $json.followupDateStr }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        280
+      ],
+      "id": "update-lead-or1",
+      "name": "Update Lead OR1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/daily-stats",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        280
+      ],
+      "id": "update-stats-or1",
+      "name": "Update Stats OR1"
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Quick follow-up on turnkey food content",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Circling back in case enhanced food & beverage visuals are a priority this quarter. Gotham Studios blends recipe development, styling, and high-volume production so your campaigns never run short on compelling assets. Interested in seeing a few recent case studies?</p><p>Best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        480
+      ],
+      "id": "gmail-send-or2",
+      "name": "Gmail - Send OR2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nfunction toEtDate(d) {\n  const p = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);\n  const m = Object.fromEntries(p.map(x => [x.type, x.value]));\n  return `${m.year}-${m.month}-${m.day}`;\n}\nfunction addBizDays(start, min, max) {\n  const add = min + Math.floor(Math.random() * (max - min + 1));\n  let d = new Date(start);\n  let k = 0;\n  while (k < add) {\n    d.setDate(d.getDate() + 1);\n    const w = d.getDay();\n    if (w !== 0 && w !== 6) k++;\n  }\n  return d;\n}\nconst now = new Date();\nconst f2 = addBizDays(now, 4, 7);\nreturn [{\n  json: {\n    ...$json,\n    followup2DateStr: toEtDate(f2),\n    organizationId: $node[\"Get Organization\"].json.organizationId,\n    campaignId: $node[\"Get Outreach Campaigns\"].json.campaigns[0].id,\n    stage: 'OR2',\n    threadId: $node[\"Gmail - Send OR2\"].json.threadId\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        480
+      ],
+      "id": "compute-followup-or2",
+      "name": "Compute FollowUp2 Date (OR2)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "followup2Date",
+              "value": "={{ $json.followup2DateStr }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        480
+      ],
+      "id": "update-lead-or2",
+      "name": "Update Lead OR2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/daily-stats",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        480
+      ],
+      "id": "update-stats-or2",
+      "name": "Update Stats OR2"
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Final note on rapid-fire content support",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Just a last nudge: if you're considering ways to scale content without overloading your team, Gotham Studios can deliver a complete asset library—from strategy to post-production—on tight timelines. Always happy to talk when the need arises.</p><p>All the best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        680
+      ],
+      "id": "gmail-send-or3",
+      "name": "Gmail - Send OR3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "YOUR_GMAIL_CREDENTIAL_ID",
+          "name": "Gmail Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -200,
+        680
+      ],
+      "id": "update-lead-or3",
+      "name": "Update Lead OR3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/daily-stats",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "campaignId",
+              "value": "={{ $json.campaignId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        680
+      ],
+      "id": "update-stats-or3",
+      "name": "Update Stats OR3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get organization ID - you'll need to set this based on your setup\nreturn [{ json: { organizationId: 'YOUR_ORGANIZATION_ID' } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3220,
+        320
+      ],
+      "id": "get-organization",
+      "name": "Get Organization"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (M-F 9-5 ET, every min)": {
+      "main": [
+        [
+          {
+            "node": "Gate: human cadence + per-stage caps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gate: human cadence + per-stage caps": {
+      "main": [
+        [
+          {
+            "node": "Get Organization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Organization": {
+      "main": [
+        [
+          {
+            "node": "Get Outreach Campaigns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Outreach Campaigns": {
+      "main": [
+        [
+          {
+            "node": "Get Daily Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Daily Stats": {
+      "main": [
+        [
+          {
+            "node": "Get OR1 Leads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get OR2 Leads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get OR3 Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get OR1 Leads": {
+      "main": [
+        [
+          {
+            "node": "Filter by Daily Caps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get OR2 Leads": {
+      "main": [
+        [
+          {
+            "node": "Filter by Daily Caps",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get OR3 Leads": {
+      "main": [
+        [
+          {
+            "node": "Filter by Daily Caps",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Filter by Daily Caps": {
+      "main": [
+        [
+          {
+            "node": "Switch Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Stage": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Send OR1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Send OR2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Send OR3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR1": {
+      "main": [
+        [
+          {
+            "node": "Compute FollowUp Date (OR1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute FollowUp Date (OR1)": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Lead OR1": {
+      "main": [
+        [
+          {
+            "node": "Update Stats OR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR2": {
+      "main": [
+        [
+          {
+            "node": "Compute FollowUp2 Date (OR2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute FollowUp2 Date (OR2)": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Lead OR2": {
+      "main": [
+        [
+          {
+            "node": "Update Stats OR2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR3": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Lead OR3": {
+      "main": [
+        [
+          {
+            "node": "Update Stats OR3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "new-workflow-version",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "supabase-outreach-workflow"
+  },
+  "id": "supabase-outreach-workflow",
+  "tags": [
+    {
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "id": "supabase-tag",
+      "name": "Supabase"
+    },
+    {
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "id": "outreach-tag",
+      "name": "Outreach"
+    }
+  ]
+}

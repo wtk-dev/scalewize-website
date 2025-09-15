@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { Database } from '@/types/database'
+import { sendVerificationEmail } from '@/lib/email-service'
 
 export async function POST(request: NextRequest) {
   try {
@@ -113,12 +114,38 @@ export async function POST(request: NextRequest) {
           )
         }
 
+        // Send verification email if email confirmation is required
+        let emailSent = false
+        if (process.env.NODE_ENV === 'production' || !authData.session) {
+          try {
+            const verificationUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/verify-email?token=${authData.user.id}&email=${encodeURIComponent(email)}`
+            
+            const emailResult = await sendVerificationEmail({
+              to: email,
+              verificationUrl,
+              fullName: fullName,
+              organizationName: organizationName
+            })
+
+            if (emailResult.success) {
+              emailSent = true
+              console.log('Verification email sent successfully:', emailResult.messageId)
+            } else {
+              console.error('Failed to send verification email:', emailResult.error)
+            }
+          } catch (emailError) {
+            console.error('Error sending verification email:', emailError)
+            // Don't fail the signup if email fails
+          }
+        }
+
         return NextResponse.json({
           success: true,
           message: 'Account created successfully',
           user: authData.user,
           organization: orgData,
-          requiresEmailConfirmation: false
+          emailSent,
+          requiresEmailConfirmation: !authData.session
         })
       } catch (error) {
         console.error('Database operation error:', error)

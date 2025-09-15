@@ -1,0 +1,703 @@
+{
+  "name": "Unified Outreach - Simple Supabase",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0-59 9-16 * * 1-5"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3040,
+        480
+      ],
+      "id": "54ada31a-bb21-4b55-ad66-c0a2034253ae",
+      "name": "Schedule Trigger (M-F 9-5 ET, every min)"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nconst SEND_MINUTE_BLOCK = new Set([0,15,30,45]);\nconst BASE_SEND_RATE = 1;\n\nfunction nowEtParts() {\n  const parts = new Intl.DateTimeFormat('en-CA', {\n    timeZone: TZ, weekday: 'short', hour12: false,\n    year:'numeric', month:'2-digit', day:'2-digit',\n    hour:'2-digit', minute:'2-digit', second:'2-digit',\n  }).formatToParts(new Date());\n  const m = Object.fromEntries(parts.map(p => [p.type, p.value]));\n  const wd = ['sun','mon','tue','wed','thu','fri','sat']\n    .indexOf(m.weekday.toLowerCase().slice(0,3));\n  return { wd, h: +m.hour, mi: +m.minute, date: `${m.year}-${m.month}-${m.day}` };\n}\nfunction inEtWindow(h, mi) {\n  const t = h*60 + mi;\n  const amStart = 9*60, amEnd = 11*60 + 59;\n  const pmStart = 13*60, pmEnd = 16*60 + 59;\n  return (t>=amStart && t<=amEnd) || (t>=pmStart && t<=pmEnd);\n}\n\nconst { wd, h, mi, date } = nowEtParts();\n\nif (wd===0 || wd===6) return [];\nif (!inEtWindow(h, mi)) return [];\nif (SEND_MINUTE_BLOCK.has(mi)) return [];\nif (Math.random() >= BASE_SEND_RATE) return [];\n\nreturn [{ json: { startedAt: new Date().toISOString() } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2860,
+        480
+      ],
+      "id": "773ef9f2-9b85-4ea2-aea7-21b53b4ef242",
+      "name": "Gate: human cadence"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads-simple?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2680,
+        280
+      ],
+      "id": "4430d062-fd44-4d0f-a8f6-2856e7302615",
+      "name": "Get OR1 Leads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads-simple?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&stage=OR2&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2680,
+        480
+      ],
+      "id": "1dba8910-dfa7-422c-9aa5-e857caeeb198",
+      "name": "Get OR2 Leads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://your-domain.com/api/outreach/leads-simple?organizationId={{ $node[\"Get Organization\"].json.organizationId }}&stage=OR3&maxResults=50",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2680,
+        680
+      ],
+      "id": "386a66a1-7a42-4545-ba0f-a67016346bae",
+      "name": "Get OR3 Leads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Combine all leads and prioritize by stage\nconst allLeads = [\n  ...($node[\"Get OR1 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR1' })),\n  ...($node[\"Get OR2 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR2' })),\n  ...($node[\"Get OR3 Leads\"].json.leads || []).map(l => ({ ...l, stage: 'OR3' }))\n];\n\n// Sort by priority and take only 1 lead per run\nreturn allLeads\n  .sort((a, b) => {\n    const priority = { OR1: 1, OR2: 2, OR3: 3 };\n    return priority[a.stage] - priority[b.stage];\n  })\n  .slice(0, 1);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2400,
+        480
+      ],
+      "id": "0bb11b3c-9f71-4062-a5a5-7f06fcd8076c",
+      "name": "Combine and Prioritize Leads",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "eab90d52-69aa-4a53-ad7b-05e3859d652d",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR1",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "45e84dfc-d5c6-4fa8-8970-2d432c17143f",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR2",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "dab8775a-511d-418f-8811-21b8de7ff977",
+                    "leftValue": "={{ $json.stage }}",
+                    "rightValue": "OR3",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -2000,
+        480
+      ],
+      "id": "3f411946-6505-4777-ab80-5d710dd0abe7",
+      "name": "Switch Stage"
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Turnkey food-&-beverage content that outperforms stock shots",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Marketing leads at companies like McCormick, Chicken Farmers of Canada, Hard Rock, and Protein Candy call on Gotham Studios when:</p><ul><li>internal or agency teams can't keep up with the volume, polish, or creative vision required;</li><li>launching a new SKU, refreshing a menu, or driving brand awareness demands content that really performs;</li><li>they need an agile partner who delivers strategy, recipe ideation, food styling, and production—all without a big-agency retainer.</li></ul><p>Our in-house crew has produced 2,000+ high-impact food & beverage images and videos, including:</p><ul><li>Scroll-stopping hero shots and GIFs for social feeds</li><li>Step-by-step recipe videos that boost dwell time and add-to-cart rates</li><li>Campaign-ready lifestyle photography aligned to brand guidelines and deadlines</li></ul><p>We handle hosting, file delivery, and post-production, so your team can focus on distribution—not logistics.</p><p>If you're ever exploring ways to level up content or simply need overflow capacity, I'd love to share a short deck or set up a 10-minute walkthrough.</p><p>Best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1600,
+        280
+      ],
+      "id": "45e4d0ee-afbe-4c46-8b9e-7cf774efb06e",
+      "name": "Gmail - Send OR1",
+      "webhookId": "02c7e0da-c17e-4837-9ddd-525b0f1a105d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IWLnQelqnFeUlJPb",
+          "name": "seb@scalewize for testing only"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nfunction toEtDate(d) {\n  const p = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);\n  const m = Object.fromEntries(p.map(x => [x.type, x.value]));\n  return `${m.year}-${m.month}-${m.day}`;\n}\nfunction addBizDays(start, min, max) {\n  const add = min + Math.floor(Math.random() * (max - min + 1));\n  let d = new Date(start);\n  let k = 0;\n  while (k < add) {\n    d.setDate(d.getDate() + 1);\n    const w = d.getDay();\n    if (w !== 0 && w !== 6) k++;\n  }\n  return d;\n}\nconst now = new Date();\nconst f1 = addBizDays(now, 2, 4);\nreturn [{\n  json: {\n    ...$json,\n    followupDateStr: toEtDate(f1),\n    organizationId: $node[\"Get Organization\"].json.organizationId,\n    stage: 'OR1',\n    threadId: $node[\"Gmail - Send OR1\"].json.threadId\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        280
+      ],
+      "id": "95f84fd6-06a2-4041-a53e-0a634156b336",
+      "name": "Compute FollowUp Date (OR1)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead-simple",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "followupDate",
+              "value": "={{ $json.followupDateStr }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -800,
+        280
+      ],
+      "id": "faaa8cf8-f761-44fe-87e4-ea86b4fe98fc",
+      "name": "Update Lead OR1",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Quick follow-up on turnkey food content",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Circling back in case enhanced food & beverage visuals are a priority this quarter. Gotham Studios blends recipe development, styling, and high-volume production so your campaigns never run short on compelling assets. Interested in seeing a few recent case studies?</p><p>Best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1600,
+        480
+      ],
+      "id": "9eeefe4f-66b2-4e8c-9c63-bf9d67a0327f",
+      "name": "Gmail - Send OR2",
+      "webhookId": "4e1390fb-a3a2-4c3b-86f9-b6c90923edd0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IWLnQelqnFeUlJPb",
+          "name": "seb@scalewize for testing only"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst TZ = 'America/New_York';\nfunction toEtDate(d) {\n  const p = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(d);\n  const m = Object.fromEntries(p.map(x => [x.type, x.value]));\n  return `${m.year}-${m.month}-${m.day}`;\n}\nfunction addBizDays(start, min, max) {\n  const add = min + Math.floor(Math.random() * (max - min + 1));\n  let d = new Date(start);\n  let k = 0;\n  while (k < add) {\n    d.setDate(d.getDate() + 1);\n    const w = d.getDay();\n    if (w !== 0 && w !== 6) k++;\n  }\n  return d;\n}\nconst now = new Date();\nconst f2 = addBizDays(now, 4, 7);\nreturn [{\n  json: {\n    ...$json,\n    followup2DateStr: toEtDate(f2),\n    organizationId: $node[\"Get Organization\"].json.organizationId,\n    stage: 'OR2',\n    threadId: $node[\"Gmail - Send OR2\"].json.threadId\n  }\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1200,
+        480
+      ],
+      "id": "9abfdd58-e8c7-4482-82da-05d4e2766de9",
+      "name": "Compute FollowUp2 Date (OR2)"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead-simple",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "followup2Date",
+              "value": "={{ $json.followup2DateStr }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -800,
+        480
+      ],
+      "id": "071b21fe-683c-456d-9332-5a7b7aa92aff",
+      "name": "Update Lead OR2",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "= {{ $json.email }}",
+        "subject": "=Final note on rapid-fire content support",
+        "message": "=<p>Hi {{ $json.first_name || 'there' }},</p><p>Just a last nudge: if you're considering ways to scale content without overloading your team, Gotham Studios can deliver a complete asset library—from strategy to post-production—on tight timelines. Always happy to talk when the need arises.</p><p>All the best,<br>Nick Lavery<br>Owner, Gotham Studios</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1600,
+        680
+      ],
+      "id": "c239b12f-0e10-4f64-b40d-eca50d1f895e",
+      "name": "Gmail - Send OR3",
+      "webhookId": "e3dfd8bf-bc17-4f44-a70a-e7b3b4b05a33",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IWLnQelqnFeUlJPb",
+          "name": "seb@scalewize for testing only"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://your-domain.com/api/outreach/update-lead-simple",
+        "authentication": "headerAuth",
+        "headerParameters": {
+          "parameter": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "bodyParameters": {
+          "parameter": [
+            {
+              "name": "leadId",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "organizationId",
+              "value": "={{ $json.organizationId }}"
+            },
+            {
+              "name": "stage",
+              "value": "={{ $json.stage }}"
+            },
+            {
+              "name": "threadId",
+              "value": "={{ $json.threadId }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1200,
+        680
+      ],
+      "id": "ee9d15d9-7d5d-4bc0-9e87-956594535c47",
+      "name": "Update Lead OR3",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "YOUR_HTTP_HEADER_AUTH_ID",
+          "name": "Supabase API Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get organization ID - you'll need to set this based on your setup\nreturn [{ json: { organizationId: 'YOUR_ORGANIZATION_ID' } }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3220,
+        320
+      ],
+      "id": "0dfb3ed9-6732-4467-bcf9-4676eb3c3e6c",
+      "name": "Get Organization"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (M-F 9-5 ET, every min)": {
+      "main": [
+        [
+          {
+            "node": "Gate: human cadence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gate: human cadence": {
+      "main": [
+        [
+          {
+            "node": "Get Organization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Organization": {
+      "main": [
+        [
+          {
+            "node": "Get OR1 Leads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get OR2 Leads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get OR3 Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get OR1 Leads": {
+      "main": [
+        [
+          {
+            "node": "Combine and Prioritize Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get OR2 Leads": {
+      "main": [
+        [
+          {
+            "node": "Combine and Prioritize Leads",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get OR3 Leads": {
+      "main": [
+        [
+          {
+            "node": "Combine and Prioritize Leads",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Combine and Prioritize Leads": {
+      "main": [
+        [
+          {
+            "node": "Switch Stage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Stage": {
+      "main": [
+        [
+          {
+            "node": "Gmail - Send OR1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Send OR2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail - Send OR3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR1": {
+      "main": [
+        [
+          {
+            "node": "Compute FollowUp Date (OR1)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute FollowUp Date (OR1)": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR2": {
+      "main": [
+        [
+          {
+            "node": "Compute FollowUp2 Date (OR2)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute FollowUp2 Date (OR2)": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail - Send OR3": {
+      "main": [
+        [
+          {
+            "node": "Update Lead OR3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9c270a4f-7cad-4ecc-b10c-1d359fd774b8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b290958628946814704a7f34e4bcb09ce7f800f716bf502fc7e428d445869d39"
+  },
+  "id": "zDnRo6DFSikmNIaz",
+  "tags": [
+    {
+      "createdAt": "2025-04-21T19:23:59.731Z",
+      "updatedAt": "2025-04-21T19:23:59.731Z",
+      "id": "XLvLdtrZ56kT9GZo",
+      "name": "Take5"
+    },
+    {
+      "createdAt": "2025-04-21T19:33:45.446Z",
+      "updatedAt": "2025-04-21T19:33:45.446Z",
+      "id": "eaiCuRkfggNnDqEB",
+      "name": "Automation"
+    }
+  ]
+}
