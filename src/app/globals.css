@@ -58,18 +58,18 @@ h1, h2, h3, h4, h5, h6 {
   background: #94a3b8;
 }
 
-/* Particle Glow Effect */
+/* Enhanced Particle Glow Effect */
 .particle-glow {
-  filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.6)) drop-shadow(0 0 12px rgba(16, 185, 129, 0.4));
+  filter: drop-shadow(0 0 6px rgba(89, 95, 57, 0.6)) drop-shadow(0 0 12px rgba(89, 95, 57, 0.4));
 }
 
-/* Video Glow Animation */
+/* Enhanced Video Glow Animation */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), 0 0 40px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 20px rgba(89, 95, 57, 0.3), 0 0 40px rgba(89, 95, 57, 0.2);
   }
   50% {
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4), 0 0 60px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 30px rgba(89, 95, 57, 0.4), 0 0 60px rgba(89, 95, 57, 0.3);
   }
 }
 
@@ -98,109 +98,301 @@ h1, h2, h3, h4, h5, h6 {
   left: 100%;
 }
 
-/* Form Styling */
+/* Enhanced Form Styling */
 input, input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea {
-  color: #171717 !important;
-  transition: all 0.2s ease-in-out;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 input:focus, textarea:focus {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  outline: none;
+  border-color: #595F39;
+  box-shadow: 0 0 0 3px rgba(89, 95, 57, 0.1);
+  background: rgba(255, 255, 255, 1);
 }
 
-/* Loading Animation */
-@keyframes shimmer {
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
+/* Enhanced Gradient Text */
+.gradient-text {
+  background: linear-gradient(135deg, #595F39 0%, #9C8B5E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
+/* Enhanced Card Hover Effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Enhanced Navigation */
+.nav-blur {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Enhanced Loading States */
 .loading-shimmer {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-  background-size: 200px 100%;
-  animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }
 
-/* Glass Effect */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-/* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, var(--green-primary), var(--green-secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% 200%;
-  animation: gradient-shift 3s ease infinite;
-}
-
-@keyframes gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Enhanced Focus States */
-.focus-green:focus {
+.focus-ring {
+  transition: all 0.2s ease;
+}
+
+.focus-ring:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
-  border-color: var(--green-primary);
+  box-shadow: 0 0 0 3px rgba(89, 95, 57, 0.2);
 }
 
-/* Improved Motion Reduce Support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Enhanced Backdrop Effects */
+.backdrop-blur-enhanced {
+  backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.7);
 }
 
-/* Henly AI Brand Colors */
-.bg-henly-primary {
-  background-color: #595F39;
+/* Enhanced Shadow System */
+.shadow-enhanced {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
-.bg-henly-primary-light {
-  background-color: rgba(89, 95, 57, 0.1);
+.shadow-enhanced-lg {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
-.bg-henly-primary-medium {
-  background-color: rgba(89, 95, 57, 0.2);
+/* Enhanced Border Radius */
+.rounded-enhanced {
+  border-radius: 16px;
 }
 
-.text-henly-primary {
+.rounded-enhanced-lg {
+  border-radius: 24px;
+}
+
+/* Enhanced Spacing */
+.space-enhanced {
+  margin: 2rem 0;
+}
+
+.space-enhanced-lg {
+  margin: 4rem 0;
+}
+
+/* Enhanced Typography Scale */
+.text-enhanced-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-enhanced-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-enhanced-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-enhanced-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-enhanced-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-enhanced-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.text-enhanced-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.text-enhanced-4xl {
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.text-enhanced-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.text-enhanced-6xl {
+  font-size: 3.75rem;
+  line-height: 1;
+}
+
+.text-enhanced-7xl {
+  font-size: 4.5rem;
+  line-height: 1;
+}
+
+.text-enhanced-8xl {
+  font-size: 6rem;
+  line-height: 1;
+}
+
+.text-enhanced-9xl {
+  font-size: 8rem;
+  line-height: 1;
+}
+
+/* Enhanced Color Utilities */
+.text-primary {
   color: #595F39;
 }
 
-.text-henly-primary-dark {
-  color: rgba(89, 95, 57, 0.9);
+.text-secondary {
+  color: #9C8B5E;
 }
 
-.text-henly-primary-medium {
-  color: rgba(89, 95, 57, 0.8);
+.bg-primary {
+  background-color: #595F39;
 }
 
-.border-henly-primary {
-  border-color: rgba(89, 95, 57, 0.3);
+.bg-secondary {
+  background-color: #9C8B5E;
 }
 
-.hover-henly-primary:hover {
-  opacity: 0.9;
-}
-
-.focus-henly-primary:focus {
-  ring-color: #595F39;
+.border-primary {
   border-color: #595F39;
+}
+
+.border-secondary {
+  border-color: #9C8B5E;
+}
+
+/* Enhanced Animation Utilities */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.8s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 640px) {
+  .text-responsive-xl {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .text-responsive-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-responsive-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  .text-responsive-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+  
+  .text-responsive-5xl {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  
+  .text-responsive-6xl {
+    font-size: 3rem;
+    line-height: 1;
+  }
+  
+  .text-responsive-7xl {
+    font-size: 3.5rem;
+    line-height: 1;
+  }
+  
+  .text-responsive-8xl {
+    font-size: 4rem;
+    line-height: 1;
+  }
+}
+
+/* Enhanced Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .shadow-enhanced,
+  .shadow-enhanced-lg {
+    box-shadow: none !important;
+  }
 }
