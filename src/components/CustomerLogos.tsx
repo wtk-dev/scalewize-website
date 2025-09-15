@@ -86,7 +86,7 @@ export default function CustomerLogos() {
         }
         
         .animate-scroll-seamless {
-          animation: scroll-seamless ${50 * logoCopies}s linear infinite;
+          animation: scroll-seamless ${20 * logoCopies}s linear infinite;
           will-change: transform;
         }
         
