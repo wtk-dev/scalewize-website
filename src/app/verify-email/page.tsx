@@ -36,17 +36,20 @@ function VerifyEmailContent() {
       setLoading(true)
       setError(null)
 
+      console.log('Verification attempt:', { token, email })
+
       if (!token || !email) {
         setError('Invalid verification link. Missing token or email.')
         setLoading(false)
         return
       }
 
-      // Get user profile with organization details
-      const { data: profileData, error: profileError } = await supabase
+      // Get user profile with organization details using the token (user ID)
+      let { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select(`
           id,
+          email,
           organization_id,
           organizations!profiles_organization_id_fkey (
             id,
@@ -54,12 +57,45 @@ function VerifyEmailContent() {
             slug
           )
         `)
-        .eq('email', email)
+        .eq('id', token) // Use token as user ID
         .single()
 
+      // Fallback: if profile not found by ID, try by email
       if (profileError || !profileData) {
-        console.error('Profile not found:', profileError)
-        setError('User profile not found. Please contact support.')
+        console.log('Profile not found by ID, trying by email as fallback')
+        const { data: fallbackProfile, error: fallbackError } = await supabase
+          .from('profiles')
+          .select(`
+            id,
+            email,
+            organization_id,
+            organizations!profiles_organization_id_fkey (
+              id,
+              name,
+              slug
+            )
+          `)
+          .eq('email', email)
+          .single()
+        
+        if (fallbackError || !fallbackProfile) {
+          console.error('Profile not found by either ID or email:', { profileError, fallbackError })
+          console.error('Searching for profile with token (user ID):', token)
+          setError('User profile not found. Please contact support.')
+          setLoading(false)
+          return
+        }
+        
+        profileData = fallbackProfile
+        profileError = null
+      }
+
+      console.log('Profile found:', profileData)
+
+      // Verify that the email matches (additional security check)
+      if (profileData.email !== email) {
+        console.error('Email mismatch:', { tokenEmail: profileData.email, providedEmail: email })
+        setError('Email verification failed. Please try again.')
         setLoading(false)
         return
       }
@@ -71,7 +107,7 @@ function VerifyEmailContent() {
           is_verified: true,
           email_verified_at: new Date().toISOString()
         })
-        .eq('email', email)
+        .eq('id', profileData.id) // Use the actual profile ID
 
       if (updateError) {
         console.error('Error updating verification status:', updateError)
@@ -93,6 +129,8 @@ function VerifyEmailContent() {
         }
       )
 
+      // Update the auth user to confirm their email
+      console.log('Updating auth user with ID:', profileData.id)
       const { error: authUpdateError } = await supabaseAdmin.auth.admin.updateUserById(
         profileData.id,
         {
@@ -103,6 +141,10 @@ function VerifyEmailContent() {
       if (authUpdateError) {
         console.error('Error updating auth user:', authUpdateError)
         // Don't fail the entire process, the profile update succeeded
+        // But log this for debugging
+        console.log('Profile verification succeeded, but auth update failed. User may need to re-login.')
+      } else {
+        console.log('Auth user email confirmation updated successfully')
       }
 
       setSuccess(true)
