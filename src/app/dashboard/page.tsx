@@ -4,13 +4,17 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { createLinkedInService } from '@/lib/linkedin-service'
 import { LinkedInAnalytics } from '@/lib/linkedin-service'
-import { MessageSquare, Users, Zap, TrendingUp, Clock } from 'lucide-react'
+import { MessageSquare, Users, Zap, TrendingUp, Clock, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 
 export default function DashboardPage() {
   const { profile, organization } = useAuth()
   const [detailedMetrics, setDetailedMetrics] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [showWelcome, setShowWelcome] = useState(false)
+  const searchParams = useSearchParams()
+  const orgSlug = searchParams.get('org')
 
   const linkedinService = organization ? createLinkedInService(organization.id) : null
 
@@ -19,6 +23,16 @@ export default function DashboardPage() {
       loadDetailedData()
     }
   }, [organization?.id]) // Only reload when organization ID changes
+
+  useEffect(() => {
+    // Show welcome message if coming from verification
+    if (orgSlug) {
+      setShowWelcome(true)
+      // Hide welcome message after 10 seconds
+      const timer = setTimeout(() => setShowWelcome(false), 10000)
+      return () => clearTimeout(timer)
+    }
+  }, [orgSlug])
 
   const loadDetailedData = async () => {
     if (!linkedinService) return
@@ -98,6 +112,23 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Welcome Message for New Users */}
+      {showWelcome && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+            <div>
+              <h3 className="text-sm font-medium text-green-800">
+                Welcome to {organization?.name}!
+              </h3>
+              <p className="text-sm text-green-700 mt-1">
+                Your email has been verified and your organization is ready to go. Start exploring your AI automation tools below.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Welcome Section */}
       <div className="bg-white rounded-lg shadow p-6">
         <h1 className="text-2xl font-bold text-gray-900">

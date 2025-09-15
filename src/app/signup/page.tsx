@@ -87,8 +87,13 @@ export default function SignupPage() {
 
       // Success! Handle the response
       if (result.message && result.message.includes("successfully")) {
-        // Account created successfully, redirect to email verification
-        router.push(`/verify-email?email=${encodeURIComponent(formData.email)}`)
+        // Account created successfully, redirect to verification pending page
+        if (result.emailSent) {
+          router.push(`/verify-email-pending?email=${encodeURIComponent(formData.email)}&org=${encodeURIComponent(formData.organizationName)}`)
+        } else {
+          // If no email was sent (development mode), go directly to dashboard
+          router.push('/dashboard')
+        }
       } else if (result.redirectUrl) {
         // Legacy redirect handling
         // If we have a redirect URL from Supabase, use it
