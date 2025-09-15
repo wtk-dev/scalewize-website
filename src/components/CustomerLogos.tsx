@@ -13,8 +13,9 @@ const customerLogos = [
   { name: 'Take5 Digital', src: '/take5digital.png', alt: 'Take5 Digital' },
 ]
 
-// Duplicate the array for seamless looping
-const duplicatedLogos = [...customerLogos, ...customerLogos]
+// Create enough copies for seamless looping
+const logoCopies = 4
+const duplicatedLogos = Array(logoCopies).fill(customerLogos).flat()
 
 export default function CustomerLogos() {
   return (
@@ -36,17 +37,16 @@ export default function CustomerLogos() {
         </motion.div>
 
         {/* Logo Scrolling Container */}
-        <div className="relative">
-          <div className="flex animate-scroll">
+        <div className="relative overflow-hidden">
+          {/* Main scrolling container */}
+          <div className="flex animate-scroll-seamless">
             {duplicatedLogos.map((logo, index) => (
-              <motion.div
+              <div
                 key={`${logo.name}-${index}`}
-                className="flex-shrink-0 mx-6 flex items-center justify-center"
+                className="flex-shrink-0 mx-6 flex items-center justify-center relative"
                 style={{ width: '220px', height: '100px' }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
+                {/* Logo container */}
                 <div className="relative w-full h-full flex items-center justify-center bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-lg transition-all duration-500 hover:scale-105">
                   <Image
                     src={logo.src}
@@ -65,32 +65,45 @@ export default function CustomerLogos() {
                     }}
                   />
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
           
-          {/* Gradient overlays for fade effect */}
-          <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-gray-50 to-transparent pointer-events-none z-10" />
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-gray-50 to-transparent pointer-events-none z-10" />
+          {/* Enhanced gradient overlays for proper fade effect */}
+          <div className="absolute left-0 top-0 bottom-0 w-48 bg-gradient-to-r from-gray-50 via-gray-50/90 via-gray-50/50 to-transparent pointer-events-none z-20" />
+          <div className="absolute right-0 top-0 bottom-0 w-48 bg-gradient-to-l from-gray-50 via-gray-50/90 via-gray-50/50 to-transparent pointer-events-none z-20" />
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes scroll {
+        @keyframes scroll-seamless {
           0% {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-${100 / logoCopies}%);
           }
         }
         
-        .animate-scroll {
-          animation: scroll 40s linear infinite;
+        .animate-scroll-seamless {
+          animation: scroll-seamless ${50 * logoCopies}s linear infinite;
+          will-change: transform;
         }
         
-        .animate-scroll:hover {
+        .animate-scroll-seamless:hover {
           animation-play-state: paused;
+        }
+        
+        /* Ensure smooth performance */
+        .animate-scroll-seamless {
+          backface-visibility: hidden;
+          perspective: 1000px;
+          transform-style: preserve-3d;
+        }
+        
+        /* Hide any potential overflow */
+        .animate-scroll-seamless > div {
+          contain: layout style paint;
         }
       `}</style>
     </section>
