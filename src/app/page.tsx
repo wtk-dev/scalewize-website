@@ -103,7 +103,6 @@ export default function Home() {
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <Image
@@ -156,7 +155,7 @@ export default function Home() {
             transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="mb-24"
           >
-            <h1 className="text-6xl sm:text-7xl lg:text-8xl font-light mb-8 leading-[1.05] tracking-tight pb-4">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-8 leading-[1.1] tracking-tight pb-4">
               <span className="block text-gray-900 mb-3 font-extralight">Make AI</span>
               <span className="block font-normal bg-gradient-to-r from-[#595F39] via-[#7A8B5A] to-[#9C8B5E] bg-clip-text text-transparent">
                 work for you
@@ -320,7 +319,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <h2 className="text-6xl sm:text-7xl lg:text-8xl font-extralight mb-8 leading-tight tracking-tight">
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-extralight mb-8 leading-tight tracking-tight">
               <span className="block text-gray-900 mb-3 font-extralight">TIME IS</span>
               <span className="block mb-3 font-light" style={{ color: '#595F39' }}>MONEY,</span>
               <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
@@ -343,7 +342,7 @@ export default function Home() {
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="text-center mb-20"
           >
-            <h2 className="text-5xl sm:text-6xl font-light text-gray-900 mb-6">
+            <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
               Solutions that <span style={{ color: '#595F39' }}>scale</span>
             </h2>
             <p className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto font-light">
@@ -456,7 +455,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <h2 className="text-5xl sm:text-6xl font-light text-white mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
               Get Started Today
             </h2>
             <p className="text-xl sm:text-2xl text-white/90 mb-12 leading-relaxed font-light max-w-3xl mx-auto">
@@ -489,7 +488,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <h2 className="text-5xl sm:text-6xl font-light mb-6">WORLD-CLASS</h2>
+            <h2 className="text-4xl sm:text-5xl font-light mb-6">WORLD-CLASS</h2>
             <p className="text-xl sm:text-2xl text-gray-200 mb-20 font-light">Agents & automations that improve your bottom line</p>
           
             <div className="grid md:grid-cols-3 gap-16">
@@ -509,7 +508,7 @@ export default function Home() {
                   <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: '#9C8B5E20' }}>
                     <stat.icon className="w-8 h-8" style={{ color: '#9C8B5E' }} />
                   </div>
-                  <div className="text-7xl sm:text-8xl font-light mb-6" style={{ color: '#9C8B5E' }}>{stat.value}</div>
+                  <div className="text-6xl sm:text-7xl font-light mb-6" style={{ color: '#9C8B5E' }}>{stat.value}</div>
                   <p className="text-gray-200 text-lg font-light">{stat.label}</p>
                 </motion.div>
               ))}
@@ -532,7 +531,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 mx-auto md:mx-0" style={{ backgroundColor: '#595F3920' }}>
                 <Star className="w-8 h-8" style={{ color: '#595F39' }} />
               </div>
-              <h3 className="text-4xl font-light text-gray-900 mb-8">Our Vision</h3>
+              <h3 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8">Our Vision</h3>
               <p className="text-xl text-gray-900 leading-relaxed font-light">
                 Accelerate business growth with AI solutions that cut complexity, boost performance, and scale with you
               </p>
@@ -547,7 +546,7 @@ export default function Home() {
               <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 mx-auto md:mx-0" style={{ backgroundColor: '#9C8B5E20' }}>
                 <CheckCircle className="w-8 h-8" style={{ color: '#9C8B5E' }} />
               </div>
-              <h3 className="text-4xl font-light text-gray-900 mb-8">Our Mission</h3>
+              <h3 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8">Our Mission</h3>
               <p className="text-xl text-gray-900 leading-relaxed font-light">
                 Make automation a reality, helping companies worldwide unlock new levels of efficiency and sustainable growth
               </p>

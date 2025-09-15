@@ -14,7 +14,7 @@ const customerLogos = [
 ]
 
 // Create enough copies for seamless looping
-const logoCopies = 4
+const logoCopies = 3
 const duplicatedLogos = Array(logoCopies).fill(customerLogos).flat()
 
 export default function CustomerLogos() {
@@ -86,7 +86,7 @@ export default function CustomerLogos() {
         }
         
         .animate-scroll-seamless {
-          animation: scroll-seamless ${12 * logoCopies}s linear infinite;
+          animation: scroll-seamless 18s linear infinite;
           will-change: transform;
         }
         
