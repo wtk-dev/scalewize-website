@@ -2,19 +2,12 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect, Suspense } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
-import { createClient } from '@supabase/supabase-js'
-import { Database } from '@/types/database'
 import { Loader2, CheckCircle, XCircle, Mail, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -45,168 +38,34 @@ function VerifyEmailContent() {
         return
       }
 
-      // Get user profile with organization details using the token (user ID)
-      let { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          email,
-          organization_id,
-          organizations!profiles_organization_id_fkey (
-            id,
-            name,
-            slug
-          )
-        `)
-        .eq('id', token) // Use token as user ID
-        .single()
-
-      // Fallback: if profile not found by ID, try by email
-      if (profileError || !profileData) {
-        console.log('Profile not found by ID, trying by email as fallback')
-        const { data: fallbackProfile, error: fallbackError } = await supabase
-          .from('profiles')
-          .select(`
-            id,
-            email,
-            organization_id,
-            organizations!profiles_organization_id_fkey (
-              id,
-              name,
-              slug
-            )
-          `)
-          .eq('email', email)
-          .single()
-        
-        if (fallbackError || !fallbackProfile) {
-          console.error('Profile not found by either ID or email:', { profileError, fallbackError })
-          console.error('Searching for profile with token (user ID):', token)
-          console.error('Email searched:', email)
-          
-          // Try to debug what profiles exist
-          const { data: allProfiles } = await supabase
-            .from('profiles')
-            .select('id, email, full_name')
-            .limit(10)
-          console.error('Available profiles:', allProfiles)
-          
-          // Check if this might be a timing issue - try to create the profile
-          console.log('Attempting to create profile for user ID:', token)
-          
-          // Create admin client for profile creation
-          const supabaseAdmin = createClient<Database>(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.SUPABASE_SERVICE_ROLE_KEY!,
-            {
-              auth: {
-                autoRefreshToken: false,
-                persistSession: false
-              }
-            }
-          )
-          
-          const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(token)
-          
-          if (authUser?.user) {
-            console.log('Auth user found, creating profile...')
-            // Try to create the profile
-            const { data: newProfile, error: createError } = await supabaseAdmin
-              .from('profiles')
-              .insert({
-                id: token,
-                email: email,
-                full_name: authUser.user.user_metadata?.full_name || 'User',
-                organization_id: null, // Will need to be set later
-                role: 'admin',
-                is_verified: false
-              })
-              .select()
-              .single()
-            
-            if (createError) {
-              console.error('Failed to create profile:', createError)
-              setError('User profile not found and could not be created. Please contact support.')
-              setLoading(false)
-              return
-            }
-            
-            profileData = newProfile
-            console.log('Profile created successfully:', profileData)
-          } else {
-            setError('User profile not found. Please contact support.')
-            setLoading(false)
-            return
-          }
-        } else {
-          profileData = fallbackProfile
-          profileError = null
-        }
-      }
-
-      console.log('Profile found:', profileData)
-
-      // Verify that the email matches (additional security check)
-      if (profileData.email !== email) {
-        console.error('Email mismatch:', { tokenEmail: profileData.email, providedEmail: email })
-        setError('Email verification failed. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      // Update user's verification status in the database
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
-          is_verified: true,
-          email_verified_at: new Date().toISOString()
+      // Use API endpoint to handle verification server-side
+      const response = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          email
         })
-        .eq('id', profileData.id) // Use the actual profile ID
+      })
 
-      if (updateError) {
-        console.error('Error updating verification status:', updateError)
-        setError('Failed to verify email. Please try again.')
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error('Verification failed:', result.error)
+        setError(result.error || 'Failed to verify email. Please try again.')
         setLoading(false)
         return
       }
 
-      // Update the auth user's email_confirmed_at using admin client
-      const { createClient } = await import('@supabase/supabase-js')
-      const supabaseAdmin = createClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!,
-        {
-          auth: {
-            autoRefreshToken: false,
-            persistSession: false
-          }
-        }
-      )
-
-      // Update the auth user to confirm their email
-      console.log('Updating auth user with ID:', profileData.id)
-      const { error: authUpdateError } = await supabaseAdmin.auth.admin.updateUserById(
-        profileData.id,
-        {
-          email_confirm: true
-        }
-      )
-
-      if (authUpdateError) {
-        console.error('Error updating auth user:', authUpdateError)
-        // Don't fail the entire process, the profile update succeeded
-        // But log this for debugging
-        console.log('Profile verification succeeded, but auth update failed. User may need to re-login.')
-      } else {
-        console.log('Auth user email confirmation updated successfully')
-      }
-
+      console.log('Verification successful:', result)
       setSuccess(true)
-      setUser(profileData)
+      setUser(result.profile)
 
       // Redirect to organization dashboard after 5 seconds
       setTimeout(() => {
-        const organization = (profileData as any).organizations
+        const organization = (result.profile as any).organizations
         if (organization?.slug) {
           router.push(`/dashboard?org=${organization.slug}`)
         } else {
