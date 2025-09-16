@@ -143,7 +143,7 @@ export default function Home() {
       <ParticleField videoRef={videoRef} />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-32 pb-16">
         {/* Enhanced Background Gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-amber-50/20" style={{ background: 'linear-gradient(135deg, #fafafa 0%, #ffffff 50%, #f8f7f4 100%)' }} />
         
@@ -290,47 +290,6 @@ export default function Home() {
 
       {/* Customer Logos Section */}
       <CustomerLogos />
-
-      {/* Enhanced Mission Statement */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-6xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-8 leading-tight">
-              We put customers first, ensuring every journey is <span style={{ color: '#595F39' }}>seamless</span>
-            </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 leading-relaxed font-light max-w-4xl mx-auto">
-              Offering innovative AI at a fraction of traditional costs, with world-class support and measurable results.
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Enhanced Time is Money Section */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-extralight mb-8 leading-tight tracking-tight">
-              <span className="block text-gray-900 mb-3 font-extralight">TIME IS</span>
-              <span className="block mb-3 font-light" style={{ color: '#595F39' }}>MONEY,</span>
-              <span className="block text-gray-900 font-extralight">SAVE BOTH</span>
-            </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 max-w-5xl mx-auto leading-relaxed font-light">
-              Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions 
-              and delightful customer experiences, always putting people first
-            </p>
-          </motion.div>
-        </div>
-      </section>
 
       {/* Enhanced Solutions Section */}
       <section id="solutions" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">

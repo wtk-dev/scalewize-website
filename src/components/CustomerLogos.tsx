@@ -28,11 +28,11 @@ export default function CustomerLogos() {
           transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl font-light text-gray-800 mb-4">
-            Trusted by innovative companies
+          <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
+            We put customers first, ensuring every journey is <span style={{ color: '#595F39' }}>seamless</span>
           </h2>
-          <p className="text-lg text-gray-600 font-light max-w-2xl mx-auto">
-            Join industry leaders who have transformed their operations with Henly AI
+          <p className="text-xl sm:text-2xl text-gray-900 leading-relaxed font-light max-w-4xl mx-auto">
+            Henly AI empowers clients to navigate AI with ease — delivering efficient, cost-effective solutions and delightful customer experiences, always putting people first
           </p>
         </motion.div>
 
