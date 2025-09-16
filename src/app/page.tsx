@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import { ArrowRight, Shield, Zap, Users, BarChart3, Clock, DollarSign, TrendingUp, MessageSquare, UserCheck, Settings, Play, Star, CheckCircle } from 'lucide-react'
 import CustomerLogos from '@/components/CustomerLogos'
+import AIAdoptionProgram from '@/components/AIAdoptionProgram'
 
 // Particle component for the animation
 const Particle = ({ delay, startX, startY, targetX, targetY }: {
@@ -115,7 +116,7 @@ export default function Home() {
               />
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="#solutions" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
+              <Link href="#ai-adoption-program" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
                 Solutions
               </Link>
               <Link href="#results" className="text-gray-800 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors">
@@ -198,10 +199,10 @@ export default function Home() {
                 transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
                 <Link 
-                  href="#solutions" 
+                  href="#ai-adoption-program" 
                   className="inline-flex items-center text-gray-800 hover:text-gray-900 px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out border-2 border-gray-300 hover:border-gray-400 bg-white hover:bg-gray-50"
                 >
-                  View Solutions
+                  View Program
                 </Link>
               </motion.div>
             </motion.div>
@@ -291,121 +292,8 @@ export default function Home() {
       {/* Customer Logos Section */}
       <CustomerLogos />
 
-      {/* Enhanced Solutions Section */}
-      <section id="solutions" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-center mb-20"
-          >
-            <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
-              Solutions that <span style={{ color: '#595F39' }}>scale</span>
-            </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto font-light">
-              Comprehensive AI automation across every aspect of your business
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {[
-               {
-                 icon: TrendingUp,
-                 title: "Sales",
-                 color: "#595F39",
-                 problem: "Generating qualified leads at scale and running high-conversion outreach is time-consuming.",
-                 solution: "We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.",
-                 impact: "Accelerated pipeline growth, higher email open rates, and more closed deals."
-               },
-               {
-                 icon: MessageSquare,
-                 title: "Marketing",
-                 color: "#9C8B5E",
-                 problem: "Generic campaigns waste budget. Content generation lacks personalization.",
-                 solution: "AI-powered audience insights personalize messaging and timing for maximum engagement.",
-                 impact: "Better click-through rates, higher ROI, stronger brand engagement."
-               },
-               {
-                 icon: Users,
-                 title: "Support",
-                 color: "#595F39",
-                 problem: "Manual support processes create bottlenecks and inconsistent experiences.",
-                 solution: "AI chatbots handle basic issues intelligently, route complex cases to specialists.",
-                 impact: "Quicker resolution times, higher satisfaction scores, significant cost savings."
-               },
-               {
-                 icon: UserCheck,
-                 title: "Talent",
-                 color: "#9C8B5E",
-                 problem: "Manual screening delays hiring top candidates in competitive markets.",
-                 solution: "AI-powered candidate screening and automated interview scheduling.",
-                 impact: "Faster hiring cycles, improved candidate quality, reduced recruitment costs."
-               },
-               {
-                 icon: Settings,
-                 title: "Operations",
-                 color: "#595F39",
-                 problem: "Complex processes slow product delivery and create inefficiencies.",
-                 solution: "Workflow automation and predictive analytics optimize supply chains and operations.",
-                 impact: "Shortened turnaround, fewer bottlenecks, consistent output quality."
-               },
-               {
-                 icon: DollarSign,
-                 title: "Finance",
-                 color: "#9C8B5E",
-                 problem: "Tedious invoicing and error-prone reconciliations drain resources.",
-                 solution: "Automated billing systems and real-time financial dashboards with AI insights.",
-                 impact: "Reduced processing time, fewer errors, stronger cash flow oversight."
-               }
-             ].map((solution, index) => (
-               <motion.div
-                 key={solution.title}
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                 whileHover={{ y: -8, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } }}
-                 className="bg-white rounded-3xl p-10 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out border border-gray-100 group"
-               >
-                <div 
-                  className="w-20 h-20 rounded-3xl flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform duration-300"
-                  style={{ backgroundColor: `${solution.color}15` }}
-                >
-                  <solution.icon className="h-10 w-10" style={{ color: solution.color }} />
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-8">{solution.title}</h3>
-              <div className="space-y-6">
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Problem
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.problem}</p>
-                </div>
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Solution
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.solution}</p>
-                </div>
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Impact
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.impact}</p>
-              </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced CTA Section */}
+      {/* AI Adoption Program Section */}
+      <AIAdoptionProgram />      {/* Enhanced CTA Section */}
       <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#595F39' }}>
         <div className="max-w-6xl mx-auto text-center">
           <motion.div

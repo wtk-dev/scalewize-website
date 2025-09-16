@@ -1,0 +1,2 @@
+      {/* AI Adoption Program Section */}
+      <AIAdoptionProgram />
