@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/database'
+import { sendVerificationEmail } from '@/lib/email-service'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -98,6 +99,31 @@ export async function POST(request: NextRequest) {
     
     console.log('Profile created successfully:', createdProfile)
     
+    // Send verification email if in production or if email verification is required
+    let emailSent = false
+    if (process.env.NODE_ENV === 'production' || profileData.email_verification_required) {
+      try {
+        const verificationUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/verify-email?token=${userId}&email=${encodeURIComponent(email)}`
+        
+        const emailResult = await sendVerificationEmail({
+          to: email,
+          verificationUrl,
+          fullName: fullName,
+          organizationName: organizationName
+        })
+
+        if (emailResult.success) {
+          emailSent = true
+          console.log('Verification email sent successfully:', emailResult.messageId)
+        } else {
+          console.error('Failed to send verification email:', emailResult.error)
+        }
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError)
+        // Don't fail the signup if email fails
+      }
+    }
+    
     // Generate a session for the newly created user
     const { data: sessionData, error: sessionError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'signup',
@@ -118,6 +144,7 @@ export async function POST(request: NextRequest) {
       userId,
       organizationId: orgData.id,
       profileId: createdProfile.id,
+      emailSent,
       session: sessionData?.properties ? {
         access_token: (sessionData.properties as any).access_token,
         refresh_token: (sessionData.properties as any).refresh_token

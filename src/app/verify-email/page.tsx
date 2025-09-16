@@ -2,18 +2,12 @@
 
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect, Suspense } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
-import { Database } from '@/types/database'
 import { Loader2, CheckCircle, XCircle, Mail, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -36,76 +30,48 @@ function VerifyEmailContent() {
       setLoading(true)
       setError(null)
 
-      // Validate token format (should be UUID)
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-      if (!token || !uuidRegex.test(token)) {
-        setError('Invalid verification token.')
+      console.log('Verification attempt:', { token, email })
+
+      if (!token || !email) {
+        setError('Invalid verification link. Missing token or email.')
         setLoading(false)
         return
       }
 
-      if (!email) {
-        setError('Email address is required.')
-        setLoading(false)
-        return
-      }
-
-      // Update user's verification status in the database
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ 
-          is_verified: true,
-          email_verified_at: new Date().toISOString()
+      // Use API endpoint to handle verification server-side
+      const response = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          token,
+          email
         })
-        .eq('email', email)
+      })
 
-      if (updateError) {
-        console.error('Error updating verification status:', updateError)
-        setError('Failed to verify email. Please try again.')
+      const result = await response.json()
+
+      if (!response.ok) {
+        console.error('Verification failed:', result.error)
+        setError(result.error || 'Failed to verify email. Please try again.')
         setLoading(false)
         return
       }
 
-      // Get the user ID and update auth user's email_confirmed_at
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .single()
-
-      if (profileData?.id) {
-        // Update the auth user's email_confirmed_at using admin client
-        const { createClient } = await import('@supabase/supabase-js')
-        const supabaseAdmin = createClient<Database>(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.SUPABASE_SERVICE_ROLE_KEY!,
-          {
-            auth: {
-              autoRefreshToken: false,
-              persistSession: false
-            }
-          }
-        )
-
-        const { error: authUpdateError } = await supabaseAdmin.auth.admin.updateUserById(
-          profileData.id,
-          {
-            email_confirm: true
-          }
-        )
-
-        if (authUpdateError) {
-          console.error('Error updating auth user:', authUpdateError)
-          // Don't fail the entire process, the profile update succeeded
-        }
-      }
-
+      console.log('Verification successful:', result)
       setSuccess(true)
+      setUser(result.profile)
 
-      // Redirect to login page after a short delay
+      // Redirect to organization dashboard after 5 seconds
       setTimeout(() => {
-        router.push('/login')
-      }, 3000)
+        const organization = (result.profile as any).organizations
+        if (organization?.slug) {
+          router.push(`/dashboard?org=${organization.slug}`)
+        } else {
+          router.push('/dashboard')
+        }
+      }, 5000)
 
     } catch (err) {
       console.error('Error verifying email:', err)
@@ -154,21 +120,22 @@ function VerifyEmailContent() {
   }
 
   if (success) {
+    const organization = user ? (user as any).organizations : null
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="max-w-md w-full bg-white rounded-lg shadow-md p-6 text-center">
           <CheckCircle className="mx-auto mb-4" style={{ color: "#595F39" }} />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h1>
           <p className="text-gray-600 mb-4">
-            Your email has been successfully verified. You can now log in to access your organization's dashboard.
+            Your email has been successfully verified. Welcome to your organization!
           </p>
           <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: "rgba(89, 95, 57, 0.1)", borderColor: "rgba(89, 95, 57, 0.3)" }}>
             <p style={{ color: "rgba(89, 95, 57, 0.8)" }}>
-              <strong>Welcome!</strong> You're now a verified member of your organization. Please log in to continue.
+              <strong>Welcome to {organization?.name || 'your organization'}!</strong> You're now a verified member and will be redirected to your dashboard.
             </p>
           </div>
           <p className="text-sm text-gray-500">
-            Redirecting to login page...
+            Redirecting to your organization dashboard in 5 seconds...
           </p>
         </div>
       </div>
