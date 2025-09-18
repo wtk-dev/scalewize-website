@@ -14,6 +14,8 @@ interface Node {
   image: string
   alt: string
   radius: number
+  separationForce: number
+  randomForce: number
 }
 
 interface Connection {
@@ -63,33 +65,37 @@ export default function AgentNetwork() {
     // Generate initial node positions with physics properties
     const newNodes: Node[] = []
     
-    // Position agents in a tighter circle in the center
+    // Position agents in a tighter circle in the center with more randomness
     agents.forEach((agent, index) => {
-      const angle = (index * 2 * Math.PI) / agents.length
-      const radius = Math.min(dimensions.width, dimensions.height) * 0.12 // Smaller radius
+      const angle = (index * 2 * Math.PI) / agents.length + (Math.random() - 0.5) * 0.5 // Add randomness
+      const radius = Math.min(dimensions.width, dimensions.height) * (0.08 + Math.random() * 0.08) // Random radius
       newNodes.push({
         ...agent,
         type: 'agent',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.3, // Slower initial velocity
-        vy: (Math.random() - 0.5) * 0.3,
-        radius: 24, // Smaller agent radius
+        vx: (Math.random() - 0.5) * 0.4, // More random velocity
+        vy: (Math.random() - 0.5) * 0.4,
+        radius: 24,
+        separationForce: 0.02, // Force to push nodes apart
+        randomForce: 0.001, // Random movement force
       })
     })
 
-    // Position tools in a wider circle around the agents
+    // Position tools in a wider circle around the agents with more randomness
     tools.forEach((tool, index) => {
-      const angle = (index * 2 * Math.PI) / tools.length
-      const radius = Math.min(dimensions.width, dimensions.height) * 0.25 // Closer to center
+      const angle = (index * 2 * Math.PI) / tools.length + (Math.random() - 0.5) * 0.8 // More randomness
+      const radius = Math.min(dimensions.width, dimensions.height) * (0.2 + Math.random() * 0.15) // Random radius
       newNodes.push({
         ...tool,
         type: 'tool',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.2, // Even slower for tools
-        vy: (Math.random() - 0.5) * 0.2,
-        radius: 20, // Smaller tool radius
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: 20,
+        separationForce: 0.015, // Slightly less separation force for tools
+        randomForce: 0.0008,
       })
     })
 
@@ -112,7 +118,7 @@ export default function AgentNetwork() {
     setConnections(newConnections)
   }, [dimensions])
 
-  // Physics simulation
+  // Enhanced physics simulation with separation forces and randomness
   useEffect(() => {
     const animate = (currentTime: number) => {
       const deltaTime = currentTime - lastTimeRef.current
@@ -120,56 +126,64 @@ export default function AgentNetwork() {
 
       setNodes(prevNodes => {
         return prevNodes.map(node => {
-          let newX = node.x + node.vx * deltaTime * 0.08 // Slower movement
+          let newX = node.x + node.vx * deltaTime * 0.08
           let newY = node.y + node.vy * deltaTime * 0.08
           let newVx = node.vx
           let newVy = node.vy
 
-          // Wall collision detection with bounce (with padding)
-          const padding = 20
-          if (newX - node.radius < padding || newX + node.radius > dimensions.width - padding) {
-            newVx = -newVx * 0.8 // Bounce with slight energy loss
-            newX = Math.max(node.radius + padding, Math.min(dimensions.width - node.radius - padding, newX))
-          }
-          if (newY - node.radius < padding || newY + node.radius > dimensions.height - padding) {
-            newVy = -newVy * 0.8 // Bounce with slight energy loss
-            newY = Math.max(node.radius + padding, Math.min(dimensions.height - node.radius - padding, newY))
-          }
+          // Add random movement force
+          newVx += (Math.random() - 0.5) * node.randomForce * deltaTime
+          newVy += (Math.random() - 0.5) * node.randomForce * deltaTime
 
-          // Node-to-node collision detection
+          // Apply separation forces to prevent clustering
           prevNodes.forEach(otherNode => {
             if (otherNode.id !== node.id) {
               const dx = newX - otherNode.x
               const dy = newY - otherNode.y
               const distance = Math.sqrt(dx * dx + dy * dy)
-              const minDistance = node.radius + otherNode.radius + 8 // Smaller minimum distance
+              const minDistance = node.radius + otherNode.radius + 15 // Increased minimum distance
 
               if (distance < minDistance && distance > 0) {
-                // Collision response
-                const overlap = minDistance - distance
-                const separationX = (dx / distance) * overlap * 0.5
-                const separationY = (dy / distance) * overlap * 0.5
+                // Strong separation force
+                const separationX = (dx / distance) * node.separationForce * deltaTime
+                const separationY = (dy / distance) * node.separationForce * deltaTime
+                
+                newVx += separationX
+                newVy += separationY
 
-                newX += separationX
-                newY += separationY
-
-                // Velocity exchange (simplified elastic collision)
-                const relativeVx = newVx - otherNode.vx
-                const relativeVy = newVy - otherNode.vy
-                const speed = relativeVx * dx + relativeVy * dy
-
-                if (speed < 0) {
-                  const impulse = 2 * speed / (distance * distance)
-                  newVx -= impulse * dx * 0.05 // Reduced impulse
-                  newVy -= impulse * dy * 0.05
-                }
+                // Also apply separation to the other node
+                const otherSeparationX = -(dx / distance) * otherNode.separationForce * deltaTime
+                const otherSeparationY = -(dy / distance) * otherNode.separationForce * deltaTime
+                
+                // Update other node's velocity (we'll handle this in the next iteration)
+                otherNode.vx += otherSeparationX
+                otherNode.vy += otherSeparationY
               }
             }
           })
 
-          // Apply slight friction
-          newVx *= 0.999
-          newVy *= 0.999
+          // Wall collision detection with bounce (with padding)
+          const padding = 20
+          if (newX - node.radius < padding || newX + node.radius > dimensions.width - padding) {
+            newVx = -newVx * 0.7 // Stronger bounce
+            newX = Math.max(node.radius + padding, Math.min(dimensions.width - node.radius - padding, newX))
+          }
+          if (newY - node.radius < padding || newY + node.radius > dimensions.height - padding) {
+            newVy = -newVy * 0.7 // Stronger bounce
+            newY = Math.max(node.radius + padding, Math.min(dimensions.height - node.radius - padding, newY))
+          }
+
+          // Apply friction
+          newVx *= 0.998
+          newVy *= 0.998
+
+          // Limit maximum velocity to prevent chaotic movement
+          const maxVelocity = 0.5
+          const currentSpeed = Math.sqrt(newVx * newVx + newVy * newVy)
+          if (currentSpeed > maxVelocity) {
+            newVx = (newVx / currentSpeed) * maxVelocity
+            newVy = (newVy / currentSpeed) * maxVelocity
+          }
 
           return {
             ...node,
