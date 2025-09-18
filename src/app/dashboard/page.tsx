@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { createLinkedInService } from '@/lib/linkedin-service'
 import { LinkedInAnalytics } from '@/lib/linkedin-service'
-import { MessageSquare, Users, Zap, TrendingUp, Clock, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
@@ -62,7 +61,6 @@ export default function DashboardPage() {
       value: detailedMetrics ? `${detailedMetrics.responseRate}%` : '0%',
       change: '+5%',
       changeType: 'positive',
-      icon: MessageSquare,
     },
     {
       name: 'Active Conversations',
@@ -194,18 +192,9 @@ export default function DashboardPage() {
 
       {/* Services Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* AI Chatbot Service */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">AI Chatbot</h3>
-            <p className="text-sm text-gray-800">
-              Your custom AI assistant connected to your business systems and databases.
-            </p>
-          </div>
           <div className="p-6">
             <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
               <div className="text-center">
-                <MessageSquare className="mx-auto mb-4" style={{ color: "#595F39" }} />
                 <p className="text-gray-800 mb-4">Preview of your AI Chatbot</p>
                 <Link 
                   href="/dashboard/chatbot"
@@ -325,11 +314,7 @@ export default function DashboardPage() {
         <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <Link href="/dashboard/chatbot" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <MessageSquare className="mr-3" style={{ color: "#595F39" }} />
             <div className="text-left">
-              <div className="font-medium text-gray-900">Start Chat</div>
-              <div className="text-sm text-gray-500">Open AI chatbot</div>
-            </div>
           </Link>
           
           <Link href="/dashboard/linkedin" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">

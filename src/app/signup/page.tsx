@@ -119,7 +119,7 @@ export default function SignupPage() {
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center">
-            <Image src="/henly_ai_logo.png" alt="Henly AI Logo" width={120} height={30} className="h-12 w-auto mx-auto" />
+            <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={120} height={30} className="h-12 w-auto mx-auto" />
           </div>
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
             Create your Henly AI account

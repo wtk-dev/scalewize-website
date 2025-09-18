@@ -1,0 +1,253 @@
+'use client'
+
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+
+interface Node {
+  id: string
+  x: number
+  y: number
+  type: 'agent' | 'tool'
+  image: string
+  alt: string
+}
+
+interface Connection {
+  from: string
+  to: string
+  active: boolean
+}
+
+export default function AgentNetwork() {
+  const [nodes, setNodes] = useState<Node[]>([])
+  const [connections, setConnections] = useState<Connection[]>([])
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
+
+  // Agent and tool configurations
+  const agents = [
+    { id: 'agent1', image: '/icon1.png', alt: 'AI Agent 1' },
+    { id: 'agent2', image: '/icon2.png', alt: 'AI Agent 2' },
+    { id: 'agent3', image: '/icon3.png', alt: 'AI Agent 3' },
+    { id: 'agent4', image: '/icon4.png', alt: 'AI Agent 4' },
+  ]
+
+  const tools = [
+    { id: 'slack', image: '/slack.png', alt: 'Slack' },
+    { id: 'outlook', image: '/outlook.png', alt: 'Outlook' },
+    { id: 'google_calendar', image: '/google_calendar.png', alt: 'Google Calendar' },
+    { id: 'linkedin', image: '/linkedin.png', alt: 'LinkedIn' },
+    { id: 'hubspot', image: '/hubspot.png', alt: 'HubSpot' },
+    { id: 'salesforce', image: '/salesforce.png', alt: 'Salesforce' },
+  ]
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setDimensions({
+        width: Math.min(window.innerWidth - 100, 1000),
+        height: Math.min(window.innerHeight * 0.6, 600)
+      })
+    }
+
+    updateDimensions()
+    window.addEventListener('resize', updateDimensions)
+    return () => window.removeEventListener('resize', updateDimensions)
+  }, [])
+
+  useEffect(() => {
+    // Generate initial node positions
+    const newNodes: Node[] = []
+    
+    // Position agents in a circle
+    agents.forEach((agent, index) => {
+      const angle = (index * 2 * Math.PI) / agents.length
+      const radius = Math.min(dimensions.width, dimensions.height) * 0.15
+      newNodes.push({
+        ...agent,
+        type: 'agent',
+        x: dimensions.width / 2 + Math.cos(angle) * radius,
+        y: dimensions.height / 2 + Math.sin(angle) * radius,
+      })
+    })
+
+    // Position tools around the perimeter
+    tools.forEach((tool, index) => {
+      const angle = (index * 2 * Math.PI) / tools.length
+      const radius = Math.min(dimensions.width, dimensions.height) * 0.35
+      newNodes.push({
+        ...tool,
+        type: 'tool',
+        x: dimensions.width / 2 + Math.cos(angle) * radius,
+        y: dimensions.height / 2 + Math.sin(angle) * radius,
+      })
+    })
+
+    setNodes(newNodes)
+
+    // Generate connections (each agent connects to multiple tools)
+    const newConnections: Connection[] = []
+    agents.forEach(agent => {
+      tools.forEach(tool => {
+        if (Math.random() > 0.3) { // 70% chance of connection
+          newConnections.push({
+            from: agent.id,
+            to: tool.id,
+            active: false
+          })
+        }
+      })
+    })
+
+    setConnections(newConnections)
+  }, [dimensions])
+
+  // Animate connections
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setConnections(prev => 
+        prev.map(conn => ({
+          ...conn,
+          active: Math.random() > 0.5
+        }))
+      )
+    }, 2000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="relative w-full h-full overflow-hidden">
+      <svg
+        className="absolute inset-0 w-full h-full"
+        style={{ width: dimensions.width, height: dimensions.height }}
+      >
+        {/* Render connections */}
+        {connections.map((connection, index) => {
+          const fromNode = nodes.find(n => n.id === connection.from)
+          const toNode = nodes.find(n => n.id === connection.to)
+          
+          if (!fromNode || !toNode) return null
+
+          return (
+            <motion.line
+              key={`${connection.from}-${connection.to}`}
+              x1={fromNode.x}
+              y1={fromNode.y}
+              x2={toNode.x}
+              y2={toNode.y}
+              stroke={connection.active ? '#595F39' : '#E5E7EB'}
+              strokeWidth={connection.active ? 2 : 1}
+              opacity={connection.active ? 0.8 : 0.3}
+              className="transition-all duration-1000"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ duration: 1, delay: index * 0.1 }}
+            />
+          )
+        })}
+
+        {/* Render animated data packets */}
+        {connections.map((connection, index) => {
+          const fromNode = nodes.find(n => n.id === connection.from)
+          const toNode = nodes.find(n => n.id === connection.to)
+          
+          if (!fromNode || !toNode || !connection.active) return null
+
+          return (
+            <motion.circle
+              key={`packet-${connection.from}-${connection.to}-${index}`}
+              r="3"
+              fill="#595F39"
+              initial={{ 
+                cx: fromNode.x, 
+                cy: fromNode.y,
+                opacity: 0 
+              }}
+              animate={{ 
+                cx: toNode.x, 
+                cy: toNode.y,
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: Math.random() * 3 + 1,
+                ease: "easeInOut"
+              }}
+            />
+          )
+        })}
+      </svg>
+
+      {/* Render nodes */}
+      {nodes.map((node) => (
+        <motion.div
+          key={node.id}
+          className="absolute transform -translate-x-1/2 -translate-y-1/2"
+          style={{
+            left: node.x,
+            top: node.y,
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ 
+            duration: 0.8, 
+            delay: Math.random() * 0.5,
+            type: "spring",
+            stiffness: 200
+          }}
+          whileHover={{ scale: 1.1 }}
+        >
+          <div className={`
+            relative w-16 h-16 rounded-full shadow-lg border-2 transition-all duration-300
+            ${node.type === 'agent' 
+              ? 'bg-white border-[#595F39] shadow-[#595F39]/20' 
+              : 'bg-gray-50 border-gray-300 shadow-gray-300/20'
+            }
+            hover:shadow-xl hover:border-[#595F39]
+          `}>
+            <Image
+              src={node.image}
+              alt={node.alt}
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-full object-cover m-auto mt-1"
+              onError={(e) => {
+                // Fallback to a colored circle if image fails to load
+                const target = e.target as HTMLImageElement
+                target.style.display = 'none'
+                const parent = target.parentElement
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="w-12 h-12 rounded-full m-auto mt-1 flex items-center justify-center text-white font-bold text-lg ${
+                      node.type === 'agent' ? 'bg-[#595F39]' : 'bg-gray-500'
+                    }">
+                      ${node.type === 'agent' ? 'A' : node.alt.charAt(0)}
+                    </div>
+                  `
+                }
+              }}
+            />
+            
+            {/* Glowing effect for active connections */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                background: `radial-gradient(circle, ${node.type === 'agent' ? '#595F39' : '#6B7280'}20 0%, transparent 70%)`
+              }}
+              animate={{
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  )
+}

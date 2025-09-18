@@ -59,7 +59,7 @@ export default function ExplorePage() {
       icon: Users,
       color: '#595F39',
       problem: 'Manual screening delays hiring top candidates.',
-      solution: 'AI chatbots handle basic issues, route complex cases.',
+      solution: 'AI automation handles basic issues, routes complex cases.',
       impact: 'Quicker resolution times, higher satisfaction scores, cost savings.',
       status: 'beta',
       price: '$749/month'

@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/contexts/AuthContext'
 import { 
-  MessageSquare, 
   BarChart3, 
   Users, 
   LogOut,
@@ -37,7 +36,6 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
   const navigation = [
     { name: 'Overview', href: '/dashboard', icon: BarChart3 },
-    { name: `${organization?.name || 'AI'} Chatbot`, href: '/dashboard/chatbot', icon: MessageSquare },
     { name: 'LinkedIn Sales', href: '/dashboard/linkedin', icon: Users },
     { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
     { name: 'Explore', href: '/dashboard/explore', icon: Search },
@@ -55,7 +53,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-y-0 left-0 flex w-64 flex-col bg-white shadow-xl">
           <div className="flex h-16 items-center justify-between px-4 border-b border-gray-200">
             <div className="flex items-center">
-              <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} 
+              <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={360} height={80} 
                 className="h-12 w-auto" />
             </div>
             <button
@@ -108,7 +106,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             <div className="flex items-center">
               {!sidebarCollapsed && (
                 <Link href="/">
-                  <Image src="/henly_ai_logo.png" alt="Henly AI Cover Logo" width={360} height={80} className="h-12 w-auto" />
+                  <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={360} height={80} className="h-12 w-auto" />
                 </Link>
               )}
             </div>
