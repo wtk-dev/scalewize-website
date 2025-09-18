@@ -2,12 +2,12 @@
 
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html } from '@react-three/drei'
-import { useRef, useMemo } from 'react'
+import { useRef } from 'react'
 import { Mesh, Group } from 'three'
 import { useFrame } from '@react-three/fiber'
 import Image from 'next/image'
 
-// Icosahedron component with transparent shade
+// Clean icosahedron component - wireframe only
 function Icosahedron({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
   const meshRef = useRef<Mesh>(null)
   
@@ -19,31 +19,19 @@ function Icosahedron({ position = [0, 0, 0] }: { position?: [number, number, num
   })
 
   return (
-    <group>
-      {/* Transparent shade */}
-      <mesh ref={meshRef} position={position}>
-        <icosahedronGeometry args={[1.5, 0]} />
-        <meshStandardMaterial 
-          color="#595F39" 
-          transparent={true}
-          opacity={0.2}
-        />
-      </mesh>
-      {/* Wireframe */}
-      <mesh ref={meshRef} position={position}>
-        <icosahedronGeometry args={[1.5, 0]} />
-        <meshStandardMaterial 
-          color="#595F39" 
-          wireframe={true}
-          transparent={true}
-          opacity={0.6}
-        />
-      </mesh>
-    </group>
+    <mesh ref={meshRef} position={position}>
+      <icosahedronGeometry args={[1.5, 0]} />
+      <meshStandardMaterial 
+        color="#595F39" 
+        wireframe={true}
+        transparent={true}
+        opacity={0.8}
+      />
+    </mesh>
   )
 }
 
-// Orbiting icon component - much smaller and orbiting around icosahedron
+// Orbiting icon component - proper orbital motion like moons around a planet
 function OrbitingIcon({ 
   icon, 
   radius, 
@@ -64,10 +52,10 @@ function OrbitingIcon({
       // Calculate orbital position around the icosahedron
       const x = Math.cos(state.clock.elapsedTime * speed + angle) * radius
       const z = Math.sin(state.clock.elapsedTime * speed + angle) * radius
-      const y = Math.sin(state.clock.elapsedTime * speed * 0.5 + angle) * 0.3
+      const y = Math.sin(state.clock.elapsedTime * speed * 0.3 + angle) * 0.2
       
-      // Position at the same Z level as icosahedron (orbiting around it)
-      groupRef.current.position.set(x, y, z)
+      // Position behind the icosahedron (like moons behind a planet)
+      groupRef.current.position.set(x, y, z - 1.8)
     }
   })
 
@@ -75,7 +63,7 @@ function OrbitingIcon({
     <group ref={groupRef}>
       <Html
         center
-        distanceFactor={40}
+        distanceFactor={60}
         position={[0, 0, 0]}
         transform
         sprite
@@ -83,19 +71,20 @@ function OrbitingIcon({
         <div className={`
           relative rounded-full shadow-lg border transition-all duration-300
           ${type === 'agent' 
-            ? 'bg-white border-[#595F39] shadow-[#595F39]/20 w-4 h-4' 
-            : 'bg-gray-50 border-gray-300 shadow-gray-300/20 w-3 h-3'
+            ? 'bg-white border-[#595F39] shadow-[#595F39]/20 w-2 h-2' 
+            : 'bg-gray-50 border-gray-300 shadow-gray-300/20 w-1.5 h-1.5'
           }
           hover:shadow-xl hover:border-[#595F39]
         `}>
           <Image
             src={icon}
             alt={type === 'agent' ? 'AI Agent' : 'Tool'}
-            width={type === 'agent' ? 12 : 8}
-            height={type === 'agent' ? 12 : 8}
+            width={type === 'agent' ? 6 : 4}
+            height={type === 'agent' ? 6 : 4}
             className={`rounded-full object-cover m-auto ${
               type === 'agent' ? 'mt-0.5' : 'mt-0'
             }`}
+            quality={100}
             onError={(e) => {
               // Fallback to a colored circle if image fails to load
               const target = e.target as HTMLImageElement
@@ -104,7 +93,7 @@ function OrbitingIcon({
               if (parent) {
                 parent.innerHTML = `
                   <div class="rounded-full m-auto flex items-center justify-center text-white font-bold ${
-                    type === 'agent' ? 'w-3 h-3 mt-0.5 text-xs bg-[#595F39]' : 'w-2 h-2 mt-0 text-xs bg-gray-500'
+                    type === 'agent' ? 'w-1.5 h-1.5 mt-0.5 text-xs bg-[#595F39]' : 'w-1 h-1 mt-0 text-xs bg-gray-500'
                   }">
                     ${type === 'agent' ? 'A' : 'T'}
                   </div>
@@ -138,36 +127,35 @@ function Scene() {
 
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.4} />
-      <directionalLight position={[10, 10, 5]} intensity={0.6} />
-      <pointLight position={[-10, -10, -5]} intensity={0.3} />
+      {/* Clean lighting */}
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[5, 5, 5]} intensity={0.8} />
 
-      {/* Orbiting agents - around icosahedron */}
+      {/* Orbiting agents - like moons around a planet */}
       {agents.map((agent, index) => (
         <OrbitingIcon
           key={agent.id}
           icon={agent.icon}
-          radius={2.5}
-          speed={0.3}
+          radius={2.8}
+          speed={0.4}
           angle={(index * Math.PI * 2) / agents.length}
           type="agent"
         />
       ))}
 
-      {/* Orbiting tools - around icosahedron */}
+      {/* Orbiting tools - like moons around a planet */}
       {tools.map((tool, index) => (
         <OrbitingIcon
           key={tool.id}
           icon={tool.icon}
-          radius={3.5}
-          speed={-0.2}
+          radius={3.8}
+          speed={-0.3}
           angle={(index * Math.PI * 2) / tools.length}
           type="tool"
         />
       ))}
 
-      {/* Central icosahedron with transparent shade */}
+      {/* Central icosahedron - clean wireframe only */}
       <Icosahedron position={[0, 0, 0]} />
     </>
   )
