@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import CustomerLogos from '@/components/CustomerLogos'
-import AgentNetwork from "@/components/animations/AgentNetwork"
+import IcosahedronNetwork from "@/components/animations/IcosahedronNetwork"
 
 export default function Home() {
   return (
@@ -129,7 +129,7 @@ export default function Home() {
             {/* Network Container */}
             <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
               <div className="aspect-[11/8] relative">
-                <AgentNetwork />
+                <IcosahedronNetwork />
                 
                 {/* Network Info Overlay */}
                 <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
