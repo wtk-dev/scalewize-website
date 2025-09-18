@@ -28,8 +28,11 @@ export default function AgentNetwork() {
   const [nodes, setNodes] = useState<Node[]>([])
   const [connections, setConnections] = useState<Connection[]>([])
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [isMouseInContainer, setIsMouseInContainer] = useState(false)
   const animationRef = useRef<number>()
   const lastTimeRef = useRef<number>(0)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Agent and tool configurations
   const agents = [
@@ -50,15 +53,52 @@ export default function AgentNetwork() {
 
   useEffect(() => {
     const updateDimensions = () => {
-      setDimensions({
-        width: Math.min(window.innerWidth - 100, 1000),
-        height: Math.min(window.innerHeight * 0.6, 600)
-      })
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        setDimensions({
+          width: rect.width,
+          height: rect.height
+        })
+      }
     }
 
     updateDimensions()
     window.addEventListener('resize', updateDimensions)
     return () => window.removeEventListener('resize', updateDimensions)
+  }, [])
+
+  // Mouse tracking
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        
+        setMousePosition({ x, y })
+        
+        // Check if mouse is within container bounds
+        const isInside = x >= 0 && x <= rect.width && y >= 0 && y <= rect.height
+        setIsMouseInContainer(isInside)
+      }
+    }
+
+    const handleMouseEnter = () => setIsMouseInContainer(true)
+    const handleMouseLeave = () => setIsMouseInContainer(false)
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('mousemove', handleMouseMove)
+      containerRef.current.addEventListener('mouseenter', handleMouseEnter)
+      containerRef.current.addEventListener('mouseleave', handleMouseLeave)
+    }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('mousemove', handleMouseMove)
+        containerRef.current.removeEventListener('mouseenter', handleMouseEnter)
+        containerRef.current.removeEventListener('mouseleave', handleMouseLeave)
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -118,7 +158,7 @@ export default function AgentNetwork() {
     setConnections(newConnections)
   }, [dimensions])
 
-  // Enhanced physics simulation with separation forces and randomness
+  // Enhanced physics simulation with separation forces, randomness, and mouse interaction
   useEffect(() => {
     const animate = (currentTime: number) => {
       const deltaTime = currentTime - lastTimeRef.current
@@ -134,6 +174,24 @@ export default function AgentNetwork() {
           // Add random movement force
           newVx += (Math.random() - 0.5) * node.randomForce * deltaTime
           newVy += (Math.random() - 0.5) * node.randomForce * deltaTime
+
+          // Mouse interaction - bounce off mouse cursor
+          if (isMouseInContainer) {
+            const dx = newX - mousePosition.x
+            const dy = newY - mousePosition.y
+            const distance = Math.sqrt(dx * dx + dy * dy)
+            const mouseRadius = 30 // Mouse interaction radius
+            
+            if (distance < mouseRadius + node.radius && distance > 0) {
+              // Strong repulsion from mouse
+              const repulsionForce = 0.03
+              const repulsionX = (dx / distance) * repulsionForce * deltaTime
+              const repulsionY = (dy / distance) * repulsionForce * deltaTime
+              
+              newVx += repulsionX
+              newVy += repulsionY
+            }
+          }
 
           // Apply separation forces to prevent clustering
           prevNodes.forEach(otherNode => {
@@ -205,7 +263,7 @@ export default function AgentNetwork() {
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [dimensions])
+  }, [dimensions, mousePosition, isMouseInContainer])
 
   // Animate connections
   useEffect(() => {
@@ -222,10 +280,16 @@ export default function AgentNetwork() {
   }, [])
 
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div 
+      ref={containerRef}
+      className="relative w-full h-full overflow-hidden"
+      style={{ width: '100%', height: '100%' }}
+    >
       <svg
         className="absolute inset-0 w-full h-full"
-        style={{ width: dimensions.width, height: dimensions.height }}
+        style={{ width: '100%', height: '100%' }}
+        viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
+        preserveAspectRatio="none"
       >
         {/* Render connections */}
         {connections.map((connection, index) => {
@@ -354,6 +418,22 @@ export default function AgentNetwork() {
           </div>
         </motion.div>
       ))}
+
+      {/* Mouse cursor indicator (optional visual feedback) */}
+      {isMouseInContainer && (
+        <motion.div
+          className="absolute pointer-events-none"
+          style={{
+            left: mousePosition.x - 15,
+            top: mousePosition.y - 15,
+          }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 0.3 }}
+          exit={{ scale: 0, opacity: 0 }}
+        >
+          <div className="w-8 h-8 rounded-full border-2 border-[#595F39] bg-[#595F39]/10 animate-pulse" />
+        </motion.div>
+      )}
     </div>
   )
 }
