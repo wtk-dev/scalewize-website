@@ -158,7 +158,7 @@ export default function AgentNetwork() {
     setConnections(newConnections)
   }, [dimensions])
 
-  // Enhanced physics simulation with separation forces, randomness, and mouse interaction
+  // Enhanced physics simulation with separation forces, randomness, and aggressive mouse interaction
   useEffect(() => {
     const animate = (currentTime: number) => {
       const deltaTime = currentTime - lastTimeRef.current
@@ -175,21 +175,29 @@ export default function AgentNetwork() {
           newVx += (Math.random() - 0.5) * node.randomForce * deltaTime
           newVy += (Math.random() - 0.5) * node.randomForce * deltaTime
 
-          // Mouse interaction - bounce off mouse cursor
+          // AGGRESSIVE Mouse interaction - much stronger bouncing
           if (isMouseInContainer) {
             const dx = newX - mousePosition.x
             const dy = newY - mousePosition.y
             const distance = Math.sqrt(dx * dx + dy * dy)
-            const mouseRadius = 40 // Increased mouse interaction radius
+            const mouseRadius = 60 // Much larger mouse interaction radius
             
             if (distance < mouseRadius + node.radius && distance > 0) {
-              // Strong repulsion from mouse
-              const repulsionForce = 0.04 // Increased repulsion
+              // Calculate repulsion force based on distance (closer = stronger)
+              const normalizedDistance = distance / (mouseRadius + node.radius)
+              const repulsionForce = 0.15 * (1 - normalizedDistance) // Much stronger force, decreases with distance
+              
+              // Apply repulsion force
               const repulsionX = (dx / distance) * repulsionForce * deltaTime
               const repulsionY = (dy / distance) * repulsionForce * deltaTime
               
               newVx += repulsionX
               newVy += repulsionY
+              
+              // Add extra velocity boost for dramatic effect
+              const velocityBoost = 0.08 * (1 - normalizedDistance)
+              newVx += (dx / distance) * velocityBoost
+              newVy += (dy / distance) * velocityBoost
             }
           }
 
@@ -232,11 +240,11 @@ export default function AgentNetwork() {
           }
 
           // Apply friction
-          newVx *= 0.996 // Less friction for more dramatic movement
+          newVx *= 0.996 // Less friction for more sustained movement
           newVy *= 0.996
 
           // Limit maximum velocity to prevent chaotic movement
-          const maxVelocity = 0.8 // Increased max velocity
+          const maxVelocity = 1.2 // Increased max velocity for more dramatic movement
           const currentSpeed = Math.sqrt(newVx * newVx + newVy * newVy)
           if (currentSpeed > maxVelocity) {
             newVx = (newVx / currentSpeed) * maxVelocity
