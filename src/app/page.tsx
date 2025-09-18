@@ -62,9 +62,9 @@ export default function Home() {
             className="mb-24"
           >
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light mb-8 leading-[1.1] tracking-tight pb-4">
-              <span className="block text-gray-900 mb-3 font-extralight">Make AI</span>
+              <span className="block text-gray-900 mb-3 font-extralight">Build Your</span>
               <span className="block font-normal bg-gradient-to-r from-[#595F39] via-[#7A8B5A] to-[#9C8B5E] bg-clip-text text-transparent">
-                work for you
+                Team
               </span>
             </h1>
             
@@ -114,21 +114,41 @@ export default function Home() {
               </motion.div>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
 
-          {/* Animated Agent Network */}
+      {/* 3D Animation Section - Full Width */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-amber-50/20">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-light text-gray-900 mb-6">
+              Integrated and Collaborative AI Agents
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our AI agents work together seamlessly, orbiting around a central intelligence core
+            </p>
+          </motion.div>
+
+          {/* 3D Animation Container */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="relative"
           >
             {/* Enhanced Ambient Glow */}
             <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
             <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
             
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
+            {/* Animation Container */}
+            <div className="relative w-full max-w-6xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
+              <div className="aspect-[16/9] relative">
                 <IcosahedronNetwork />
                 
                 {/* Network Info Overlay */}
@@ -207,16 +227,16 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Workflow Automation</h3>
               <p className="text-gray-600 mb-6">
-                Streamline business processes with intelligent automation that connects your tools and systems seamlessly.
+                Streamline business processes with intelligent automation that adapts to your unique workflow requirements.
               </p>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li>• Custom workflow creation</li>
-                <li>• Multi-platform integrations</li>
-                <li>• Real-time monitoring</li>
+                <li>• Custom workflow design</li>
+                <li>• Intelligent process optimization</li>
+                <li>• Real-time monitoring and alerts</li>
               </ul>
             </motion.div>
 
-            {/* Analytics & Insights */}
+            {/* Data Analytics */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -229,43 +249,101 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Analytics & Insights</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Data Analytics</h3>
               <p className="text-gray-600 mb-6">
-                Get deep insights into your automation performance with comprehensive analytics and reporting.
+                Transform raw data into actionable insights with AI-powered analytics and predictive modeling.
               </p>
               <ul className="space-y-2 text-sm text-gray-500">
-                <li>• Performance dashboards</li>
-                <li>• ROI tracking</li>
+                <li>• Advanced data visualization</li>
                 <li>• Predictive analytics</li>
+                <li>• Custom reporting dashboards</li>
               </ul>
             </motion.div>
           </div>
         </div>
       </section>
 
+      {/* Results Section */}
+      <section id="results" className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-light text-gray-900 mb-6">
+              Proven Results for Your Business
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              See how our AI solutions have transformed businesses across industries.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center"
+            >
+              <div className="text-5xl font-light mb-4" style={{ color: '#595F39' }}>300%</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Increase in Lead Generation</h3>
+              <p className="text-gray-600">Average improvement in qualified leads for our clients</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-center"
+            >
+              <div className="text-5xl font-light mb-4" style={{ color: '#595F39' }}>85%</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Reduction in Manual Tasks</h3>
+              <p className="text-gray-600">Time saved through intelligent automation</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-center"
+            >
+              <div className="text-5xl font-light mb-4" style={{ color: '#595F39' }}>24/7</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Continuous Operation</h3>
+              <p className="text-gray-600">AI agents work around the clock for your business</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
-      <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#595F39' }}>
+      <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl font-light text-white mb-6">
+            <h2 className="text-4xl font-light text-gray-900 mb-6">
               Ready to Transform Your Business?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Schedule a free consultation to discover how AI automation can revolutionize your workflows and boost your productivity.
+            <p className="text-xl text-gray-600 mb-10">
+              Book a free consultation to discover how our AI solutions can accelerate your growth.
             </p>
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.3 }}
             >
               <Link 
-                href="/signup" 
-                className="inline-flex items-center text-gray-900 bg-white px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-xl hover:shadow-2xl"
+                href="#book-call" 
+                className="inline-flex items-center text-white px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-500 ease-out shadow-xl hover:shadow-2xl"
+                style={{ backgroundColor: '#595F39' }}
               >
-                Get Started Today
+                Book Your Free Consultation
                 <svg className="ml-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -276,33 +354,46 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-20 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white py-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={48} height={48} className="h-12 w-12" />
-              <p className="mt-6 text-gray-400">
-                Empowering businesses with intelligent AI automation solutions.
+              <Image
+                src="/scalewize_cover_logo.png"
+                alt="ScaleWize AI"
+                width={200}
+                height={45}
+                className="h-12 w-auto mb-4"
+              />
+              <p className="text-gray-400 text-sm">
+                Building the future of AI-powered business automation.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Solutions</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-sm text-gray-400">
                 <li><Link href="#solutions" className="hover:text-white transition-colors">LinkedIn Automation</Link></li>
                 <li><Link href="#solutions" className="hover:text-white transition-colors">Workflow Automation</Link></li>
-                <li><Link href="#solutions" className="hover:text-white transition-colors">Analytics & Insights</Link></li>
+                <li><Link href="#solutions" className="hover:text-white transition-colors">Data Analytics</Link></li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="#book-call" className="hover:text-white transition-colors">Contact Us</Link></li>
-                <li><Link href="/login" className="hover:text-white transition-colors">Sign In</Link></li>
-                <li><Link href="/signup" className="hover:text-white transition-colors">Get Started</Link></li>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#results" className="hover:text-white transition-colors">Results</Link></li>
+                <li><Link href="#blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Login</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Contact</h3>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link href="#book-call" className="hover:text-white transition-colors">Book a Call</Link></li>
+                <li><Link href="#book-call" className="hover:text-white transition-colors">Support</Link></li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-16 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm text-gray-400">
             <p>&copy; 2024 ScaleWize AI. All rights reserved.</p>
           </div>
         </div>

@@ -1,30 +1,11 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Text } from '@react-three/drei'
+import { OrbitControls, Html } from '@react-three/drei'
 import { useRef, useMemo } from 'react'
 import { Mesh, Group } from 'three'
 import { useFrame } from '@react-three/fiber'
 import Image from 'next/image'
-
-// Icosahedron geometry generator
-function createIcosahedronGeometry() {
-  const phi = (1 + Math.sqrt(5)) / 2 // Golden ratio
-  const vertices = [
-    [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
-    [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
-    [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1]
-  ]
-  
-  const faces = [
-    [0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11],
-    [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6], [7, 1, 8],
-    [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9],
-    [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]
-  ]
-  
-  return { vertices, faces }
-}
 
 // Icosahedron component
 function Icosahedron({ position = [0, 0, 0] }: { position?: [number, number, number] }) {
@@ -36,8 +17,6 @@ function Icosahedron({ position = [0, 0, 0] }: { position?: [number, number, num
       meshRef.current.rotation.y += delta * 0.3
     }
   })
-
-  const { vertices, faces } = useMemo(() => createIcosahedronGeometry(), [])
 
   return (
     <mesh ref={meshRef} position={position}>
@@ -52,7 +31,7 @@ function Icosahedron({ position = [0, 0, 0] }: { position?: [number, number, num
   )
 }
 
-// Orbiting icon component
+// Orbiting icon component - always facing forward (2D)
 function OrbitingIcon({ 
   icon, 
   radius, 
@@ -70,30 +49,58 @@ function OrbitingIcon({
   
   useFrame((state) => {
     if (groupRef.current) {
-      groupRef.current.position.x = Math.cos(state.clock.elapsedTime * speed + angle) * radius
-      groupRef.current.position.z = Math.sin(state.clock.elapsedTime * speed + angle) * radius
-      groupRef.current.position.y = Math.sin(state.clock.elapsedTime * speed * 0.5 + angle) * 0.5
+      // Calculate orbital position
+      const x = Math.cos(state.clock.elapsedTime * speed + angle) * radius
+      const z = Math.sin(state.clock.elapsedTime * speed + angle) * radius
+      const y = Math.sin(state.clock.elapsedTime * speed * 0.5 + angle) * 0.5
+      
+      groupRef.current.position.set(x, y, z)
     }
   })
 
   return (
     <group ref={groupRef}>
-      <mesh>
-        <sphereGeometry args={[0.3, 16, 16]} />
-        <meshStandardMaterial 
-          color={type === 'agent' ? '#595F39' : '#6B7280'}
-          transparent={true}
-          opacity={0.8}
-        />
-      </mesh>
-      {/* Icon plane */}
-      <mesh position={[0, 0, 0.35]}>
-        <planeGeometry args={[0.5, 0.5]} />
-        <meshBasicMaterial 
-          transparent={true}
-          opacity={0.9}
-        />
-      </mesh>
+      <Html
+        center
+        distanceFactor={10}
+        position={[0, 0, 0]}
+        transform
+        sprite
+      >
+        <div className={`
+          relative rounded-full shadow-lg border-2 transition-all duration-300
+          ${type === 'agent' 
+            ? 'bg-white border-[#595F39] shadow-[#595F39]/20 w-16 h-16' 
+            : 'bg-gray-50 border-gray-300 shadow-gray-300/20 w-14 h-14'
+          }
+          hover:shadow-xl hover:border-[#595F39]
+        `}>
+          <Image
+            src={icon}
+            alt={type === 'agent' ? 'AI Agent' : 'Tool'}
+            width={type === 'agent' ? 48 : 40}
+            height={type === 'agent' ? 48 : 40}
+            className={`rounded-full object-cover m-auto ${
+              type === 'agent' ? 'mt-2' : 'mt-1.5'
+            }`}
+            onError={(e) => {
+              // Fallback to a colored circle if image fails to load
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+              const parent = target.parentElement
+              if (parent) {
+                parent.innerHTML = `
+                  <div class="rounded-full m-auto flex items-center justify-center text-white font-bold ${
+                    type === 'agent' ? 'w-12 h-12 mt-2 text-lg bg-[#595F39]' : 'w-10 h-10 mt-1.5 text-sm bg-gray-500'
+                  }">
+                    ${type === 'agent' ? 'A' : 'T'}
+                  </div>
+                `
+              }
+            }}
+          />
+        </div>
+      </Html>
     </group>
   )
 }
@@ -148,20 +155,6 @@ function Scene() {
           angle={(index * Math.PI * 2) / tools.length}
           type="tool"
         />
-      ))}
-
-      {/* Connection lines */}
-      {agents.map((agent, agentIndex) => (
-        tools.map((tool, toolIndex) => (
-          <mesh key={`${agent.id}-${tool.id}`}>
-            <cylinderGeometry args={[0.01, 0.01, 1.5]} />
-            <meshBasicMaterial 
-              color="#595F39" 
-              transparent={true}
-              opacity={0.3}
-            />
-          </mesh>
-        ))
       ))}
     </>
   )
