@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { createLinkedInService } from '@/lib/linkedin-service'
 import { LinkedInAnalytics } from '@/lib/linkedin-service'
+import { Users, Zap, TrendingUp, Clock, CheckCircle } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
@@ -47,7 +48,7 @@ export default function DashboardPage() {
     }
   }
 
-  // Detailed LinkedIn stats based on real data
+  // LinkedIn automation stats based on real data
   const stats = [
     {
       name: 'Connection Rate',
@@ -61,13 +62,14 @@ export default function DashboardPage() {
       value: detailedMetrics ? `${detailedMetrics.responseRate}%` : '0%',
       change: '+5%',
       changeType: 'positive',
+      icon: TrendingUp,
     },
     {
       name: 'Active Conversations',
       value: detailedMetrics ? `${detailedMetrics.activeConversations}` : '0',
       change: '+3',
       changeType: 'positive',
-      icon: TrendingUp,
+      icon: Clock,
     },
     {
       name: 'Avg Response Time',
@@ -133,7 +135,7 @@ export default function DashboardPage() {
           Welcome back, {profile?.full_name || 'User'}!
         </h1>
         <p className="text-gray-800 mt-1">
-          Your AI assistant is ready to help with {organization?.name}'s automation needs.
+          Your AI automation platform is ready to help with {organization?.name}'s business processes.
         </p>
       </div>
 
@@ -156,7 +158,7 @@ export default function DashboardPage() {
                         {stat.value}
                       </div>
                       <div className={`ml-2 flex items-baseline text-sm font-semibold ${
-                        stat.changeType === 'positive' ? 'style="color: #595F39"' : 'text-red-600'
+                        stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
                       }`}>
                         {stat.change}
                       </div>
@@ -180,7 +182,7 @@ export default function DashboardPage() {
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
             className={`h-2 rounded-full ${
-              usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 60 ? 'bg-yellow-500' : 'style={{ backgroundColor: "#595F39" }}'
+              usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 60 ? 'bg-yellow-500' : 'bg-green-600'
             }`}
             style={{ width: `${Math.min(usagePercentage, 100)}%` }}
           />
@@ -192,21 +194,6 @@ export default function DashboardPage() {
 
       {/* Services Overview */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="p-6">
-            <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-gray-800 mb-4">Preview of your AI Chatbot</p>
-                <Link 
-                  href="/dashboard/chatbot"
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39]" style={{ backgroundColor: "#595F39" }}
-                >
-                  Open Chatbot
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* LinkedIn Sales Service */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -236,6 +223,30 @@ export default function DashboardPage() {
                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39]" style={{ backgroundColor: "#595F39" }}
                 >
                   View Leads
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Workflow Automation Service */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h3 className="text-lg font-medium text-gray-900">Workflow Automation</h3>
+            <p className="text-sm text-gray-800">
+              Streamline business processes with intelligent automation.
+            </p>
+          </div>
+          <div className="p-6">
+            <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+              <div className="text-center">
+                <Zap className="mx-auto mb-4" style={{ color: "#595F39" }} />
+                <p className="text-gray-800 mb-4">Automation Dashboard</p>
+                <Link 
+                  href="/dashboard/analytics"
+                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#595F39]" style={{ backgroundColor: "#595F39" }}
+                >
+                  View Analytics
                 </Link>
               </div>
             </div>
@@ -313,10 +324,6 @@ export default function DashboardPage() {
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Link href="/dashboard/chatbot" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            <div className="text-left">
-          </Link>
-          
           <Link href="/dashboard/linkedin" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             <Users className="mr-3" style={{ color: "#595F39" }} />
             <div className="text-left">
@@ -332,8 +339,16 @@ export default function DashboardPage() {
               <div className="text-sm text-gray-500">View performance metrics</div>
             </div>
           </Link>
+          
+          <Link href="/dashboard/explore" className="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            <TrendingUp className="h-5 w-5 text-blue-600 mr-3" />
+            <div className="text-left">
+              <div className="font-medium text-gray-900">Explore</div>
+              <div className="text-sm text-gray-500">Discover new features</div>
+            </div>
+          </Link>
         </div>
       </div>
     </div>
   )
-} 
+}

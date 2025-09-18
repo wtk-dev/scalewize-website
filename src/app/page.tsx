@@ -2,102 +2,11 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect, useRef } from 'react'
-import { motion, useAnimation } from 'framer-motion'
+import { motion } from 'framer-motion'
 import CustomerLogos from '@/components/CustomerLogos'
 import AgentNetwork from "@/components/animations/AgentNetwork"
 
-// Particle component for the animation
-const Particle = ({ delay, startX, startY, targetX, targetY }: {
-  delay: number
-  startX: number
-  startY: number
-  targetX: number
-  targetY: number
-}) => {
-  return (
-    <motion.div
-      className="absolute w-2.5 h-2.5 rounded-full opacity-0"
-      style={{
-        background: '#595F39',
-        boxShadow: '0 0 6px #595F39, 0 0 12px #595F39',
-      }}
-      initial={{
-        x: startX,
-        y: startY,
-        opacity: 0,
-        scale: 0,
-      }}
-      animate={{
-        x: targetX,
-        y: targetY,
-        opacity: [0, 0.8, 0],
-        scale: [0, 1.2, 0],
-      }}
-      transition={{
-        duration: Math.random() * 2 + 3, // Random duration between 3-5 seconds
-        delay: delay,
-        repeat: Infinity,
-        repeatDelay: Math.random() * 4 + 1, // Random delay between 1-5 seconds
-        ease: "easeInOut",
-      }}
-    />
-  )
-}
-
-// Floating particle background
-const ParticleField = ({ videoRef }: { videoRef: React.RefObject<HTMLDivElement | null> }) => {
-  const [particles, setParticles] = useState<Array<{
-    id: number
-    delay: number
-    startX: number
-    startY: number
-    targetX: number
-    targetY: number
-  }>>([])
-
-  useEffect(() => {
-    const generateParticles = () => {
-      const newParticles = []
-      for (let i = 0; i < 15; i++) {
-        newParticles.push({
-          id: i,
-          delay: Math.random() * 2,
-          startX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-          startY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-          targetX: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-          targetY: Math.random() * (typeof window !== 'undefined' ? window.innerHeight : 800),
-        })
-      }
-      setParticles(newParticles)
-    }
-
-    generateParticles()
-    const interval = setInterval(generateParticles, 8000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((particle) => (
-        <Particle
-          key={particle.id}
-          delay={particle.delay}
-          startX={particle.startX}
-          startY={particle.startY}
-          targetX={particle.targetX}
-          targetY={particle.targetY}
-        />
-      ))}
-    </div>
-  )
-}
-
 export default function Home() {
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
-  const [videoError, setVideoError] = useState(false)
-  const videoRef = useRef<HTMLDivElement>(null)
-
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -107,7 +16,7 @@ export default function Home() {
             <div className="flex items-center">
               <Image
                 src="/scalewize_cover_logo.png"
-                alt="Henly AI"
+                alt="ScaleWize AI"
                 width={200}
                 height={45}
                 className="h-12 w-auto"
@@ -138,9 +47,6 @@ export default function Home() {
           </div>
         </div>
       </nav>
-
-      {/* Particle Animation Background */}
-      <ParticleField videoRef={videoRef} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-32 pb-16">
@@ -189,39 +95,11 @@ export default function Home() {
                   style={{ backgroundColor: '#595F39' }}
                 >
                   Book a Call
-                  <ArrowRight className="ml-3 h-5 w-5" />
+                  <svg className="ml-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -234,67 +112,7 @@ export default function Home() {
                   View Solutions
                 </Link>
               </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
             </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
           </motion.div>
 
           {/* Animated Agent Network */}
@@ -326,7 +144,6 @@ export default function Home() {
               </div>
             </div>
           </motion.div>
-
         </div>
       </section>
 
@@ -340,501 +157,153 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-center mb-20"
+            className="text-center mb-16"
           >
-            <h2 className="text-4xl sm:text-5xl font-light text-gray-900 mb-6">
-              Solutions that <span style={{ color: '#595F39' }}>scale</span>
+            <h2 className="text-4xl font-light text-gray-900 mb-6">
+              Powerful AI Solutions for Your Business
             </h2>
-            <p className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto font-light">
-              Comprehensive AI automation across every aspect of your business
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Streamline operations, automate workflows, and scale your business with our comprehensive AI platform.
             </p>
           </motion.div>
 
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* LinkedIn Automation */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#595F39' }}>
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
               </div>
-            </div>
-          </motion.div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">LinkedIn Automation</h3>
+              <p className="text-gray-600 mb-6">
+                Automate lead generation, connection requests, and follow-up messages on LinkedIn with intelligent AI agents.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li>• Smart lead identification</li>
+                <li>• Automated outreach sequences</li>
+                <li>• Response tracking and analytics</li>
+              </ul>
+            </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {[
-               {
-                 icon: TrendingUp,
-                 title: "Sales",
-                 color: "#595F39",
-                 problem: "Generating qualified leads at scale and running high-conversion outreach is time-consuming.",
-                 solution: "We source thousands of verified prospects based on your Ideal Client Profile, then run targeted email campaigns—minimal setup, maximum impact.",
-                 impact: "Accelerated pipeline growth, higher email open rates, and more closed deals."
-               },
-               {
-                 icon: MessageSquare,
-                 title: "Marketing",
-                 color: "#9C8B5E",
-                 problem: "Generic campaigns waste budget. Content generation lacks personalization.",
-                 solution: "AI-powered audience insights personalize messaging and timing for maximum engagement.",
-                 impact: "Better click-through rates, higher ROI, stronger brand engagement."
-               },
-               {
-                 icon: Users,
-                 title: "Support",
-                 color: "#595F39",
-                 problem: "Manual support processes create bottlenecks and inconsistent experiences.",
-                 solution: "AI chatbots handle basic issues intelligently, route complex cases to specialists.",
-                 impact: "Quicker resolution times, higher satisfaction scores, significant cost savings."
-               },
-               {
-                 icon: UserCheck,
-                 title: "Talent",
-                 color: "#9C8B5E",
-                 problem: "Manual screening delays hiring top candidates in competitive markets.",
-                 solution: "AI-powered candidate screening and automated interview scheduling.",
-                 impact: "Faster hiring cycles, improved candidate quality, reduced recruitment costs."
-               },
-               {
-                 icon: Settings,
-                 title: "Operations",
-                 color: "#595F39",
-                 problem: "Complex processes slow product delivery and create inefficiencies.",
-                 solution: "Workflow automation and predictive analytics optimize supply chains and operations.",
-                 impact: "Shortened turnaround, fewer bottlenecks, consistent output quality."
-               },
-               {
-                 icon: DollarSign,
-                 title: "Finance",
-                 color: "#9C8B5E",
-                 problem: "Tedious invoicing and error-prone reconciliations drain resources.",
-                 solution: "Automated billing systems and real-time financial dashboards with AI insights.",
-                 impact: "Reduced processing time, fewer errors, stronger cash flow oversight."
-               }
-             ].map((solution, index) => (
-               <motion.div
-                 key={solution.title}
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ duration: 0.8, delay: index * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                 whileHover={{ y: -8, transition: { duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] } }}
-                 className="bg-white rounded-3xl p-10 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out border border-gray-100 group"
-               >
-                <div 
-                  className="w-20 h-20 rounded-3xl flex items-center justify-center mb-8 shadow-lg group-hover:scale-110 transition-transform duration-300"
-                  style={{ backgroundColor: `${solution.color}15` }}
-                >
-                  <solution.icon className="h-10 w-10" style={{ color: solution.color }} />
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-medium text-gray-900 mb-8">{solution.title}</h3>
-              <div className="space-y-6">
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Problem
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.problem}</p>
-                </div>
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Solution
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.solution}</p>
-                </div>
-                <div>
-                    <h4 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide flex items-center">
-                      <div className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: solution.color }} />
-                      Impact
-                    </h4>
-                    <p className="text-gray-900 text-sm leading-relaxed font-light">{solution.impact}</p>
+            {/* Workflow Automation */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#595F39' }}>
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
-                </div>
-              </motion.div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Workflow Automation</h3>
+              <p className="text-gray-600 mb-6">
+                Streamline business processes with intelligent automation that connects your tools and systems seamlessly.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li>• Custom workflow creation</li>
+                <li>• Multi-platform integrations</li>
+                <li>• Real-time monitoring</li>
+              </ul>
+            </motion.div>
 
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
+            {/* Analytics & Insights */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300"
+            >
+              <div className="w-16 h-16 rounded-xl flex items-center justify-center mb-6" style={{ backgroundColor: '#595F39' }}>
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
-            </div>
-          </motion.div>
-            ))}
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Analytics & Insights</h3>
+              <p className="text-gray-600 mb-6">
+                Get deep insights into your automation performance with comprehensive analytics and reporting.
+              </p>
+              <ul className="space-y-2 text-sm text-gray-500">
+                <li>• Performance dashboards</li>
+                <li>• ROI tracking</li>
+                <li>• Predictive analytics</li>
+              </ul>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Enhanced CTA Section */}
+      {/* CTA Section */}
       <section id="book-call" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: '#595F39' }}>
-        <div className="max-w-6xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <h2 className="text-4xl sm:text-5xl font-light text-white mb-6 leading-tight">
-              Get Started Today
+            <h2 className="text-4xl font-light text-white mb-6">
+              Ready to Transform Your Business?
             </h2>
-            <p className="text-xl sm:text-2xl text-white/90 mb-12 leading-relaxed font-light max-w-3xl mx-auto">
-              Book a free workflow & AI readiness audit for your business today
+            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+              Schedule a free consultation to discover how AI automation can revolutionize your workflows and boost your productivity.
             </p>
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <Link 
-                href="#book-call" 
-                className="inline-flex items-center bg-white hover:bg-gray-50 px-12 py-5 rounded-2xl text-xl font-medium transition-all duration-500 ease-out shadow-xl hover:shadow-2xl"
-                style={{ color: '#595F39' }}
+                href="/signup" 
+                className="inline-flex items-center text-gray-900 bg-white px-12 py-4 rounded-2xl text-lg font-medium transition-all duration-300 shadow-xl hover:shadow-2xl"
               >
-                Book Now
-                <ArrowRight className="ml-4 h-6 w-6" />
+                Get Started Today
+                <svg className="ml-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </Link>
             </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-          </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Enhanced Performance Stats */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <h2 className="text-4xl sm:text-5xl font-light mb-6">WORLD-CLASS</h2>
-            <p className="text-xl sm:text-2xl text-gray-200 mb-20 font-light">Agents & automations that improve your bottom line</p>
-          
-            <div className="grid md:grid-cols-3 gap-16">
-              {[
-                { value: "20K", label: "Hours Saved Annually", icon: Clock },
-                { value: "$13K", label: "Monthly Savings", icon: DollarSign },
-                { value: "8X", label: "Productivity Increase", icon: TrendingUp }
-              ].map((stat, index) => (
-                <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="text-center group"
-                >
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: '#9C8B5E20' }}>
-                    <stat.icon className="w-8 h-8" style={{ color: '#9C8B5E' }} />
-                  </div>
-                  <div className="text-6xl sm:text-7xl font-light mb-6" style={{ color: '#9C8B5E' }}>{stat.value}</div>
-                  <p className="text-gray-200 text-lg font-light">{stat.label}</p>
-                </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Enhanced Vision & Mission */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-20">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-center md:text-left"
-            >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 mx-auto md:mx-0" style={{ backgroundColor: '#595F3920' }}>
-                <Star className="w-8 h-8" style={{ color: '#595F39' }} />
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8">Our Vision</h3>
-              <p className="text-xl text-gray-900 leading-relaxed font-light">
-                Accelerate business growth with AI solutions that cut complexity, boost performance, and scale with you
-              </p>
-            </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
-              className="text-center md:text-left"
-            >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-8 mx-auto md:mx-0" style={{ backgroundColor: '#9C8B5E20' }}>
-                <CheckCircle className="w-8 h-8" style={{ color: '#9C8B5E' }} />
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-light text-gray-900 mb-8">Our Mission</h3>
-              <p className="text-xl text-gray-900 leading-relaxed font-light">
-                Make automation a reality, helping companies worldwide unlock new levels of efficiency and sustainable growth
-              </p>
-            </motion.div>
-
-          {/* Animated Agent Network */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, delay: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative mb-20"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Network Container */}
-            <div className="relative w-full max-w-4xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200 p-8">
-              <div className="aspect-[11/8] relative">
-                <AgentNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">AI Agents Working</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Agents and tools collaborating in real-time
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Footer */}
+      {/* Footer */}
       <footer className="bg-gray-900 text-white py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-16">
-            <div className="col-span-2">
-              <div className="flex items-center mb-8">
-                <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={48} height={48} className="h-12 w-12" />
-                <span className="ml-4 text-3xl font-light">Henly AI</span>
-              </div>
-              <p className="text-gray-300 mb-8 leading-relaxed font-light text-lg">
-                Your vision, our expertise. We customize AI solutions to meet your everyday challenges—delivering faster results and freeing you to focus on what really matters.
+          <div className="grid md:grid-cols-3 gap-16">
+            <div>
+              <Image src="/scalewize_cover_logo.png" alt="ScaleWize AI Logo" width={48} height={48} className="h-12 w-12" />
+              <p className="mt-6 text-gray-400">
+                Empowering businesses with intelligent AI automation solutions.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-8 text-xl">Locations</h4>
-              <div className="space-y-4 text-gray-300 font-light text-lg">
-                <p>Calgary, Canada</p>
-                <p>Copenhagen, Denmark</p>
-                <p>Toronto, Canada</p>
-              </div>
+              <h3 className="text-lg font-semibold mb-4">Solutions</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="#solutions" className="hover:text-white transition-colors">LinkedIn Automation</Link></li>
+                <li><Link href="#solutions" className="hover:text-white transition-colors">Workflow Automation</Link></li>
+                <li><Link href="#solutions" className="hover:text-white transition-colors">Analytics & Insights</Link></li>
+              </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-8 text-xl">Newsletter</h4>
-              <p className="text-gray-300 mb-8 font-light text-lg">START UNLOCKING TIME TODAY!</p>
-              <div className="flex">
-                <input 
-                  type="email" 
-                  placeholder="Email*" 
-                  className="flex-1 px-6 py-4 bg-gray-800 border border-gray-700 rounded-l-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 text-lg"
-                  style={{ '--tw-ring-color': '#595F39' } as React.CSSProperties}
-                />
-                <button className="px-8 py-4 rounded-r-xl text-white font-medium transition-colors hover:opacity-90 text-lg" style={{ backgroundColor: '#595F39' }}>
-                  Subscribe
-                </button>
-              </div>
+              <h3 className="text-lg font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><Link href="#book-call" className="hover:text-white transition-colors">Contact Us</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">Sign In</Link></li>
+                <li><Link href="/signup" className="hover:text-white transition-colors">Get Started</Link></li>
+              </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-16 pt-8 text-center text-gray-300 text-lg">
-            © 2024 Henly AI. All rights reserved.
+          <div className="border-t border-gray-800 mt-16 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 ScaleWize AI. All rights reserved.</p>
           </div>
         </div>
       </footer>
