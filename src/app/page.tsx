@@ -117,8 +117,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3D Animation Section - Full Width */}
+      {/* 3D Animation Section - Direct on Background */}
       <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-amber-50/20">
+        <div className="max-w-7xl mx-auto">
+          {/* 3D Animation Container - No Box */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="relative"
+          >
+            <div className="aspect-[16/9] relative">
+              <IcosahedronNetwork />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Integrated and Collaborative AI Agents Section */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -132,37 +150,6 @@ export default function Home() {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Our AI agents work together seamlessly, orbiting around a central intelligence core
             </p>
-          </motion.div>
-
-          {/* 3D Animation Container */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="relative"
-          >
-            {/* Enhanced Ambient Glow */}
-            <div className="absolute inset-0 rounded-3xl blur-3xl scale-110 animate-pulse" style={{ background: "rgba(89, 95, 57, 0.1)" }} />
-            <div className="absolute inset-0 rounded-2xl blur-2xl scale-105" style={{ background: "rgba(89, 95, 57, 0.05)" }} />
-            
-            {/* Animation Container */}
-            <div className="relative w-full max-w-6xl mx-auto bg-gradient-to-br from-white via-gray-50 to-amber-50/30 rounded-3xl overflow-hidden shadow-2xl border border-gray-200">
-              <div className="aspect-[16/9] relative">
-                <IcosahedronNetwork />
-                
-                {/* Network Info Overlay */}
-                <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">Build your team</span>
-                  </div>
-                  <p className="text-gray-600 text-xs mt-1">
-                    Integrated and collaborative AI agents
-                  </p>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
