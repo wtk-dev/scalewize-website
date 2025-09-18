@@ -2,15 +2,18 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 interface Node {
   id: string
   x: number
   y: number
+  vx: number
+  vy: number
   type: 'agent' | 'tool'
   image: string
   alt: string
+  radius: number
 }
 
 interface Connection {
@@ -23,6 +26,8 @@ export default function AgentNetwork() {
   const [nodes, setNodes] = useState<Node[]>([])
   const [connections, setConnections] = useState<Connection[]>([])
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 })
+  const animationRef = useRef<number>()
+  const lastTimeRef = useRef<number>(0)
 
   // Agent and tool configurations
   const agents = [
@@ -55,10 +60,10 @@ export default function AgentNetwork() {
   }, [])
 
   useEffect(() => {
-    // Generate initial node positions
+    // Generate initial node positions with physics properties
     const newNodes: Node[] = []
     
-    // Position agents in a circle
+    // Position agents in a circle with random velocities
     agents.forEach((agent, index) => {
       const angle = (index * 2 * Math.PI) / agents.length
       const radius = Math.min(dimensions.width, dimensions.height) * 0.15
@@ -67,10 +72,13 @@ export default function AgentNetwork() {
         type: 'agent',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
+        vx: (Math.random() - 0.5) * 0.5, // Random velocity between -0.25 and 0.25
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: 32, // Agent radius
       })
     })
 
-    // Position tools around the perimeter
+    // Position tools around the perimeter with random velocities
     tools.forEach((tool, index) => {
       const angle = (index * 2 * Math.PI) / tools.length
       const radius = Math.min(dimensions.width, dimensions.height) * 0.35
@@ -79,6 +87,9 @@ export default function AgentNetwork() {
         type: 'tool',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
+        vx: (Math.random() - 0.5) * 0.3, // Slightly slower for tools
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: 28, // Tool radius
       })
     })
 
@@ -99,6 +110,86 @@ export default function AgentNetwork() {
     })
 
     setConnections(newConnections)
+  }, [dimensions])
+
+  // Physics simulation
+  useEffect(() => {
+    const animate = (currentTime: number) => {
+      const deltaTime = currentTime - lastTimeRef.current
+      lastTimeRef.current = currentTime
+
+      setNodes(prevNodes => {
+        return prevNodes.map(node => {
+          let newX = node.x + node.vx * deltaTime * 0.1
+          let newY = node.y + node.vy * deltaTime * 0.1
+          let newVx = node.vx
+          let newVy = node.vy
+
+          // Wall collision detection with bounce
+          if (newX - node.radius < 0 || newX + node.radius > dimensions.width) {
+            newVx = -newVx * 0.8 // Bounce with slight energy loss
+            newX = Math.max(node.radius, Math.min(dimensions.width - node.radius, newX))
+          }
+          if (newY - node.radius < 0 || newY + node.radius > dimensions.height) {
+            newVy = -newVy * 0.8 // Bounce with slight energy loss
+            newY = Math.max(node.radius, Math.min(dimensions.height - node.radius, newY))
+          }
+
+          // Node-to-node collision detection
+          prevNodes.forEach(otherNode => {
+            if (otherNode.id !== node.id) {
+              const dx = newX - otherNode.x
+              const dy = newY - otherNode.y
+              const distance = Math.sqrt(dx * dx + dy * dy)
+              const minDistance = node.radius + otherNode.radius + 10 // Minimum distance
+
+              if (distance < minDistance && distance > 0) {
+                // Collision response
+                const overlap = minDistance - distance
+                const separationX = (dx / distance) * overlap * 0.5
+                const separationY = (dy / distance) * overlap * 0.5
+
+                newX += separationX
+                newY += separationY
+
+                // Velocity exchange (simplified elastic collision)
+                const relativeVx = newVx - otherNode.vx
+                const relativeVy = newVy - otherNode.vy
+                const speed = relativeVx * dx + relativeVy * dy
+
+                if (speed < 0) {
+                  const impulse = 2 * speed / (distance * distance)
+                  newVx -= impulse * dx * 0.1
+                  newVy -= impulse * dy * 0.1
+                }
+              }
+            }
+          })
+
+          // Apply slight friction
+          newVx *= 0.999
+          newVy *= 0.999
+
+          return {
+            ...node,
+            x: newX,
+            y: newY,
+            vx: newVx,
+            vy: newVy
+          }
+        })
+      })
+
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
   }, [dimensions])
 
   // Animate connections
