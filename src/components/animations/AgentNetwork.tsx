@@ -361,10 +361,10 @@ export default function AgentNetwork() {
       {nodes.map((node) => (
         <motion.div
           key={node.id}
-          className="absolute transform -translate-x-1/2 -translate-y-1/2"
+          className="absolute"
           style={{
-            left: node.x,
-            top: node.y,
+            left: node.x - (node.type === 'agent' ? 32 : 28), // Center the div
+            top: node.y - (node.type === 'agent' ? 32 : 28),   // Center the div
           }}
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
