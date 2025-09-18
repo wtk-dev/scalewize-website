@@ -117,8 +117,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3D Animation Section - Direct on Background */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-amber-50/20">
+      {/* 3D Animation Section - Overlapping with CTAs */}
+      <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 via-white to-amber-50/20 -mt-16">
         <div className="max-w-7xl mx-auto">
           {/* 3D Animation Container - No Box */}
           <motion.div
