@@ -74,7 +74,7 @@ export default function Home() {
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="text-xl sm:text-2xl text-gray-900 max-w-4xl mx-auto leading-relaxed font-light mb-10"
             >
-              Integrated and collaborative AI agents
+              We build custom AI agents and intelligent workflow automations, for business efficiency
             </motion.p>
 
             {/* Enhanced CTA Buttons */}
@@ -135,10 +135,10 @@ export default function Home() {
                 <div className="absolute bottom-6 left-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 max-w-xs shadow-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: "#595F39" }} />
-                    <span className="text-gray-800 text-sm font-medium">Agents Collaborating</span>
+                    <span className="text-gray-800 text-sm font-medium">Build your team</span>
                   </div>
                   <p className="text-gray-600 text-xs mt-1">
-                    Passing information and bouncing off each other
+                    Integrated and collaborative AI agents
                   </p>
                 </div>
               </div>

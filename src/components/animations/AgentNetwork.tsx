@@ -63,33 +63,33 @@ export default function AgentNetwork() {
     // Generate initial node positions with physics properties
     const newNodes: Node[] = []
     
-    // Position agents in a circle with random velocities
+    // Position agents in a tighter circle in the center
     agents.forEach((agent, index) => {
       const angle = (index * 2 * Math.PI) / agents.length
-      const radius = Math.min(dimensions.width, dimensions.height) * 0.15
+      const radius = Math.min(dimensions.width, dimensions.height) * 0.12 // Smaller radius
       newNodes.push({
         ...agent,
         type: 'agent',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.5, // Random velocity between -0.25 and 0.25
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: 32, // Agent radius
+        vx: (Math.random() - 0.5) * 0.3, // Slower initial velocity
+        vy: (Math.random() - 0.5) * 0.3,
+        radius: 24, // Smaller agent radius
       })
     })
 
-    // Position tools around the perimeter with random velocities
+    // Position tools in a wider circle around the agents
     tools.forEach((tool, index) => {
       const angle = (index * 2 * Math.PI) / tools.length
-      const radius = Math.min(dimensions.width, dimensions.height) * 0.35
+      const radius = Math.min(dimensions.width, dimensions.height) * 0.25 // Closer to center
       newNodes.push({
         ...tool,
         type: 'tool',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.3, // Slightly slower for tools
-        vy: (Math.random() - 0.5) * 0.3,
-        radius: 28, // Tool radius
+        vx: (Math.random() - 0.5) * 0.2, // Even slower for tools
+        vy: (Math.random() - 0.5) * 0.2,
+        radius: 20, // Smaller tool radius
       })
     })
 
@@ -120,19 +120,20 @@ export default function AgentNetwork() {
 
       setNodes(prevNodes => {
         return prevNodes.map(node => {
-          let newX = node.x + node.vx * deltaTime * 0.1
-          let newY = node.y + node.vy * deltaTime * 0.1
+          let newX = node.x + node.vx * deltaTime * 0.08 // Slower movement
+          let newY = node.y + node.vy * deltaTime * 0.08
           let newVx = node.vx
           let newVy = node.vy
 
-          // Wall collision detection with bounce
-          if (newX - node.radius < 0 || newX + node.radius > dimensions.width) {
+          // Wall collision detection with bounce (with padding)
+          const padding = 20
+          if (newX - node.radius < padding || newX + node.radius > dimensions.width - padding) {
             newVx = -newVx * 0.8 // Bounce with slight energy loss
-            newX = Math.max(node.radius, Math.min(dimensions.width - node.radius, newX))
+            newX = Math.max(node.radius + padding, Math.min(dimensions.width - node.radius - padding, newX))
           }
-          if (newY - node.radius < 0 || newY + node.radius > dimensions.height) {
+          if (newY - node.radius < padding || newY + node.radius > dimensions.height - padding) {
             newVy = -newVy * 0.8 // Bounce with slight energy loss
-            newY = Math.max(node.radius, Math.min(dimensions.height - node.radius, newY))
+            newY = Math.max(node.radius + padding, Math.min(dimensions.height - node.radius - padding, newY))
           }
 
           // Node-to-node collision detection
@@ -141,7 +142,7 @@ export default function AgentNetwork() {
               const dx = newX - otherNode.x
               const dy = newY - otherNode.y
               const distance = Math.sqrt(dx * dx + dy * dy)
-              const minDistance = node.radius + otherNode.radius + 10 // Minimum distance
+              const minDistance = node.radius + otherNode.radius + 8 // Smaller minimum distance
 
               if (distance < minDistance && distance > 0) {
                 // Collision response
@@ -159,8 +160,8 @@ export default function AgentNetwork() {
 
                 if (speed < 0) {
                   const impulse = 2 * speed / (distance * distance)
-                  newVx -= impulse * dx * 0.1
-                  newVy -= impulse * dy * 0.1
+                  newVx -= impulse * dx * 0.05 // Reduced impulse
+                  newVy -= impulse * dy * 0.05
                 }
               }
             }
@@ -247,7 +248,7 @@ export default function AgentNetwork() {
           return (
             <motion.circle
               key={`packet-${connection.from}-${connection.to}-${index}`}
-              r="3"
+              r="2"
               fill="#595F39"
               initial={{ 
                 cx: fromNode.x, 
@@ -290,7 +291,7 @@ export default function AgentNetwork() {
           whileHover={{ scale: 1.1 }}
         >
           <div className={`
-            relative w-16 h-16 rounded-full shadow-lg border-2 transition-all duration-300
+            relative w-12 h-12 rounded-full shadow-lg border-2 transition-all duration-300
             ${node.type === 'agent' 
               ? 'bg-white border-[#595F39] shadow-[#595F39]/20' 
               : 'bg-gray-50 border-gray-300 shadow-gray-300/20'
@@ -300,9 +301,9 @@ export default function AgentNetwork() {
             <Image
               src={node.image}
               alt={node.alt}
-              width={48}
-              height={48}
-              className="w-12 h-12 rounded-full object-cover m-auto mt-1"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full object-cover m-auto mt-1"
               onError={(e) => {
                 // Fallback to a colored circle if image fails to load
                 const target = e.target as HTMLImageElement
@@ -310,7 +311,7 @@ export default function AgentNetwork() {
                 const parent = target.parentElement
                 if (parent) {
                   parent.innerHTML = `
-                    <div class="w-12 h-12 rounded-full m-auto mt-1 flex items-center justify-center text-white font-bold text-lg ${
+                    <div class="w-8 h-8 rounded-full m-auto mt-1 flex items-center justify-center text-white font-bold text-sm ${
                       node.type === 'agent' ? 'bg-[#595F39]' : 'bg-gray-500'
                     }">
                       ${node.type === 'agent' ? 'A' : node.alt.charAt(0)}
