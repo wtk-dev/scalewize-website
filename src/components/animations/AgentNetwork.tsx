@@ -114,11 +114,11 @@ export default function AgentNetwork() {
         type: 'agent',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.4, // More random velocity
-        vy: (Math.random() - 0.5) * 0.4,
-        radius: 24,
-        separationForce: 0.02, // Force to push nodes apart
-        randomForce: 0.001, // Random movement force
+        vx: (Math.random() - 0.5) * 0.6, // More dramatic velocity
+        vy: (Math.random() - 0.5) * 0.6,
+        radius: 32, // Bigger icons
+        separationForce: 0.03, // Stronger separation
+        randomForce: 0.002, // More random movement
       })
     })
 
@@ -131,11 +131,11 @@ export default function AgentNetwork() {
         type: 'tool',
         x: dimensions.width / 2 + Math.cos(angle) * radius,
         y: dimensions.height / 2 + Math.sin(angle) * radius,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        radius: 20,
-        separationForce: 0.015, // Slightly less separation force for tools
-        randomForce: 0.0008,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: 28, // Bigger icons
+        separationForce: 0.025, // Stronger separation
+        randomForce: 0.0015,
       })
     })
 
@@ -180,11 +180,11 @@ export default function AgentNetwork() {
             const dx = newX - mousePosition.x
             const dy = newY - mousePosition.y
             const distance = Math.sqrt(dx * dx + dy * dy)
-            const mouseRadius = 30 // Mouse interaction radius
+            const mouseRadius = 40 // Increased mouse interaction radius
             
             if (distance < mouseRadius + node.radius && distance > 0) {
               // Strong repulsion from mouse
-              const repulsionForce = 0.03
+              const repulsionForce = 0.04 // Increased repulsion
               const repulsionX = (dx / distance) * repulsionForce * deltaTime
               const repulsionY = (dy / distance) * repulsionForce * deltaTime
               
@@ -199,7 +199,7 @@ export default function AgentNetwork() {
               const dx = newX - otherNode.x
               const dy = newY - otherNode.y
               const distance = Math.sqrt(dx * dx + dy * dy)
-              const minDistance = node.radius + otherNode.radius + 15 // Increased minimum distance
+              const minDistance = node.radius + otherNode.radius + 20 // Increased minimum distance
 
               if (distance < minDistance && distance > 0) {
                 // Strong separation force
@@ -223,20 +223,20 @@ export default function AgentNetwork() {
           // Wall collision detection with bounce (with padding)
           const padding = 20
           if (newX - node.radius < padding || newX + node.radius > dimensions.width - padding) {
-            newVx = -newVx * 0.7 // Stronger bounce
+            newVx = -newVx * 0.8 // More dramatic bounce
             newX = Math.max(node.radius + padding, Math.min(dimensions.width - node.radius - padding, newX))
           }
           if (newY - node.radius < padding || newY + node.radius > dimensions.height - padding) {
-            newVy = -newVy * 0.7 // Stronger bounce
+            newVy = -newVy * 0.8 // More dramatic bounce
             newY = Math.max(node.radius + padding, Math.min(dimensions.height - node.radius - padding, newY))
           }
 
           // Apply friction
-          newVx *= 0.998
-          newVy *= 0.998
+          newVx *= 0.996 // Less friction for more dramatic movement
+          newVy *= 0.996
 
           // Limit maximum velocity to prevent chaotic movement
-          const maxVelocity = 0.5
+          const maxVelocity = 0.8 // Increased max velocity
           const currentSpeed = Math.sqrt(newVx * newVx + newVy * newVy)
           if (currentSpeed > maxVelocity) {
             newVx = (newVx / currentSpeed) * maxVelocity
@@ -369,19 +369,21 @@ export default function AgentNetwork() {
           whileHover={{ scale: 1.1 }}
         >
           <div className={`
-            relative w-12 h-12 rounded-full shadow-lg border-2 transition-all duration-300
+            relative rounded-full shadow-lg border-2 transition-all duration-300
             ${node.type === 'agent' 
-              ? 'bg-white border-[#595F39] shadow-[#595F39]/20' 
-              : 'bg-gray-50 border-gray-300 shadow-gray-300/20'
+              ? 'bg-white border-[#595F39] shadow-[#595F39]/20 w-16 h-16' 
+              : 'bg-gray-50 border-gray-300 shadow-gray-300/20 w-14 h-14'
             }
             hover:shadow-xl hover:border-[#595F39]
           `}>
             <Image
               src={node.image}
               alt={node.alt}
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-full object-cover m-auto mt-1"
+              width={node.type === 'agent' ? 48 : 40}
+              height={node.type === 'agent' ? 48 : 40}
+              className={`rounded-full object-cover m-auto ${
+                node.type === 'agent' ? 'mt-2' : 'mt-1.5'
+              }`}
               onError={(e) => {
                 // Fallback to a colored circle if image fails to load
                 const target = e.target as HTMLImageElement
@@ -389,8 +391,8 @@ export default function AgentNetwork() {
                 const parent = target.parentElement
                 if (parent) {
                   parent.innerHTML = `
-                    <div class="w-8 h-8 rounded-full m-auto mt-1 flex items-center justify-center text-white font-bold text-sm ${
-                      node.type === 'agent' ? 'bg-[#595F39]' : 'bg-gray-500'
+                    <div class="rounded-full m-auto flex items-center justify-center text-white font-bold ${
+                      node.type === 'agent' ? 'w-12 h-12 mt-2 text-lg bg-[#595F39]' : 'w-10 h-10 mt-1.5 text-sm bg-gray-500'
                     }">
                       ${node.type === 'agent' ? 'A' : node.alt.charAt(0)}
                     </div>
@@ -418,22 +420,6 @@ export default function AgentNetwork() {
           </div>
         </motion.div>
       ))}
-
-      {/* Mouse cursor indicator (optional visual feedback) */}
-      {isMouseInContainer && (
-        <motion.div
-          className="absolute pointer-events-none"
-          style={{
-            left: mousePosition.x - 15,
-            top: mousePosition.y - 15,
-          }}
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.3 }}
-          exit={{ scale: 0, opacity: 0 }}
-        >
-          <div className="w-8 h-8 rounded-full border-2 border-[#595F39] bg-[#595F39]/10 animate-pulse" />
-        </motion.div>
-      )}
     </div>
   )
 }
